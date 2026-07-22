@@ -557,11 +557,10 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 
 /* ===== Officer form: match Details (wide, multi-column) layout ===== */
 .main.narrow{max-width:1220px;margin-left:var(--sidebar-w);margin-right:0;padding-left:32px;padding-right:32px}
-.card-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px 28px;align-items:start}
+.card-body{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 28px;align-items:start}
 .card-body>.field,.card-body>.field-row>.field{margin-bottom:0}
 .card-body>.field-row{display:contents}
 .card-body>.field:has(textarea),
-.card-body>.field:has(.ro-row),
 .card-body>.field:has(.toggle),
 .card-body>.field:has(.capture),
 .card-body>.map-lite,
@@ -667,6 +666,79 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 @media(max-width:1020px){
   .sec-jump{margin:0 -16px 20px;padding:10px 16px;border-bottom:1px solid var(--grey-200)}
 }
+
+/* ===== P1 UX adjustments: prerequisite · dependency · progress · asset nav ===== */
+/* 1 · Contract as prerequisite */
+.prereq{border-left:3px solid var(--teal-600);background:var(--teal-50);border-radius:var(--r-md);
+  padding:12px 14px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start}
+.prereq svg{width:18px;height:18px;color:var(--teal-700);flex:none;margin-top:1px}
+.prereq b{color:var(--teal-700);font-size:var(--fs-base)}
+.prereq p{margin:3px 0 0;color:var(--grey-600);font-size:var(--fs-sm);line-height:1.5}
+.field.is-prereq>label{color:var(--teal-700)}
+/* span full width inside the grid card-body */
+.card-body>.prereq,.card-body>.dep-wrap,.card-body>.site-goto{grid-column:1 / -1}
+
+/* 2 · Dependency gating */
+.dep-note{display:none;align-items:center;gap:8px;color:var(--grey-500);font-size:var(--fs-sm);
+  font-weight:520;margin:0 0 14px;padding:10px 12px;background:var(--grey-100);border-radius:var(--r-md)}
+.dep-note svg{width:16px;height:16px;flex:none;color:var(--grey-400)}
+.dep-note.show{display:flex}
+.card-body>.dep-note{grid-column:1 / -1}
+.dep-group,.dep-field{transition:opacity .2s}
+.dep-group.locked,.dep-field.locked{opacity:.45;pointer-events:none;filter:grayscale(.35)}
+
+/* 3 · Section progress on quick-jump chips */
+.sj-chip{display:inline-flex;align-items:center;gap:7px}
+.sj-ico{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;
+  border-radius:var(--r-pill);font-size:11px;font-weight:700;line-height:1}
+.sj-ico.count{background:var(--warning-50);color:var(--warning-700);padding:0 5px}
+.sj-chip.is-on .sj-ico.count{background:rgba(255,255,255,.30);color:#fff}
+.sj-ico.tick{color:var(--success-600)}
+.sj-chip.is-on .sj-ico.tick{color:#fff}
+.sj-ico.tick svg{width:14px;height:14px}
+.req-left{margin:-6px 2px 18px;font-size:var(--fs-sm);font-weight:600;color:var(--grey-500)}
+.req-left b{color:var(--warning-700)}
+.req-left.done,.req-left.done b{color:var(--success-600)}
+
+/* 4 · Asset / task quick-jump + collapse */
+.site-goto{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:var(--fs-sm);
+  font-weight:600;color:var(--grey-600)}
+.site-goto select{flex:1;min-width:0;font-family:inherit;font-size:var(--fs-base);color:var(--grey-800);
+  padding:9px 12px;border:1px solid var(--grey-200);border-radius:var(--r-md);background:#fff;cursor:pointer}
+.asset-lite-head,.task-lite-head{cursor:pointer}
+.asset-lite-head strong,.task-lite-head strong{display:inline-flex;align-items:center}
+.al-chev{display:inline-flex;flex:none;margin-right:8px;color:var(--grey-400);transition:transform .2s}
+.al-chev svg{width:16px;height:16px;display:block}
+.asset-lite.collapsed .asset-lite-head .al-chev svg,
+.task-lite.collapsed .task-lite-head .al-chev svg{transform:rotate(-90deg)}
+.asset-lite.collapsed>:not(.asset-lite-head){display:none}
+.task-lite.collapsed>:not(.task-lite-head){display:none}
+
+/* ---- Mobile Site & assets: accordion cards + task bottom-sheet (desktop unaffected) ---- */
+.al-sub,.tl-sub,.tl-edit{display:none}
+@media(max-width:820px){
+  #s-site .asset-lite-head,#s-site .task-lite-head{flex-wrap:wrap;position:relative}
+  #s-site .al-sub,#s-site .tl-sub{display:block;flex-basis:100%;font-size:var(--fs-sm);color:var(--grey-500);font-weight:500;margin-top:4px;padding-right:56px}
+  #s-site .task-lite{cursor:pointer}
+  #s-site .task-lite>.asset-lite-grid,
+  #s-site .task-lite>.task-others,
+  #s-site .task-lite>.field{display:none}
+  #s-site .task-lite .task-lite-head .btn,#s-site .task-lite .al-chev{display:none}
+  #s-site .tl-edit{display:inline-flex;position:absolute;right:2px;top:2px;color:var(--teal-600);font-weight:600;font-size:var(--fs-sm)}
+}
+.msheet-scrim{position:fixed;inset:0;background:rgba(22,31,38,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60}
+.msheet-scrim.show{opacity:1;pointer-events:auto}
+.msheet{position:fixed;left:0;right:0;bottom:0;max-height:88vh;background:#fff;border-radius:16px 16px 0 0;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.15,1);z-index:61;display:flex;flex-direction:column;box-shadow:0 -8px 32px rgba(22,31,38,.18)}
+.msheet.show{transform:translateY(0)}
+.msheet-grab{width:38px;height:4px;border-radius:99px;background:var(--grey-300);margin:8px auto 0}
+.msheet-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 12px;border-bottom:1px solid var(--grey-200)}
+.msheet-title{font-weight:700;color:var(--grey-900);font-size:var(--fs-md)}
+.msheet-done{background:var(--teal-600);color:#fff;border:0;border-radius:8px;padding:9px 18px;font-weight:600;font-family:inherit;cursor:pointer}
+.msheet-body{overflow-y:auto;padding:16px}
+.msheet .task-lite{border:0;padding:0;margin:0;background:transparent}
+.msheet .task-lite .task-lite-head{display:none}
+.msheet .task-lite .asset-lite-grid{grid-template-columns:1fr;gap:16px}
+.msheet .task-lite>.field:not([hidden]){margin-top:16px}
 </style>
 </head>
 <body>
@@ -730,30 +802,33 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
   </div>
 
   <nav class="sec-jump" id="secJump" aria-label="Jump to section">
-    <button class="sj-chip is-on" data-target="s-ref">References</button>
-    <button class="sj-chip" data-target="s-cls">Classification</button>
-    <button class="sj-chip" data-target="s-desc">Location</button>
-    <button class="sj-chip" data-target="s-site">Site &amp; assets</button>
-    <button class="sj-chip" data-target="s-fund">Funding</button>
+    <button class="sj-chip is-on" data-target="s-ref"><span>Work instruction</span><span class="sj-ico"></span></button>
+    <button class="sj-chip" data-target="s-desc"><span>Location</span><span class="sj-ico"></span></button>
+    <button class="sj-chip" data-target="s-site"><span>Site &amp; assets</span><span class="sj-ico"></span></button>
+    <button class="sj-chip" data-target="s-fund"><span>Funding</span><span class="sj-ico"></span></button>
   </nav>
+  <div class="req-left" id="reqLeft"></div>
 
   <section class="card" id="s-ref">
-    <div class="card-head"><h2>References</h2><span class="hint">System-generated values are locked</span></div>
+    <div class="card-head"><h2>Work instruction details</h2><span class="hint">System-generated values are locked</span></div>
     <div class="card-body">
-      <div class="field">
+      <div class="prereq">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6l-8-4Z"/><path d="m9 12 2 2 4-4"/></svg>
+        <div><b>Start here — select the contract first.</b>
+        <p>It unlocks the road, sector and assets below, which are all filtered by the selected contract.</p></div>
+      </div>
+      <div class="field is-prereq">
         <label for="e-con">Contract no. <span class="req">*</span></label>
         <select class="control" id="e-con">
           <option selected disabled>Select contract…</option>
           <option>TR388</option>
         </select>
-        <p class="help">Roads, sectors and assets below are filtered by the selected contract.</p>
       </div>
       <div class="field">
         <label>Work instruction no.</label>
         <div class="ro-row">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <b style="color:var(--grey-400);font-weight:480">Assigned when the WI is created</b>
-          <span class="tag">System generated</span>
+          <b style="color:var(--grey-400);font-weight:480">Auto-generated on save</b>
         </div>
       </div>
       <div class="field-row">
@@ -766,12 +841,6 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
           <input class="control" id="e-def" type="text" placeholder="e.g. DEF-2026-0417">
         </div>
       </div>
-    </div>
-  </section>
-
-  <section class="card" id="s-cls">
-    <div class="card-head"><h2>Classification &amp; dates</h2></div>
-    <div class="card-body">
       <div class="field-row">
         <div class="field">
           <label for="e-dept">Department <span class="req">*</span></label>
@@ -823,35 +892,32 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
   <section class="card" id="s-desc">
     <div class="card-head"><h2>Location &amp; description</h2></div>
     <div class="card-body">
-      <div class="field-row">
-        <div class="field">
-          <label for="e-road">Road name <span class="req">*</span></label>
-          <select class="control" id="e-road">
-            <option selected disabled>Search or select road…</option>
-            <option>Adis Road</option>
-            <option>Admiralty Drive</option>
-            <option>Admiralty Lane</option>
-            <option>Palm Drive</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="e-ltag">Location tag</label>
-          <select class="control" id="e-ltag">
-            <option selected disabled>Select location tag…</option>
-            <option>REX-ADI00Y-00000</option>
-            <option>REX-PAD06R-00000</option>
-          </select>
-        </div>
+      <div class="dep-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Select a contract first — road, sector and sub-sector are filtered by it.</div>
+      <div class="field dep-field">
+        <label for="e-road">Road name <span class="req">*</span></label>
+        <select class="control" id="e-road">
+          <option selected disabled>Search or select road…</option>
+          <option>Adis Road</option>
+          <option>Admiralty Drive</option>
+          <option>Admiralty Lane</option>
+          <option>Palm Drive</option>
+        </select>
       </div>
-      <div class="field-row">
-        <div class="field">
-          <label for="e-sec">Sector <span class="req">*</span></label>
-          <select class="control" id="e-sec"><option selected disabled>Select sector…</option><option>NW3</option><option>NW2</option><option>NW1</option></select>
-        </div>
-        <div class="field">
-          <label for="e-sub">Sub-sector <span class="req">*</span></label>
-          <select class="control" id="e-sub"><option selected disabled>Select sub-sector…</option><option>CS4</option><option>NW1</option><option>NW2</option></select>
-        </div>
+      <div class="field dep-field">
+        <label for="e-ltag">Location tag</label>
+        <select class="control" id="e-ltag">
+          <option selected disabled>Select location tag…</option>
+          <option>REX-ADI00Y-00000</option>
+          <option>REX-PAD06R-00000</option>
+        </select>
+      </div>
+      <div class="field dep-field">
+        <label for="e-sec">Sector <span class="req">*</span></label>
+        <select class="control" id="e-sec"><option selected disabled>Select sector…</option><option>NW3</option><option>NW2</option><option>NW1</option></select>
+      </div>
+      <div class="field dep-field">
+        <label for="e-sub">Sub-sector <span class="req">*</span></label>
+        <select class="control" id="e-sub"><option selected disabled>Select sub-sector…</option><option>CS4</option><option>NW1</option><option>NW2</option></select>
       </div>
       <div class="field">
         <label for="e-desc">Work / defect description</label>
@@ -872,6 +938,10 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
         <span class="tk"></span>
         <span class="tx"><strong>Asset not found</strong><span>Tick if the asset is not in the inventory</span></span>
       </label>
+      <div class="site-goto"><label for="siteGoto">Go to</label><select id="siteGoto"><option value="">Jump to asset or task…</option></select></div>
+      <div class="dep-wrap" data-dep>
+        <div class="dep-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Select a contract first — the map and asset selection unlock once a road is chosen.</div>
+        <div class="dep-group">
       <div class="map-lite" role="img" aria-label="Map placeholder for asset selection">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
         <strong>Map — select assets within the buffer</strong>
@@ -958,6 +1028,8 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
         Add another asset
       </button>
+        </div>
+      </div>
       <div class="divider"></div>
       <div class="field">
         <label>Attachment</label>
@@ -1268,6 +1340,171 @@ document.addEventListener('change', function(e){
   }
   window.addEventListener('scroll',function(){ if(!ticking){ ticking=true; window.requestAnimationFrame(spy); } },{passive:true});
   window.addEventListener('resize',spy); spy();
+})();
+</script>
+<script>
+/* ===== P1 UX adjustments: dependency gating · section progress · asset go-to/collapse ===== */
+(function(){
+  var con=document.getElementById('e-con');
+  var wraps=Array.prototype.slice.call(document.querySelectorAll('[data-dep]'));
+  var chips=Array.prototype.slice.call(document.querySelectorAll('.sj-chip'));
+  var TICK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+  var CHEV='<span class="al-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>';
+
+  function chosen(sel){ if(!sel)return false; var o=sel.options[sel.selectedIndex]; return !!(o && !o.disabled && (''+o.value)!==''); }
+  function filled(ctrl){
+    if(!ctrl) return true;
+    if(ctrl.tagName==='SELECT') return chosen(ctrl);
+    return (''+ctrl.value).trim()!=='';
+  }
+  /* 2 · dependency gating */
+  function applyLock(){
+    var locked=!chosen(con);
+    document.querySelectorAll('.dep-note').forEach(function(n){ n.classList.toggle('show',locked); });
+    document.querySelectorAll('.dep-field,.dep-group').forEach(function(f){ f.classList.toggle('locked',locked); });
+  }
+  /* 3 · section progress */
+  function reqControls(sec){
+    return Array.prototype.slice.call(sec.querySelectorAll('.field')).filter(function(f){ return f.querySelector('.req'); })
+      .map(function(f){ return f.querySelector('select,input,textarea'); }).filter(Boolean);
+  }
+  function updateProgress(){
+    var totalLeft=0;
+    chips.forEach(function(c){
+      var sec=document.getElementById(c.getAttribute('data-target')); if(!sec) return;
+      var ctrls=reqControls(sec), left=ctrls.filter(function(x){return !filled(x);}).length;
+      totalLeft+=left;
+      var ico=c.querySelector('.sj-ico'); if(!ico) return;
+      if(ctrls.length===0){ ico.className='sj-ico'; ico.innerHTML=''; }
+      else if(left===0){ ico.className='sj-ico tick'; ico.innerHTML=TICK; }
+      else { ico.className='sj-ico count'; ico.textContent=left; }
+      c.classList.toggle('done',ctrls.length>0 && left===0);
+    });
+    var rl=document.getElementById('reqLeft'); if(!rl) return;
+    if(totalLeft===0){ rl.className='req-left done'; rl.textContent='✓ All required fields complete'; }
+    else { rl.className='req-left'; rl.innerHTML='<b>'+totalLeft+'</b> required field'+(totalLeft>1?'s':'')+' left'; }
+  }
+  /* 4 · asset/task collapse chevrons + go-to */
+  function addChevrons(){
+    document.querySelectorAll('#s-site .asset-lite-head strong, #s-site .task-lite-head strong').forEach(function(s){
+      if(!s.querySelector('.al-chev')) s.insertAdjacentHTML('afterbegin',CHEV);
+    });
+  }
+  function buildGoto(){
+    var sel=document.getElementById('siteGoto'); if(!sel) return;
+    sel.innerHTML='<option value="">Jump to asset or task…</option>';
+    Array.prototype.slice.call(document.querySelectorAll('#s-site .asset-lite')).forEach(function(a,ai){
+      a.id='asset-'+ai;
+      var at=a.querySelector('.asset-lite-grid select'); var atv=chosen(at)?(' · '+at.options[at.selectedIndex].textContent):'';
+      var o=document.createElement('option'); o.value='#asset-'+ai; o.textContent='Asset '+(ai+1)+atv; sel.appendChild(o);
+      Array.prototype.slice.call(a.querySelectorAll('.task-lite')).forEach(function(t,ti){
+        t.id='asset-'+ai+'-task-'+ti;
+        var o2=document.createElement('option'); o2.value='#asset-'+ai+'-task-'+ti; o2.textContent=' Asset '+(ai+1)+' · Task '+(ti+1); sel.appendChild(o2);
+      });
+    });
+  }
+  var goto=document.getElementById('siteGoto');
+  if(goto) goto.addEventListener('change',function(){
+    if(!goto.value) return; var el=document.querySelector(goto.value);
+    if(el){ el.classList.remove('collapsed'); var p=el.closest('.asset-lite'); if(p) p.classList.remove('collapsed'); el.scrollIntoView({behavior:'smooth',block:'center'}); }
+    goto.value='';
+  });
+  /* collapse toggle (delegated → survives cloned assets/tasks) */
+  document.addEventListener('click',function(e){
+    var h=e.target.closest('#s-site .asset-lite-head, #s-site .task-lite-head');
+    if(!h || e.target.closest('.btn')) return;
+    h.parentNode.classList.toggle('collapsed');
+  });
+  /* refresh nav after any add/remove/collapse click inside the site card */
+  document.addEventListener('click',function(e){
+    if(e.target.closest('#s-site')) setTimeout(function(){ addChevrons(); buildGoto(); updateProgress(); },0);
+  });
+
+  document.addEventListener('change',function(){ applyLock(); addChevrons(); buildGoto(); updateProgress(); });
+  document.addEventListener('input',updateProgress);
+  applyLock(); addChevrons(); buildGoto(); updateProgress();
+})();
+</script>
+<div class="msheet-scrim" id="msheetScrim"></div>
+<div class="msheet" id="msheet" role="dialog" aria-modal="true">
+  <div class="msheet-grab"></div>
+  <div class="msheet-head"><div class="msheet-title" id="msheetTitle">Task</div>
+    <button class="msheet-done" id="msheetDone" type="button">Done</button></div>
+  <div class="msheet-body" id="msheetBody"></div>
+</div>
+<script>
+/* ===== Mobile Site & assets: accordion cards + task bottom-sheet (desktop untouched) ===== */
+(function(){
+  var mq=window.matchMedia('(max-width:820px)');
+  var site=document.getElementById('s-site'); if(!site) return;
+  var scrim=document.getElementById('msheetScrim'),sheet=document.getElementById('msheet'),
+      sbody=document.getElementById('msheetBody'),stitle=document.getElementById('msheetTitle'),
+      sdone=document.getElementById('msheetDone');
+  function pick(sel){ return (sel && sel.selectedIndex>0 && !sel.options[sel.selectedIndex].disabled)?sel.options[sel.selectedIndex].textContent:''; }
+  function assetSummary(a){
+    var sels=a.querySelectorAll(':scope > .asset-lite-grid select');
+    var typ=pick(sels[0])||'No asset type', tag=pick(sels[1]);
+    var nt=a.querySelectorAll(':scope .task-lite').length;
+    return typ+(tag?(' · '+tag):'')+' · '+nt+' task'+(nt>1?'s':'');
+  }
+  function taskSummary(t){
+    var sels=t.querySelectorAll(':scope > .asset-lite-grid select');
+    return (pick(sels[0])||'Element?')+' · '+(pick(sels[1])||'Defect?');
+  }
+  function injectSummaries(){
+    site.querySelectorAll('.asset-lite').forEach(function(a){
+      var head=a.querySelector(':scope > .asset-lite-head'); if(!head) return;
+      var sub=head.querySelector('.al-sub'); if(!sub){ sub=document.createElement('div'); sub.className='al-sub'; head.appendChild(sub); }
+      sub.textContent=assetSummary(a);
+    });
+    site.querySelectorAll('.task-lite').forEach(function(t){
+      var head=t.querySelector(':scope > .task-lite-head'); if(!head) return;
+      var sub=head.querySelector('.tl-sub'); if(!sub){ sub=document.createElement('div'); sub.className='tl-sub'; head.appendChild(sub);
+        var ed=document.createElement('span'); ed.className='tl-edit'; ed.textContent='Edit ›'; head.appendChild(ed); }
+      sub.textContent=taskSummary(t);
+    });
+  }
+  var current=null, ph=null;
+  function openSheet(t){
+    current=t; ph=document.createComment('ph'); t.parentNode.insertBefore(ph,t);
+    sbody.appendChild(t);
+    var h=t.querySelector('.task-lite-head strong'); stitle.textContent=h?h.textContent.replace(/\s+/g,' ').trim():'Task';
+    scrim.classList.add('show'); sheet.classList.add('show'); document.body.style.overflow='hidden';
+  }
+  function closeSheet(){
+    if(!current) return;
+    if(ph&&ph.parentNode){ ph.parentNode.insertBefore(current,ph); ph.remove(); }
+    scrim.classList.remove('show'); sheet.classList.remove('show'); document.body.style.overflow='';
+    current=null; ph=null; injectSummaries();
+  }
+  sdone.addEventListener('click',closeSheet);
+  scrim.addEventListener('click',closeSheet);
+  // tap a task (mobile) → open sheet; capture phase to beat the collapse handler
+  site.addEventListener('click',function(e){
+    if(!mq.matches) return;
+    var head=e.target.closest('.task-lite-head');
+    if(head && !e.target.closest('.btn')){ e.stopPropagation(); openSheet(head.parentNode); }
+  },true);
+  // add-task on mobile → open the new task straight in the bottom-sheet
+  site.addEventListener('click',function(e){
+    if(!mq.matches) return;
+    var add=e.target.closest('.task-add'); if(!add) return;
+    var asset=add.closest('.asset-lite'); if(!asset) return;
+    setTimeout(function(){
+      var tasks=asset.querySelectorAll('.task-lite');
+      if(tasks.length) openSheet(tasks[tasks.length-1]);
+    },0);
+  });
+  function initMobile(){
+    var m=mq.matches;
+    site.querySelectorAll('.asset-lite').forEach(function(a){ a.classList.toggle('collapsed',m); });
+    if(!m && sheet.classList.contains('show')) closeSheet();
+    injectSummaries();
+  }
+  mq.addEventListener('change',initMobile);
+  site.addEventListener('change',injectSummaries);
+  document.addEventListener('click',function(e){ if(e.target.closest('#s-site')) setTimeout(injectSummaries,10); });
+  initMobile();
 })();
 </script></body>
 </html>
