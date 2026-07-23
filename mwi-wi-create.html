@@ -34,6 +34,13 @@
   /* Semantic */
   --success-50:#EAF5EE; --success-600:#177245; --success-700:#0F5C37;
   --warning-50:#FEF3E2; --warning-600:#A15C07; --warning-700:#7A4506;
+  /* SGDS yellow ramp — @govtechsg/sgds-web-component themes/root.css */
+  --sgds-yellow-100:#FEF4CB; --sgds-yellow-200:#FCDE63; --sgds-yellow-300:#E5BF29;
+  --sgds-yellow-600:#7E6917; --sgds-yellow-700:#605111; --sgds-yellow-800:#483C0D;
+  /* semantic aliases, exactly as themes/day.css maps them */
+  --sgds-warning-bg-default:var(--sgds-yellow-200);
+  --sgds-warning-color-emphasis:var(--sgds-yellow-700);
+  --sgds-warning-border-color-default:var(--sgds-yellow-600);
   --danger-50:#F9ECEB;  --danger-600:#A93A32;  --danger-700:#8F2D2B; /* LTA maroon */
   --info-50:#EBF1FB;    --info-600:#175CD3;    --info-700:#1247A4;
   /* Typography */
@@ -116,7 +123,7 @@ button{font-family:inherit;cursor:pointer}
 .nav-item.sub.current{color:var(--teal-700);font-weight:620;background:linear-gradient(to right,var(--teal-50),transparent)}
 .nav-ico{width:18px;height:18px;flex:none;color:var(--grey-400)}
 
-.main{margin-left:var(--sidebar-w);padding:calc(var(--topbar-h) + 24px) 32px 96px;max-width:1220px}
+.main{margin-left:var(--sidebar-w);padding:var(--topbar-h) 32px 96px;max-width:1220px}
 
 /* ---------- Page header ---------- */
 .breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:var(--fs-sm);color:var(--grey-500);margin-bottom:14px}
@@ -329,7 +336,7 @@ button{font-family:inherit;cursor:pointer}
     box-shadow:none;width:min(300px,84vw);
   }
   .sidebar.open{transform:none;box-shadow:var(--shadow-lg)}
-  .main{margin-left:0;padding:calc(var(--topbar-h) + 16px) 16px 72px}
+  .main{margin-left:0;padding:var(--topbar-h) 16px 72px}
   .avatar-meta{display:none}
   .brand-logo-img{height:42px}
 }
@@ -556,7 +563,7 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 .jump-select .xselect{width:auto;min-width:220px}
 
 /* ===== Officer form: match Details (wide, multi-column) layout ===== */
-.main.narrow{max-width:1220px;margin-left:var(--sidebar-w);margin-right:0;padding-left:32px;padding-right:32px}
+.main.narrow{max-width:none;width:auto;margin-left:var(--sidebar-w);margin-right:0;padding-left:32px;padding-right:32px}
 .card-body{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 28px;align-items:start}
 .card-body>.field,.card-body>.field-row>.field{margin-bottom:0}
 .card-body>.field-row{display:contents}
@@ -568,7 +575,7 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 .card-body>.divider,
 .card-body>.btn{grid-column:1 / -1}
 .card-body>.btn{justify-self:start}
-.action-bar .inner{max-width:1220px;margin:0 auto 0 var(--sidebar-w);padding:0 32px}
+.action-bar .inner{max-width:none;margin:0 0 0 var(--sidebar-w);padding:0 32px}
 @media(max-width:1020px){
   .main.narrow{margin-left:0;padding-left:16px;padding-right:16px;max-width:none}
   .card-body{grid-template-columns:1fr}
@@ -647,11 +654,10 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 /* ---- Section quick-jump tabs (sticky chips + scroll-spy) — desktop + mobile ---- */
 .sec-jump{
   display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;
-  position:sticky;top:var(--topbar-h);z-index:22;
-  margin:0 -32px 22px;padding:12px 32px;
-  background:rgba(247,249,250,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  margin:0 -32px;padding:0 32px;
   scrollbar-width:none;scroll-behavior:smooth;
 }
+.sec-jump[hidden]{display:none}
 .sec-jump::-webkit-scrollbar{display:none}
 .sj-chip{
   flex:none;white-space:nowrap;border:1px solid var(--grey-200);background:#fff;
@@ -661,11 +667,36 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 }
 .sj-chip:hover{border-color:var(--grey-300)}
 .sj-chip.is-on{background:var(--teal-600);border-color:var(--teal-600);color:#fff;font-weight:600}
-/* offset anchors so headings clear the fixed topbar + sticky tab bar */
-.card{scroll-margin-top:calc(var(--topbar-h) + 76px)}
+/* offset anchors so headings clear the fixed topbar + the whole sticky head */
+.card{scroll-margin-top:calc(var(--topbar-h) + var(--stick-h, 76px) + 12px)}
 @media(max-width:1020px){
-  .sec-jump{margin:0 -16px 20px;padding:10px 16px;border-bottom:1px solid var(--grey-200)}
+  .sec-jump{margin:0 -16px;padding:0 16px}
 }
+
+/* ---- Sticky head: context bar + wizard + section chips travel together ---- */
+.stickyhead{
+  position:sticky;top:var(--topbar-h);z-index:30;
+  margin:0 -32px 20px;padding:14px 32px 12px;
+  background:rgba(247,249,250,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--grey-200);
+}
+/* identical 12px rhythm between the three rows; wiz + chips bleed to the edges so they
+   scroll the full width while their content stays aligned with the page gutter */
+.stickyhead>.context-bar{margin:0}
+.stickyhead>.wiz{margin:12px -32px 0;padding:0 32px 4px}
+.stickyhead>.sec-jump{margin:12px -32px 0;padding:0 32px}
+@media(max-width:1020px){
+  .stickyhead{margin:0 -16px 16px;padding:12px 16px 10px}
+  .stickyhead>.wiz{margin:12px -16px 0;padding:0 16px 4px}
+  .stickyhead>.sec-jump{margin:12px -16px 0;padding:0 16px}
+}
+
+/* condensed once the page is scrolled — padding only, so nothing reflows or resizes:
+   the layout is already compact at rest (no path subline, abbreviated status on mobile) */
+.stickyhead{transition:padding .18s ease,box-shadow .18s ease}
+.stickyhead.is-stuck{padding-top:8px;padding-bottom:8px;box-shadow:0 4px 14px rgba(22,31,38,.07)}
+.stickyhead.is-stuck>.wiz{margin-top:9px}
+.stickyhead.is-stuck>.sec-jump{margin-top:9px}
 
 /* ===== P1 UX adjustments: prerequisite · dependency · progress · asset nav ===== */
 /* 1 · Contract as prerequisite */
@@ -676,7 +707,7 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 .prereq p{margin:3px 0 0;color:var(--grey-600);font-size:var(--fs-sm);line-height:1.5}
 .field.is-prereq>label{color:var(--teal-700)}
 /* span full width inside the grid card-body */
-.card-body>.prereq,.card-body>.dep-wrap,.card-body>.site-goto{grid-column:1 / -1}
+.card-body>.prereq,.card-body>.dep-wrap{grid-column:1 / -1}
 
 /* 2 · Dependency gating */
 .dep-note{display:none;align-items:center;gap:8px;color:var(--grey-500);font-size:var(--fs-sm);
@@ -701,10 +732,53 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 .req-left.done,.req-left.done b{color:var(--success-600)}
 
 /* 4 · Asset / task quick-jump + collapse */
-.site-goto{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:var(--fs-sm);
-  font-weight:600;color:var(--grey-600)}
-.site-goto select{flex:1;min-width:0;font-family:inherit;font-size:var(--fs-base);color:var(--grey-800);
-  padding:9px 12px;border:1px solid var(--grey-200);border-radius:var(--r-md);background:#fff;cursor:pointer}
+.asset-tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 0 16px;padding-bottom:2px}
+.asset-tabs::-webkit-scrollbar{display:none}
+.at-chip{flex:none;white-space:nowrap;border:1px solid var(--grey-200);background:#fff;color:var(--grey-600);
+  font-family:inherit;font-size:var(--fs-sm);font-weight:560;padding:7px 14px;border-radius:var(--r-pill);
+  cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.at-chip:hover{border-color:var(--grey-300)}
+.at-chip.is-on{background:var(--teal-600);border-color:var(--teal-600);color:#fff;font-weight:600}
+.at-add{flex:none;white-space:nowrap;border:1.5px dashed var(--grey-300);background:transparent;color:var(--teal-700);
+  font-family:inherit;font-size:var(--fs-sm);font-weight:600;padding:7px 14px;border-radius:var(--r-pill);
+  cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.at-add:hover{background:var(--teal-50)}
+/* task count carried on the asset chip */
+.at-chip{display:inline-flex;align-items:center;gap:7px}
+.at-count{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;
+  border-radius:var(--r-pill);background:var(--grey-100);color:var(--grey-600);
+  font-size:var(--fs-xs);font-weight:650;line-height:1}
+.at-chip.is-on .at-count{background:rgba(255,255,255,.28);color:#fff}
+.at-count.is-zero{background:var(--warning-50);color:var(--warning-700)}
+.at-chip.is-on .at-count.is-zero{background:rgba(255,255,255,.28);color:#fff}
+.asset-lite[hidden]{display:none}
+.task-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:14px 0;padding:14px 0 2px;border-top:1px solid var(--grey-200)}
+.task-tabs::-webkit-scrollbar{display:none}
+.tt-chip{flex:none;white-space:nowrap;border:1px solid var(--grey-200);background:#fff;color:var(--grey-600);
+  font-family:inherit;font-size:var(--fs-xs);font-weight:600;padding:6px 12px;border-radius:var(--r-pill);
+  cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.tt-chip:hover{border-color:var(--grey-300)}
+.tt-chip.is-on{background:var(--navy-600);border-color:var(--navy-600);color:#fff}
+.tt-add{flex:none;white-space:nowrap;border:1.5px dashed var(--grey-300);background:transparent;color:var(--navy-600);
+  font-family:inherit;font-size:var(--fs-xs);font-weight:600;padding:6px 12px;border-radius:var(--r-pill);
+  cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.tt-add:hover{background:var(--navy-50)}
+body.view-mode .tt-add{display:none}
+.task-lite[hidden]{display:none}
+body.view-mode .at-add{display:none}
+
+/* add-buttons are gated: one thing must be finished before the next can start */
+.at-add:disabled,.tt-add:disabled{opacity:.4;cursor:not-allowed;border-style:dashed;
+  border-color:var(--grey-200);color:var(--grey-400);background:transparent}
+.at-add:disabled:hover,.tt-add:disabled:hover{background:transparent}
+.gate-note{display:flex;align-items:flex-start;gap:7px;font-size:var(--fs-sm);color:var(--grey-600);
+  background:var(--warning-50);border-radius:var(--r-sm);padding:8px 11px;margin:0 0 16px}
+.gate-note svg{width:15px;height:15px;flex:none;margin-top:1px;color:var(--warning-700)}
+.gate-note.is-info{background:var(--grey-50);color:var(--grey-500)}      /* rule stated up front */
+.gate-note.is-info svg{color:var(--grey-400)}
+.gate-note[hidden]{display:none}
+.task-tabs+.gate-note{margin:0 0 4px}
+body.view-mode .gate-note{display:none}
 .asset-lite-head,.task-lite-head{cursor:pointer}
 .asset-lite-head strong,.task-lite-head strong{display:inline-flex;align-items:center}
 .al-chev{display:inline-flex;flex:none;margin-right:8px;color:var(--grey-400);transition:transform .2s}
@@ -713,6 +787,194 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 .task-lite.collapsed .task-lite-head .al-chev svg{transform:rotate(-90deg)}
 .asset-lite.collapsed>:not(.asset-lite-head){display:none}
 .task-lite.collapsed>:not(.task-lite-head){display:none}
+
+/* ---- Wizard steps (CO @ Approval-in-Progress = full 4 steps) ---- */
+.wiz{display:flex;align-items:center;overflow-x:auto;margin:0 0 24px;padding-bottom:6px;scrollbar-width:none}
+.wiz::-webkit-scrollbar{display:none}
+.wiz-step{flex:0 0 auto;display:inline-flex;align-items:center;gap:10px;padding:6px 2px;background:none;border:0;
+  font-family:inherit;font-size:var(--fs-sm);font-weight:560;color:var(--grey-500);cursor:pointer;
+  white-space:nowrap;transition:color .15s}
+.wiz-step:hover{color:var(--grey-700)}
+.wiz-n{width:24px;height:24px;border-radius:var(--r-pill);display:grid;place-items:center;flex:none;
+  font-size:12px;font-weight:700;background:#fff;border:1.5px solid var(--grey-300);color:var(--grey-500);transition:all .15s}
+.wiz-n svg{width:13px;height:13px;display:block}
+.wiz-step.is-done{color:var(--teal-700)}
+.wiz-step.is-done .wiz-n{background:var(--teal-600);border-color:var(--teal-600);color:#fff}
+.wiz-step.is-on{color:var(--navy-700);font-weight:680}
+.wiz-step.is-on .wiz-n{background:var(--navy-700);border-color:var(--navy-700);color:#fff}
+.wiz-sep{flex:1 0 32px;min-width:32px;height:1.5px;background:var(--grey-200);margin:0 14px}
+.wiz-step.is-done+.wiz-sep{background:var(--teal-200)}
+.step-panel{display:none}
+.step-panel.is-on{display:block}
+@media(max-width:1020px){.wiz{margin:0 -16px 18px;padding:0 16px 8px}.wiz-sep{flex:0 0 20px;min-width:20px;margin:0 8px}}
+
+/* read-only value styling (Approval stage) */
+.control[readonly]{background:var(--grey-50);color:var(--grey-600);border-color:var(--grey-200);cursor:default}
+.control[readonly]:focus{border-color:var(--grey-200);box-shadow:none}
+.control.num{text-align:right}
+.ro-val{padding:11px 0;font-size:var(--fs-base);color:var(--grey-800);font-weight:560}
+.chip-appr{background:var(--navy-50);color:var(--navy-700)}
+.empty-tasks,.empty-assets{font-size:var(--fs-sm);color:var(--grey-500);padding:14px 2px}
+
+/* ---- context-bar actions (Timeline / Edit) ---- */
+.context-bar{gap:10px;flex-wrap:nowrap}
+/* one layout at every width: title, status chip beneath it, actions on the right */
+.context-bar .ctx{flex:1;min-width:0}
+.context-bar .ctx strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctx-meta{display:flex;align-items:center;gap:10px;margin-top:5px}
+.ctx-sub{display:none}                 /* path is in the sidebar (desktop) / the burger menu (mobile) */
+.ctx-actions{display:flex;gap:10px;flex:none}
+.chip-abbr{display:none}
+@media(max-width:1020px){
+  .chip-full{display:none}             /* status abbreviates */
+  .chip-abbr{display:inline}
+  .context-bar{gap:8px}
+  .context-bar .back{width:32px;height:32px}
+  /* icon-only actions: font-size:0 drops the label text node, the svg keeps its own size.
+     Both buttons carry title + aria-label so the meaning survives. */
+  .ctx-actions{gap:8px}
+  .ctx-actions .ctx-btn{width:38px;height:38px;padding:0;gap:0;font-size:0;justify-content:center}
+  .ctx-actions .ctx-btn svg{width:18px;height:18px}
+}
+.ctx-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:var(--r-sm);
+  border:1px solid var(--grey-200);background:#fff;color:var(--grey-700);font-family:inherit;
+  font-size:var(--fs-sm);font-weight:600;cursor:pointer;white-space:nowrap;flex:none}
+.ctx-btn:hover{border-color:var(--grey-300)}
+.ctx-btn svg{width:16px;height:16px;flex:none}
+.ctx-btn-primary{background:var(--teal-600);border-color:var(--teal-600);color:#fff}
+.ctx-btn-primary:hover{background:var(--teal-700);border-color:var(--teal-700);color:#fff}
+
+/* ---- view (read-only) mode — the officer presses Edit to unlock ---- */
+body.view-mode .step-panel .control,
+body.view-mode .step-panel .xselect-trigger,
+body.view-mode .step-panel .xdate-trigger,
+body.view-mode .step-panel .boq td input{background:var(--grey-50);color:var(--grey-600);border-color:var(--grey-200);pointer-events:none}
+body.view-mode .step-panel .toggle{pointer-events:none;opacity:.65}
+body.view-mode .step-panel .capture,
+body.view-mode .step-panel .btn-map,
+body.view-mode #s-site .btn-ghost,
+body.view-mode #boqAdd{display:none}
+
+/* ---- Task site-execution fields: filled by the Site Supervisor, read-only for the CO ---- */
+.wip-ro .control,.wip-ro .xselect-trigger,.wip-ro .xdate-trigger{
+  background:var(--grey-50);color:var(--grey-600);border-color:var(--grey-200);pointer-events:none}
+.wip-sep{display:flex;align-items:center;gap:10px;margin:20px 0 14px;font-size:var(--fs-xs);
+  font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--grey-400)}
+.wip-sep::after{content:"";flex:1;height:1px;background:var(--grey-200)}
+.photo-grid-ro{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.photo-ro .lbl{display:block;font-size:var(--fs-sm);font-weight:600;color:var(--grey-800);margin-bottom:6px}
+.photo-ro .ph{height:104px;border-radius:var(--r-md);border:1px solid var(--grey-200);
+  display:flex;align-items:flex-end;padding:8px;overflow:hidden}
+.photo-ro .ph .cap{font-size:11px;font-weight:700;color:#fff;background:rgba(0,0,0,.42);padding:2px 8px;border-radius:var(--r-pill)}
+.ph-before{background:linear-gradient(135deg,#8794a0,#5d6b76)}
+.ph-during{background:linear-gradient(135deg,#9c8f74,#6f6552)}
+.ph-after{background:linear-gradient(135deg,#6d9a7c,#48705a)}
+.ph.is-empty{background:var(--grey-100)}
+.ph.is-empty .cap{background:var(--grey-300);color:var(--grey-600)}
+@media(max-width:820px){
+  .photo-grid-ro{grid-template-columns:1fr;gap:12px}   /* one photo per row on mobile */
+  .photo-ro .ph{height:150px}
+}
+.file-ro{display:inline-flex;align-items:center;gap:9px;font-size:var(--fs-sm);color:var(--grey-700);
+  background:var(--grey-50);border:1px solid var(--grey-200);border-radius:var(--r-sm);padding:10px 13px}
+.file-ro svg{width:16px;height:16px;color:var(--grey-500);flex:none}
+
+/* ---- Timeline modal (approval trail) ---- */
+.tl-scrim{position:fixed;inset:0;background:rgba(22,31,38,.45);opacity:0;pointer-events:none;transition:opacity .2s;z-index:70}
+.tl-scrim.show{opacity:1;pointer-events:auto}
+.tl-modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-48%);width:min(1040px,calc(100vw - 32px));
+  max-height:82vh;background:#fff;border-radius:var(--r-lg);box-shadow:0 20px 60px rgba(22,31,38,.28);
+  z-index:71;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.tl-modal.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+.tl-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;
+  background:var(--teal-50);border-radius:var(--r-lg) var(--r-lg) 0 0}
+.tl-head strong{font-size:var(--fs-md);color:var(--grey-900)}
+.tl-close{background:none;border:0;cursor:pointer;color:var(--grey-600);display:grid;place-items:center;padding:4px}
+.tl-close svg{width:20px;height:20px}
+.tl-body{overflow-y:auto;padding:18px 22px 24px}
+.tl-item{position:relative;padding:0 0 22px 26px;border-left:2px dashed var(--teal-200)}
+.tl-item:last-child{border-left-color:transparent;padding-bottom:4px}
+.tl-item::before{content:"";position:absolute;left:-7px;top:2px;width:12px;height:12px;border-radius:var(--r-pill);
+  background:#fff;border:2px solid var(--teal-600)}
+.tl-time{display:inline-block;background:var(--teal-600);color:#fff;font-size:var(--fs-xs);font-weight:700;
+  padding:3px 10px;border-radius:var(--r-pill)}
+.tl-title{font-size:var(--fs-base);font-weight:660;color:var(--grey-900);margin:8px 0 10px}
+.tl-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 18px;padding-bottom:14px;border-bottom:1px solid var(--grey-200)}
+.tl-meta>div{font-size:var(--fs-sm);color:var(--grey-800)}
+.tl-meta>div>span{display:block;font-size:var(--fs-xs);color:var(--grey-500);font-weight:600;margin-bottom:3px}
+.rb{display:inline-block;font-style:normal;font-size:var(--fs-xs);font-weight:700;color:#fff;padding:3px 9px;border-radius:var(--r-pill)}
+.rb-co{background:var(--navy-600)}
+.rb-ss{background:#C2410C}
+.rb-eng{background:#7C3AED}
+@media(max-width:820px){
+  .tl-meta{grid-template-columns:1fr 1fr}
+  .tl-modal{width:calc(100vw - 20px);max-height:88vh}
+}
+.card-body>.field.f1{grid-column:auto}
+.card-body>.field.f1 textarea{min-height:0;height:46px;resize:none}
+
+/* action bar: online Approval-in-Progress button set */
+.act-left{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
+.act-left::-webkit-scrollbar{display:none}
+.act-right{display:flex;gap:8px;flex:none}
+.action-bar .inner{justify-content:space-between}
+.action-bar .btn{flex:none;min-height:44px;justify-content:center}
+.btn-act{background:var(--teal-600);color:#fff;border:1px solid var(--teal-600);white-space:nowrap}
+
+.btn-act:hover{background:var(--teal-700);border-color:var(--teal-700);color:#fff}
+.btn-warn{background:var(--sgds-warning-bg-default);color:var(--sgds-warning-color-emphasis);
+  border:1px solid transparent;font-weight:600}
+.btn-warn:hover{background:var(--sgds-yellow-300);color:var(--sgds-yellow-800);border-color:transparent}
+.btn-warn:active{background:var(--sgds-yellow-300);color:var(--sgds-yellow-800);border-color:transparent}
+body:not(.view-mode) .action-bar{display:none}   /* editing: only Save (top right) is available */
+.tl-modal.tl-sm{width:min(520px,calc(100vw - 32px))}
+.rt-hint{font-size:var(--fs-sm);color:var(--grey-600);margin:0 0 14px}
+.rt-opt{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--grey-200);
+  border-radius:var(--r-md);margin-bottom:10px;cursor:pointer}
+.rt-opt:hover{border-color:var(--grey-300)}
+.rt-opt input{margin-top:3px;accent-color:var(--teal-600);flex:none}
+.rt-opt strong{display:block;font-size:var(--fs-base);color:var(--grey-900);font-weight:640}
+.rt-opt em{font-style:normal;font-size:var(--fs-sm);color:var(--grey-500)}
+.rt-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 18px 18px;border-top:1px solid var(--grey-200)}
+@media(max-width:1020px){
+  /* every action visible at once — no swiping. Positive action on its own row,
+     the two reversing actions share the row below it. */
+  .action-bar{padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+  .action-bar .inner{display:flex;flex-direction:column-reverse;align-items:stretch;gap:8px;overflow:visible;padding:0}
+  .act-left{display:grid;grid-template-columns:1fr 1fr;gap:8px;overflow:visible;flex:none;min-width:0}
+  .act-right{display:grid;grid-template-columns:1fr;gap:8px;flex:none}
+  .action-bar .btn{flex:none;width:100%;min-height:44px;padding:8px 10px;
+    white-space:normal;line-height:1.25;text-align:center}
+  .main.narrow{padding-bottom:160px}      /* clear the now two-row bar */
+}
+
+/* ---- BOQ table (Price schedule) ---- */
+.boq-wrap{grid-column:1 / -1;overflow-x:auto;border:1px solid var(--grey-200);border-radius:var(--r-md)}
+.boq{width:100%;border-collapse:collapse;min-width:760px;font-size:var(--fs-sm)}
+.boq th,.boq td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--grey-200)}
+.boq th{background:var(--grey-50);font-weight:640;color:var(--grey-600);font-size:var(--fs-xs);
+  text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.boq td input{width:100%;border:1px solid var(--grey-200);border-radius:6px;padding:7px 9px;
+  font-family:inherit;font-size:var(--fs-sm);color:var(--grey-800);background:#fff}
+.boq td.num input{text-align:right}
+.boq tfoot td{font-weight:700;background:var(--grey-50);color:var(--grey-900)}
+.boq-hint{grid-column:1 / -1;font-size:var(--fs-xs);color:var(--grey-500);margin-top:-8px}
+/* row actions + in-table add row */
+.boq th.act,.boq td.act{width:44px;padding-left:0;padding-right:10px;text-align:right}
+.boq-del{width:30px;height:30px;border:1px solid transparent;border-radius:var(--r-sm);background:transparent;
+  color:var(--grey-400);display:inline-flex;align-items:center;justify-content:center;
+  transition:background .15s,color .15s,border-color .15s}
+.boq-del svg{width:15px;height:15px;display:block}
+.boq-del:hover{background:var(--danger-50);color:var(--danger-600);border-color:rgba(169,58,50,.25)}
+.boq-actions td{padding:0;border-bottom:1px solid var(--grey-200)}
+.boq-add{width:100%;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:11px 12px;border:0;background:transparent;color:var(--teal-700);
+  font-family:inherit;font-size:var(--fs-sm);font-weight:600;transition:background .15s}
+.boq-add svg{width:14px;height:14px;display:block}
+.boq-add:hover{background:var(--teal-50)}
+.boq-empty td{color:var(--grey-500);font-style:italic}
+body.view-mode .boq th.act,body.view-mode .boq td.act,
+body.view-mode .boq-actions{display:none}
 
 /* ---- Mobile Site & assets: accordion cards + task bottom-sheet (desktop unaffected) ---- */
 .al-sub,.tl-sub,.tl-edit{display:none}
@@ -790,45 +1052,61 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 
 <main class="main narrow">
 
+  <div class="stickyhead" id="stickyhead">
   <div class="context-bar">
     <a class="back" href="mwi-list-redesign.html" aria-label="Back to list">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
     </a>
     <div class="ctx">
-      <strong>New maintenance work instruction</strong>
-      Work instruction · Maintenance WI
+      <strong>RMWP-TR388-RRFM-M-5</strong>
+      <div class="ctx-meta">
+        <span class="chip chip-sm chip-appr" title="Approval in progress"><span class="chip-full">Approval in progress</span><span class="chip-abbr">AIP</span></span>
+      </div>
     </div>
-    <span class="chip chip-sm chip-idle" style="margin-left:auto">Not saved yet</span>
+    <div class="ctx-actions">
+      <button class="ctx-btn" id="btnTimeline" type="button" title="Timeline" aria-label="Timeline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="7" r="2.4"/><circle cx="6" cy="17" r="2.4"/><path d="M11 7h8M11 17h8"/></svg>
+        Timeline
+      </button>
+      <button class="ctx-btn ctx-btn-primary" id="btnEdit" type="button"></button>
+    </div>
   </div>
 
-  <nav class="sec-jump" id="secJump" aria-label="Jump to section">
-    <button class="sj-chip is-on" data-target="s-ref"><span>Work instruction</span><span class="sj-ico"></span></button>
-    <button class="sj-chip" data-target="s-desc"><span>Location</span><span class="sj-ico"></span></button>
-    <button class="sj-chip" data-target="s-site"><span>Site &amp; assets</span><span class="sj-ico"></span></button>
-    <button class="sj-chip" data-target="s-fund"><span>Funding</span><span class="sj-ico"></span></button>
+  <nav class="wiz" id="wiz" aria-label="Work instruction steps">
+    <button class="wiz-step is-done" data-step="1" type="button"><span class="wiz-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Work / Task / Site Detail</button>
+    <span class="wiz-sep"></span>
+    <button class="wiz-step is-done" data-step="2" type="button"><span class="wiz-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Fund Detail</button>
+    <span class="wiz-sep"></span>
+    <button class="wiz-step is-done" data-step="3" type="button"><span class="wiz-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Price Schedule</button>
+    <span class="wiz-sep"></span>
+    <button class="wiz-step is-on" data-step="4" type="button"><span class="wiz-n">4</span>Approval</button>
   </nav>
-  <div class="req-left" id="reqLeft"></div>
+
+  <nav class="sec-jump" id="secJump" aria-label="Jump to section" hidden>
+    <button class="sj-chip is-on" data-target="s-ref"><span>Work instruction</span></button>
+    <button class="sj-chip" data-target="s-desc"><span>Location</span></button>
+    <button class="sj-chip" data-target="s-site"><span>Site &amp; assets</span></button>
+    <button class="sj-chip" data-target="s-att"><span>Attachment</span></button>
+  </nav>
+  </div><!-- /.stickyhead -->
+
+  <div class="step-panel" data-panel="1">
 
   <section class="card" id="s-ref">
-    <div class="card-head"><h2>Work instruction details</h2><span class="hint">System-generated values are locked</span></div>
+    <div class="card-head"><h2>Work instruction details</h2></div>
     <div class="card-body">
-      <div class="prereq">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6l-8-4Z"/><path d="m9 12 2 2 4-4"/></svg>
-        <div><b>Start here — select the contract first.</b>
-        <p>It unlocks the road, sector and assets below, which are all filtered by the selected contract.</p></div>
-      </div>
-      <div class="field is-prereq">
+      <div class="field">
         <label for="e-con">Contract no. <span class="req">*</span></label>
         <select class="control" id="e-con">
-          <option selected disabled>Select contract…</option>
-          <option>TR388</option>
+          <option disabled>Select contract…</option>
+          <option selected>TR388</option>
         </select>
       </div>
       <div class="field">
         <label>Work instruction no.</label>
         <div class="ro-row">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <b style="color:var(--grey-400);font-weight:480">Auto-generated on save</b>
+          <b>RMWP-TR388-RRFM-M-5</b>
         </div>
       </div>
       <div class="field-row">
@@ -845,8 +1123,8 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
         <div class="field">
           <label for="e-dept">Department <span class="req">*</span></label>
           <select class="control" id="e-dept">
-            <option selected disabled>Select department…</option>
-            <option>RRFM</option>
+            <option disabled>Select department…</option>
+            <option selected>RRFM</option>
             <option>PATH</option>
             <option>A&amp;C</option>
           </select>
@@ -854,9 +1132,9 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
         <div class="field">
           <label for="e-wt">Work type <span class="req">*</span></label>
           <select class="control" id="e-wt">
-            <option selected disabled>Select work type…</option>
+            <option disabled>Select work type…</option>
             <option>Simplified item</option>
-            <option>Works order — accident</option>
+            <option selected>Works order — accident</option>
             <option>Outcome-based defect</option>
           </select>
         </div>
@@ -864,11 +1142,11 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
       <div class="field-row">
         <div class="field">
           <label for="e-fb">Feedback date <span class="req">*</span></label>
-          <input class="control" id="e-fb" type="date" value="2026-07-21">
+          <input class="control" id="e-fb" type="date" value="2026-06-02">
         </div>
         <div class="field">
           <label for="e-in">Instruction date <span class="req">*</span></label>
-          <input class="control" id="e-in" type="date" value="2026-07-21">
+          <input class="control" id="e-in" type="date" value="2026-06-02">
         </div>
       </div>
       <div class="field">
@@ -892,12 +1170,11 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
   <section class="card" id="s-desc">
     <div class="card-head"><h2>Location &amp; description</h2></div>
     <div class="card-body">
-      <div class="dep-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Select a contract first — road, sector and sub-sector are filtered by it.</div>
       <div class="field dep-field">
         <label for="e-road">Road name <span class="req">*</span></label>
         <select class="control" id="e-road">
-          <option selected disabled>Search or select road…</option>
-          <option>Adis Road</option>
+          <option disabled>Search or select road…</option>
+          <option selected>Adis Road</option>
           <option>Admiralty Drive</option>
           <option>Admiralty Lane</option>
           <option>Palm Drive</option>
@@ -906,18 +1183,18 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
       <div class="field dep-field">
         <label for="e-ltag">Location tag</label>
         <select class="control" id="e-ltag">
-          <option selected disabled>Select location tag…</option>
-          <option>REX-ADI00Y-00000</option>
+          <option disabled>Select location tag…</option>
+          <option selected>REX-ADI00Y-00000</option>
           <option>REX-PAD06R-00000</option>
         </select>
       </div>
       <div class="field dep-field">
         <label for="e-sec">Sector <span class="req">*</span></label>
-        <select class="control" id="e-sec"><option selected disabled>Select sector…</option><option>NW3</option><option>NW2</option><option>NW1</option></select>
+        <select class="control" id="e-sec"><option disabled>Select sector…</option><option selected>NW3</option><option>NW2</option><option>NW1</option></select>
       </div>
       <div class="field dep-field">
         <label for="e-sub">Sub-sector <span class="req">*</span></label>
-        <select class="control" id="e-sub"><option selected disabled>Select sub-sector…</option><option>CS4</option><option>NW1</option><option>NW2</option></select>
+        <select class="control" id="e-sub"><option disabled>Select sub-sector…</option><option selected>CS4</option><option>NW1</option><option>NW2</option></select>
       </div>
       <div class="field">
         <label for="e-desc">Work / defect description</label>
@@ -931,22 +1208,21 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
   </section>
 
   <section class="card" id="s-site">
-    <div class="card-head"><h2>Site &amp; assets</h2><span class="hint">Select assets on the map to apply the selection buffer</span></div>
+    <div class="card-head"><h2>Site &amp; assets</h2></div>
     <div class="card-body">
       <label class="toggle" style="margin-bottom:18px">
         <input type="checkbox">
         <span class="tk"></span>
         <span class="tx"><strong>Asset not found</strong><span>Tick if the asset is not in the inventory</span></span>
       </label>
-      <div class="site-goto"><label for="siteGoto">Go to</label><select id="siteGoto"><option value="">Jump to asset or task…</option></select></div>
       <div class="dep-wrap" data-dep>
-        <div class="dep-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Select a contract first — the map and asset selection unlock once a road is chosen.</div>
         <div class="dep-group">
       <div class="map-lite" role="img" aria-label="Map placeholder for asset selection">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
         <strong>Map — select assets within the buffer</strong>
         <span>The interactive map renders for the Singapore region after a road is selected.</span>
       </div>
+      <nav class="asset-tabs" id="assetTabs" aria-label="Assets"></nav>
       <div class="asset-lite">
         <div class="asset-lite-head">
           <strong>Asset 1</strong>
@@ -956,8 +1232,8 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
           <div class="field">
             <label>Asset type name (code) <span class="req">*</span></label>
             <select class="control">
-              <option selected disabled>Select asset type…</option>
-              <option>Bollard</option>
+              <option disabled>Select asset type…</option>
+              <option selected>Bollard</option>
               <option>Footpath</option>
               <option>Traffic sign</option>
             </select>
@@ -965,7 +1241,7 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
           <div class="field">
             <label>Asset tag</label>
             <div class="with-map">
-              <select class="control"><option selected disabled>Select asset tag…</option><option>REX-BRR-BOLL-07896</option><option>REX-SNG-FTP-F2026</option><option>REX-ADI-TSGN-00312</option></select>
+              <select class="control"><option disabled>Select asset tag…</option><option selected>REX-BRR-BOLL-07896</option><option>REX-SNG-FTP-F2026</option><option>REX-ADI-TSGN-00312</option></select>
               <button class="btn-map" type="button">Map</button>
             </div>
           </div>
@@ -974,6 +1250,7 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
             <input class="control" type="text" placeholder="Optional">
           </div>
         </div>
+        <nav class="task-tabs" aria-label="Tasks"></nav>
         <div class="task-lite">
           <div class="task-lite-head">
             <strong>Task 1</strong>
@@ -983,8 +1260,8 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
             <div class="field">
               <label>Element type <span class="req">*</span></label>
               <select class="control">
-                <option selected disabled>Select element type…</option>
-                <option>Bollard</option>
+                <option disabled>Select element type…</option>
+                <option selected>Bollard</option>
                 <option>Signage</option>
                 <option>Railing</option>
                 <option>Flexible pavement</option>
@@ -994,8 +1271,8 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
             <div class="field">
               <label>Defect type <span class="req">*</span></label>
               <select class="control defect-select">
-                <option selected disabled>Select defect type…</option>
-                <option>Hole</option>
+                <option disabled>Select defect type…</option>
+                <option selected>Hole</option>
                 <option>Damaged</option>
                 <option>Depression</option>
                 <option>Cracked surface</option>
@@ -1005,7 +1282,7 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
             <div class="field">
               <label>Default X Y coordinates</label>
               <div class="with-map">
-                <input class="control" type="text" placeholder="e.g. 26495.53, 37133.86">
+                <input class="control" type="text" value="26495.53, 37133.86" placeholder="e.g. 26495.53, 37133.86">
                 <button class="btn-map" type="button">Map</button>
               </div>
             </div>
@@ -1014,26 +1291,58 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
             <label>Others <span class="req">*</span></label>
             <input class="control" type="text" placeholder="Specify the defect type">
           </div>
-          <div class="field" style="margin-top:16px">
-            <label>Landmark</label>
-            <input class="control" type="text" placeholder="Optional">
+          <div class="asset-lite-grid" style="margin-top:16px">
+            <div class="field">
+              <label>Landmark</label>
+              <input class="control" type="text" value="Opp Blk 123 Adis Road" placeholder="Optional">
+            </div>
+            <div class="field wip-ro"><label>Start work date</label><input class="control" type="text" value="05/06/2026" readonly></div>
+            <div class="field wip-ro"><label>End work date</label><input class="control" type="text" value="12/06/2026" readonly></div>
+          </div>
+
+          <div class="wip-ro">
+            <div class="wip-sep">Site execution · recorded by the site supervisor</div>
+            <div class="photo-grid-ro">
+              <div class="photo-ro"><span class="lbl">Before photo</span><div class="ph ph-before"><span class="cap">Before</span></div></div>
+              <div class="photo-ro"><span class="lbl">During photo</span><div class="ph ph-during"><span class="cap">During</span></div></div>
+              <div class="photo-ro"><span class="lbl">After photo</span><div class="ph ph-after"><span class="cap">After</span></div></div>
+            </div>
+            <div class="asset-lite-grid" style="margin-top:18px">
+              <div class="field"><label>Defect cause</label><input class="control" type="text" value="Ageing" readonly></div>
+              <div class="field"><label>Action taken on site</label><input class="control" type="text" value="Repair" readonly></div>
+              <div class="field"><label>Unit</label><input class="control" type="text" value="M" readonly></div>
+              <div class="field"><label>Length</label><input class="control" type="text" value="1" readonly></div>
+              <div class="field"><label>Measurement</label><input class="control" type="text" value="1" readonly></div>
+              <div class="field"><label>Work progress status (10% – 100%)</label><input class="control" type="text" value="100%" readonly></div>
+            </div>
+            <div class="field" style="margin-top:16px">
+              <label>Task remarks</label>
+              <textarea class="control" readonly>Bollard hole patched and repainted; area made good.</textarea>
+            </div>
+            <div class="field">
+              <label>Attachment</label>
+              <div class="file-ro">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>
+                RRFM-M-5_site-record.pdf
+              </div>
+            </div>
           </div>
         </div>
-        <button class="btn btn-ghost btn-sm task-add" type="button" style="margin-top:14px">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-          Add another task
-        </button>
       </div>
-      <button class="btn btn-ghost" type="button" style="margin-top:12px">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-        Add another asset
-      </button>
         </div>
       </div>
-      <div class="divider"></div>
+    </div>
+  </section>
+
+  <section class="card" id="s-att">
+    <div class="card-head"><h2>Attachment</h2></div>
+    <div class="card-body">
       <div class="field">
-        <label>Attachment</label>
-        <div class="capture" role="button" tabindex="0" style="min-height:84px">
+        <div class="file-ro">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>
+          RRFM-M-5_work-instruction.pdf
+        </div>
+        <div class="capture" role="button" tabindex="0" style="min-height:84px;margin-top:12px">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></svg>
           <strong>Upload file</strong>
           <span>PDF, DOC, JPEG, JPG or PNG · max 5 MB · Official (Closed) / non-sensitive or below</span>
@@ -1041,18 +1350,20 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
       </div>
     </div>
   </section>
+  </div><!-- /step 1 -->
 
+  <div class="step-panel" data-panel="2">
   <section class="card" id="s-fund">
-    <div class="card-head"><h2>Funding</h2><span class="hint">Fund detail — completed by the LTA project team</span></div>
+    <div class="card-head"><h2>Funding</h2></div>
     <div class="card-body">
       <div class="field-row">
         <div class="field">
           <label for="e-amt">Estimated amount (S$)</label>
-          <input class="control" id="e-amt" type="number" inputmode="decimal" placeholder="0.00">
+          <input class="control" id="e-amt" type="number" inputmode="decimal" value="234.56" placeholder="0.00">
         </div>
         <div class="field">
           <label for="e-ecd">Estimated completion date <span class="req">*</span></label>
-          <input class="control" id="e-ecd" type="date">
+          <input class="control" id="e-ecd" type="date" value="2026-06-17">
         </div>
       </div>
       <div class="field">
@@ -1065,17 +1376,118 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
       </div>
     </div>
   </section>
+  </div><!-- /step 2 -->
+
+  <div class="step-panel" data-panel="3">
+  <section class="card" id="s-price">
+    <div class="card-head"><h2>Price schedule</h2></div>
+    <div class="card-body">
+      <div class="field">
+        <label for="p-pay">Payment type</label>
+        <select class="control" id="p-pay"><option disabled>Select payment type…</option><option>Interim</option><option selected>Final</option></select>
+      </div>
+      <div class="field">
+        <label for="p-final">Final amount (S$)</label>
+        <input class="control num" id="p-final" type="text" value="234.56" placeholder="0.00">
+      </div>
+      <div class="field">
+        <label for="p-acd">Actual completion date</label>
+        <input class="control" id="p-acd" type="date" value="2026-06-02">
+      </div>
+      <div class="field">
+        <label>Funding source details</label>
+        <div class="ro-row"><b style="color:var(--grey-700);font-weight:560">EXT.ETRO.ASM(RD).E-TR388.000.3MINDE7115.TR388</b></div>
+      </div>
+      <div class="boq-wrap">
+        <table class="boq">
+          <thead><tr><th>Item</th><th>Description</th><th>Unit</th><th class="num">Rate (S$)</th><th class="num">Quantity</th><th class="num">Amount (S$)</th><th class="act" aria-label="Row actions"></th></tr></thead>
+          <tbody id="boqBody">
+            <tr>
+              <td><input value="1.1"></td>
+              <td><input value="Supply and install replacement bollard"></td>
+              <td><input value="Nos"></td>
+              <td class="num"><input value="185.00"></td>
+              <td class="num"><input value="2"></td>
+              <td class="num"><input class="boq-amt" value="370.00"></td>
+              <td class="act"><button class="boq-del" type="button" title="Delete row" aria-label="Delete row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button></td>
+            </tr>
+          </tbody>
+          <tbody class="boq-actions">
+            <tr><td colspan="7">
+              <button class="boq-add" type="button" id="boqAdd">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                Add BOQ row
+              </button>
+            </td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="5">Total</td><td class="num" id="boqTotal">S$ 370.00</td><td class="act"></td></tr></tfoot>
+        </table>
+      </div>
+      <div class="field">
+        <label>Attachment</label>
+        <div class="capture" role="button" tabindex="0" style="min-height:84px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></svg>
+          <strong>Upload file</strong>
+          <span>PDF, DOC, JPEG, JPG or PNG · max 5 MB</span>
+        </div>
+      </div>
+      <div class="field">
+        <label for="p-rem">Price schedule remarks</label>
+        <textarea class="control" id="p-rem" placeholder="Optional"></textarea>
+      </div>
+      <div class="field">
+        <label class="toggle">
+          <input type="checkbox">
+          <span class="tk"></span>
+          <span class="tx"><strong>Contractor declaration — Certificate of Supervision</strong><span>The works were performed and supervised in accordance with the contract specification.</span></span>
+        </label>
+      </div>
+    </div>
+  </section>
+  </div><!-- /step 3 -->
+
+  <div class="step-panel is-on" data-panel="4">
+  <section class="card" id="s-appr">
+    <div class="card-head"><h2>Approval</h2></div>
+    <div class="card-body">
+      <div class="field">
+        <label for="a-pay">Payment type</label>
+        <select class="control" id="a-pay"><option>Interim</option><option selected>Final</option></select>
+      </div>
+      <div class="field">
+        <label for="a-final">Final amount (S$)</label>
+        <input class="control num" id="a-final" type="text" value="234.56" readonly>
+      </div>
+      <div class="field f1">
+        <label for="a-rem">Approval remarks</label>
+        <textarea class="control" id="a-rem" placeholder="Optional"></textarea>
+      </div>
+
+      <div class="field"><label for="a-instr">Instruction date</label><input class="control" id="a-instr" type="text" value="02/06/2026" readonly></div>
+      <div class="field"><label for="a-ecd">Estimated completion date</label><input class="control" id="a-ecd" type="text" value="17/06/2026" readonly></div>
+      <div class="field"><label for="a-acd">Actual completion date</label><input class="control" id="a-acd" type="text" value="02/06/2026" readonly></div>
+
+      <div class="field"><label for="a-fb">Feedback date</label><input class="control" id="a-fb" type="text" value="02/06/2026" readonly></div>
+      <div class="field"><label for="a-jm1">JM submission date (first)</label><input class="control" id="a-jm1" type="text" value="08/07/2026" readonly></div>
+      <div class="field"><label for="a-jm2">JM submission date (latest)</label><input class="control" id="a-jm2" type="text" value="08/07/2026" readonly></div>
+
+      <div class="field"><label for="a-days">Days taken to submit JM (to LTA)</label><input class="control" id="a-days" type="text" value="36 days" readonly></div>
+      <div class="field"><label>Payment status</label><div class="ro-val">Un Paid</div></div>
+    </div>
+  </section>
+  </div><!-- /step 4 -->
 
 </main>
 
 <div class="action-bar">
   <div class="inner">
-    <span class="saved">Draft not created yet</span>
-    <a class="btn btn-ghost" href="mwi-list-redesign.html" style="text-decoration:none">Cancel</a>
-    <a class="btn btn-primary" href="mwi-view-redesign.html" style="text-decoration:none">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-      Create work instruction
-    </a>
+    <div class="act-left">
+      <button class="btn btn-warn" id="btnReturn" type="button">Return</button>
+      <button class="btn btn-warn" type="button">Reassign to LTA Officer</button>
+    </div>
+    <div class="act-right">
+      <button class="btn btn-primary" type="button">Approve and Close</button>
+    </div>
   </div>
 </div>
 
@@ -1219,14 +1631,92 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 </script>
 <script>
 (function(){
+  var MAX_ASSETS=3, MAX_TASKS=3;          // Arjun: 3 assets x 3 tasks (still to be confirmed)
+  var ASSET_TPL=null, TASK_TPL=null;      // templates so everything can be re-added after deleting all
   function assets(){ return Array.prototype.slice.call(document.querySelectorAll('.asset-lite')); }
+  function setLabel(h,text){              // renumber without wiping the injected collapse chevron
+    for(var i=h.childNodes.length-1;i>=0;i--){ if(h.childNodes[i].nodeType===3){ h.childNodes[i].nodeValue=text; return; } }
+    h.appendChild(document.createTextNode(text));
+  }
+  function assetHost(){ return document.querySelector('#s-site .dep-group')||document.querySelector('#s-site .card-body'); }
+
+  /* ---- completeness gates: nothing new starts until the current one is finished ---- */
+  var INFO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>';
+  function reqFields(scope){
+    return Array.prototype.slice.call(scope.querySelectorAll('.field')).filter(function(f){
+      return f.querySelector('label .req');
+    });
+  }
+  function fieldOk(f){
+    if(!f || f.hidden) return true;
+    var s=f.querySelector('select.control');
+    if(s){ var o=s.options[s.selectedIndex]; return !!(o && !o.disabled); }
+    var i=f.querySelector('input.control,textarea.control');
+    return i ? !!(i.value||'').trim() : true;
+  }
+  function taskComplete(t){ return reqFields(t).every(fieldOk); }
+  function assetOwnComplete(a){ var g=a.querySelector('.asset-lite-grid'); return g ? reqFields(g).every(fieldOk) : true; }
+  function assetComplete(a){ var ts=tasksIn(a); return assetOwnComplete(a) && ts.length>0 && ts.every(taskComplete); }
+  function noteAfter(anchor,cls){                     // one reusable note node per bar
+    var n=anchor.nextElementSibling;
+    if(!n || !n.classList.contains(cls)){ n=document.createElement('div'); n.className=cls+' gate-note'; anchor.parentNode.insertBefore(n,anchor.nextSibling); }
+    return n;
+  }
+  function say(node,text,info){
+    if(!text){ node.hidden=true; return; }
+    node.hidden=false; node.classList.toggle('is-info',!!info);
+    node.innerHTML=INFO+'<span></span>';
+    node.lastChild.textContent=text;
+  }
+
+  var activeAsset=0;
+  function buildAssetTabs(){
+    var bar=document.getElementById('assetTabs'); if(!bar) return;
+    var list=assets();
+    if(activeAsset>=list.length) activeAsset=Math.max(0,list.length-1);
+    bar.innerHTML='';
+    list.forEach(function(a,i){
+      a.hidden=(i!==activeAsset);
+      a.classList.remove('collapsed');            // tabs replace the accordion
+      var b=document.createElement('button');
+      b.type='button'; b.className='at-chip'+(i===activeAsset?' is-on':'');
+      var n=tasksIn(a).length;
+      b.innerHTML='<span></span><span class="at-count'+(n?'':' is-zero')+'">'+n+'</span>';
+      b.firstChild.textContent='Asset '+(i+1);
+      b.title=n+(n===1?' task':' tasks');
+      b.addEventListener('click',function(){ activeAsset=i; buildAssetTabs(); });
+      bar.appendChild(b);
+    });
+    var note=noteAfter(bar,'asset-gate');
+    if(list.length<MAX_ASSETS){
+      var blocker=null;
+      for(var j=0;j<list.length;j++){ if(!assetComplete(list[j])){ blocker=j+1; break; } }
+      var add=document.createElement('button');
+      add.type='button'; add.className='at-add';
+      add.disabled=!!blocker;
+      add.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add asset';
+      add.title=blocker?('Finish Asset '+blocker+' first'):('Add asset '+(list.length+1)+' of '+MAX_ASSETS);
+      add.addEventListener('click',addAsset);
+      bar.appendChild(add);
+      if(blocker) say(note,'Asset '+blocker+' is not finished — fill its required fields and complete every task in it before adding another asset.');
+      else say(note,'Finish the current asset and all its tasks before adding another. Up to '+MAX_ASSETS+' assets.',true);
+    } else {
+      say(note,'Maximum of '+MAX_ASSETS+' assets reached.',true);
+    }
+    bar.style.display=bar.children.length?'':'none';
+  }
   function updateRemove(){
     var list=assets();
     list.forEach(function(a,i){
       var rm=a.querySelector('.asset-remove');
-      if(rm) rm.style.display = list.length>1 ? '' : 'none';
-      var h=a.querySelector('.asset-lite-head strong'); if(h) h.textContent='Asset '+(i+1);
+      if(rm) rm.style.display='';                        // always deletable
+      var h=a.querySelector('.asset-lite-head strong'); if(h) setLabel(h,'Asset '+(i+1));
     });
+    var e=document.querySelector('#s-site .empty-assets');
+    if(!list.length){
+      if(!e){ e=document.createElement('div'); e.className='empty-assets'; e.textContent='No asset added yet.'; assetHost().appendChild(e); }
+    } else if(e){ e.remove(); }
+    buildAssetTabs();
   }
   function enhance(sel){
     if(sel.dataset.x)return; sel.dataset.x='1';
@@ -1249,44 +1739,110 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
     window.addEventListener('scroll',function(){ if(w.classList.contains('open'))w.classList.remove('open'); },true);
     w.appendChild(trg); w.appendChild(menu);
   }
-  function wireRemove(a){ var rm=a.querySelector('.asset-remove'); if(rm && !rm.dataset.w){ rm.dataset.w='1'; rm.addEventListener('click',function(){ if(assets().length>1){ a.remove(); updateRemove(); } }); } }
+  function wireRemove(a){ var rm=a.querySelector('.asset-remove'); if(rm && !rm.dataset.w){ rm.dataset.w='1'; rm.addEventListener('click',function(){ a.remove(); updateRemove(); }); } }
   function resetClone(clone){
-    clone.querySelectorAll('.xselect').forEach(function(x){ var s=x.querySelector('select'); if(s){ s.style.display=''; s.removeAttribute('data-x'); s.selectedIndex=0; x.parentNode.insertBefore(s,x); x.remove(); } });
+    clone.querySelectorAll('.xselect').forEach(function(x){ var s=x.querySelector('select'); if(s){ s.style.display=''; s.removeAttribute('data-x'); Array.prototype.slice.call(s.querySelectorAll('option[selected]')).forEach(function(o){o.removeAttribute('selected');}); s.selectedIndex=0; x.parentNode.insertBefore(s,x); x.remove(); } });
     clone.querySelectorAll('input[type=text]').forEach(function(i){ i.value=''; });
     clone.querySelectorAll('.task-others').forEach(function(o){ o.hidden=true; });
+    clone.querySelectorAll('textarea').forEach(function(t){ t.value=''; });          // a new task has no site work yet
+    clone.querySelectorAll('.ph').forEach(function(p){ p.classList.add('is-empty'); });
+    clone.querySelectorAll('.file-ro').forEach(function(f){
+      for(var i=f.childNodes.length-1;i>=0;i--){ var n=f.childNodes[i];
+        if(n.nodeType===3 && n.nodeValue.trim()){ n.nodeValue=' No file attached'; break; } }
+    });
     clone.querySelectorAll('[data-w]').forEach(function(el){ el.removeAttribute('data-w'); });
   }
   // ---- tasks (nested inside each asset) ----
   function tasksIn(a){ return Array.prototype.slice.call(a.querySelectorAll('.task-lite')); }
-  function updateTaskRemove(a){ var list=tasksIn(a); list.forEach(function(t,i){ var rm=t.querySelector('.task-remove'); if(rm) rm.style.display=list.length>1?'':'none'; var h=t.querySelector('.task-lite-head strong'); if(h) h.textContent='Task '+(i+1); }); }
-  function wireTaskRemove(a,t){ var rm=t.querySelector('.task-remove'); if(rm && !rm.dataset.w){ rm.dataset.w='1'; rm.addEventListener('click',function(){ if(tasksIn(a).length>1){ t.remove(); updateTaskRemove(a); } }); } }
+  function taskTabsOf(a){ return a.querySelector('.task-tabs'); }
+  function updateTaskRemove(a){
+    var list=tasksIn(a);
+    var act=parseInt(a.dataset.activeTask||'0',10);
+    if(act>=list.length) act=Math.max(0,list.length-1);
+    a.dataset.activeTask=act;
+    list.forEach(function(t,i){
+      t.hidden=(i!==act);
+      t.classList.remove('collapsed');
+      var rm=t.querySelector('.task-remove'); if(rm) rm.style.display='';   // always deletable
+      var h=t.querySelector('.task-lite-head strong'); if(h) setLabel(h,'Task '+(i+1));
+    });
+    var bar=taskTabsOf(a);
+    if(bar){
+      bar.innerHTML='';
+      list.forEach(function(t,i){
+        var b=document.createElement('button');
+        b.type='button'; b.className='tt-chip'+(i===act?' is-on':'');
+        b.textContent='Task '+(i+1);
+        b.addEventListener('click',function(){ a.dataset.activeTask=i; updateTaskRemove(a); });
+        bar.appendChild(b);
+      });
+      var note=noteAfter(bar,'task-gate');
+      if(list.length<MAX_TASKS){
+        var blocker=null;
+        for(var j=0;j<list.length;j++){ if(!taskComplete(list[j])){ blocker=j+1; break; } }
+        var add=document.createElement('button');
+        add.type='button'; add.className='tt-add';
+        add.disabled=!!blocker;
+        add.innerHTML='<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add task';
+        add.title=blocker?('Finish Task '+blocker+' first'):('Add task '+(list.length+1)+' of '+MAX_TASKS);
+        add.addEventListener('click',function(){ addTask(a); });
+        bar.appendChild(add);
+        if(blocker) say(note,'Task '+blocker+' is not finished — fill its required fields before adding another task.');
+        else say(note,'Finish the current task before adding another. Up to '+MAX_TASKS+' tasks per asset.',true);
+      } else {
+        say(note,'Maximum of '+MAX_TASKS+' tasks per asset reached.',true);
+      }
+      bar.style.display=bar.children.length?'':'none';
+    }
+    var e=a.querySelector('.empty-tasks');
+    if(!list.length){
+      if(!e){ e=document.createElement('div'); e.className='empty-tasks'; e.textContent='No task added yet.'; a.appendChild(e); }
+    } else if(e){ e.remove(); }
+  }
+  function refreshGates(){ assets().forEach(function(a){ updateTaskRemove(a); }); buildAssetTabs(); }
+  function wireTaskRemove(a,t){ var rm=t.querySelector('.task-remove'); if(rm && !rm.dataset.w){ rm.dataset.w='1'; rm.addEventListener('click',function(){ t.remove(); refreshGates(); }); } }
   function addTask(a){
-    var list=tasksIn(a); var last=list[list.length-1]; if(!last) return;
-    var clone=last.cloneNode(true); resetClone(clone);
-    last.parentNode.insertBefore(clone, last.nextSibling);
+    var list=tasksIn(a); if(list.length>=MAX_TASKS) return;
+    var src=list[list.length-1]||TASK_TPL; if(!src) return;
+    var clone=src.cloneNode(true); resetClone(clone);
+    clone.hidden=false;
+    if(list.length) list[list.length-1].parentNode.insertBefore(clone,list[list.length-1].nextSibling);
+    else { var bar=taskTabsOf(a);
+      if(bar){ var nx=bar.nextElementSibling;
+        var anchor=(nx && nx.classList.contains('task-gate')) ? nx : bar;   // keep the gate note next to the bar
+        anchor.parentNode.insertBefore(clone,anchor.nextSibling);
+      } else a.appendChild(clone); }
     clone.querySelectorAll('select.control').forEach(enhance);
-    wireTaskRemove(a,clone); updateTaskRemove(a);
-    clone.scrollIntoView({behavior:'smooth',block:'center'});
+    var rm=clone.querySelector('.task-lite-head .btn'); if(rm) rm.classList.add('task-remove');
+    wireTaskRemove(a,clone);
+    a.dataset.activeTask=tasksIn(a).indexOf(clone);
+    refreshGates();
   }
   function wireTasks(a){
     tasksIn(a).forEach(function(t){ var rm=t.querySelector('.task-lite-head .btn'); if(rm) rm.classList.add('task-remove'); wireTaskRemove(a,t); });
-    Array.prototype.slice.call(a.querySelectorAll('.task-add')).filter(function(b){ return b.closest('.asset-lite')===a; }).forEach(function(b){ if(!b.dataset.w){ b.dataset.w='1'; b.addEventListener('click',function(){ addTask(a); }); } });
     updateTaskRemove(a);
   }
   function addAsset(){
-    var list=assets(); var last=list[list.length-1];
-    var clone=last.cloneNode(true); resetClone(clone);
-    tasksIn(clone).slice(1).forEach(function(t){ t.remove(); }); // fresh asset gets one empty task
-    last.parentNode.insertBefore(clone, last.nextSibling);
+    var list=assets(); if(list.length>=MAX_ASSETS) return;
+    var src=list[list.length-1]||ASSET_TPL; if(!src) return;
+    var clone=src.cloneNode(true); resetClone(clone);
+    tasksIn(clone).slice(1).forEach(function(t){ t.remove(); }); // fresh asset starts with one task
+    clone.hidden=false;
+    if(list.length) list[list.length-1].parentNode.insertBefore(clone,list[list.length-1].nextSibling);
+    else assetHost().appendChild(clone);
     clone.querySelectorAll('select.control').forEach(enhance);
+    var rm=clone.querySelector('.asset-lite-head .btn'); if(rm) rm.classList.add('asset-remove');
     wireRemove(clone); wireTasks(clone);
+    activeAsset=assets().indexOf(clone);
     updateRemove();
-    clone.scrollIntoView({behavior:'smooth',block:'center'});
   }
+  (function(){ var f=assets()[0]; if(f){ ASSET_TPL=f.cloneNode(true); var t=f.querySelector('.task-lite'); if(t) TASK_TPL=t.cloneNode(true); } })();
   assets().forEach(function(a){ var rm=a.querySelector('.asset-lite-head .btn'); if(rm) rm.classList.add('asset-remove'); wireRemove(a); wireTasks(a); });
-  var addBtn=Array.prototype.slice.call(document.querySelectorAll('.btn')).filter(function(b){return /Add another asset/.test(b.textContent);})[0];
-  if(addBtn) addBtn.addEventListener('click',addAsset);
   updateRemove();
+
+  // any edit inside Site & assets can open or close a gate — re-evaluate both levels
+  var site=document.getElementById('s-site');
+  if(site){ ['change','input'].forEach(function(ev){ site.addEventListener(ev,refreshGates); }); }
 })();
 </script>
 <script>
@@ -1334,7 +1890,9 @@ document.addEventListener('change', function(e){
   var ticking=false;
   function spy(){
     ticking=false;
-    var offset=150, idx=0;
+    // "current" = the last card whose top has passed under the sticky head
+    var head=document.getElementById('stickyhead');
+    var offset=(head?head.getBoundingClientRect().bottom:150)+16, idx=0;
     for(var i=0;i<ids.length;i++){ var el=document.getElementById(ids[i]); if(el && el.getBoundingClientRect().top<=offset) idx=i; }
     chips.forEach(function(c,i){ var on=i===idx; if(on!==c.classList.contains('is-on')){ c.classList.toggle('is-on',on); if(on) center(c); } });
   }
@@ -1370,10 +1928,12 @@ document.addEventListener('change', function(e){
   }
   function updateProgress(){
     var totalLeft=0;
+    document.querySelectorAll('main section.card').forEach(function(sec){
+      totalLeft+=reqControls(sec).filter(function(x){return !filled(x);}).length;
+    });
     chips.forEach(function(c){
       var sec=document.getElementById(c.getAttribute('data-target')); if(!sec) return;
       var ctrls=reqControls(sec), left=ctrls.filter(function(x){return !filled(x);}).length;
-      totalLeft+=left;
       var ico=c.querySelector('.sj-ico'); if(!ico) return;
       if(ctrls.length===0){ ico.className='sj-ico'; ico.innerHTML=''; }
       else if(left===0){ ico.className='sj-ico tick'; ico.innerHTML=TICK; }
@@ -1385,44 +1945,210 @@ document.addEventListener('change', function(e){
     else { rl.className='req-left'; rl.innerHTML='<b>'+totalLeft+'</b> required field'+(totalLeft>1?'s':'')+' left'; }
   }
   /* 4 · asset/task collapse chevrons + go-to */
-  function addChevrons(){
-    document.querySelectorAll('#s-site .asset-lite-head strong, #s-site .task-lite-head strong').forEach(function(s){
-      if(!s.querySelector('.al-chev')) s.insertAdjacentHTML('afterbegin',CHEV);
-    });
-  }
-  function buildGoto(){
-    var sel=document.getElementById('siteGoto'); if(!sel) return;
-    sel.innerHTML='<option value="">Jump to asset or task…</option>';
-    Array.prototype.slice.call(document.querySelectorAll('#s-site .asset-lite')).forEach(function(a,ai){
-      a.id='asset-'+ai;
-      var at=a.querySelector('.asset-lite-grid select'); var atv=chosen(at)?(' · '+at.options[at.selectedIndex].textContent):'';
-      var o=document.createElement('option'); o.value='#asset-'+ai; o.textContent='Asset '+(ai+1)+atv; sel.appendChild(o);
-      Array.prototype.slice.call(a.querySelectorAll('.task-lite')).forEach(function(t,ti){
-        t.id='asset-'+ai+'-task-'+ti;
-        var o2=document.createElement('option'); o2.value='#asset-'+ai+'-task-'+ti; o2.textContent=' Asset '+(ai+1)+' · Task '+(ti+1); sel.appendChild(o2);
-      });
-    });
-  }
-  var goto=document.getElementById('siteGoto');
-  if(goto) goto.addEventListener('change',function(){
-    if(!goto.value) return; var el=document.querySelector(goto.value);
-    if(el){ el.classList.remove('collapsed'); var p=el.closest('.asset-lite'); if(p) p.classList.remove('collapsed'); el.scrollIntoView({behavior:'smooth',block:'center'}); }
-    goto.value='';
-  });
-  /* collapse toggle (delegated → survives cloned assets/tasks) */
-  document.addEventListener('click',function(e){
-    var h=e.target.closest('#s-site .asset-lite-head, #s-site .task-lite-head');
-    if(!h || e.target.closest('.btn')) return;
-    h.parentNode.classList.toggle('collapsed');
-  });
+  function addChevrons(){}
   /* refresh nav after any add/remove/collapse click inside the site card */
   document.addEventListener('click',function(e){
-    if(e.target.closest('#s-site')) setTimeout(function(){ addChevrons(); buildGoto(); updateProgress(); },0);
+    if(e.target.closest('#s-site')) setTimeout(function(){ addChevrons(); updateProgress(); },0);
   });
 
-  document.addEventListener('change',function(){ applyLock(); addChevrons(); buildGoto(); updateProgress(); });
+  document.addEventListener('change',function(){ applyLock(); addChevrons(); updateProgress(); });
   document.addEventListener('input',updateProgress);
-  applyLock(); addChevrons(); buildGoto(); updateProgress();
+  applyLock(); addChevrons(); updateProgress();
+})();
+</script>
+<script>
+/* ===== Wizard steps (CO @ Approval sees all 4) + BOQ row add ===== */
+(function(){
+  var wiz=document.getElementById('wiz'); if(!wiz) return;
+  var steps=Array.prototype.slice.call(wiz.querySelectorAll('.wiz-step'));
+  var panels=Array.prototype.slice.call(document.querySelectorAll('.step-panel'));
+  var jump=document.getElementById('secJump');       // section chips belong to step 1 only
+  function go(n){
+    steps.forEach(function(s){ s.classList.toggle('is-on', s.getAttribute('data-step')===n); });
+    panels.forEach(function(p){ p.classList.toggle('is-on', p.getAttribute('data-panel')===n); });
+    if(jump) jump.hidden=(n!=='1');
+    var on=wiz.querySelector('.wiz-step.is-on');
+    if(on) wiz.scrollLeft=Math.max(0,on.offsetLeft-wiz.clientWidth/2+on.offsetWidth/2);
+    window.scrollTo(0,0);
+    measure();
+    window.dispatchEvent(new Event('resize')); // re-run section scroll-spy for the newly shown panel
+  }
+  steps.forEach(function(s){ s.addEventListener('click',function(){ go(s.getAttribute('data-step')); }); });
+  var initOn=wiz.querySelector('.wiz-step.is-on');   // bring the current step into view on load (mobile)
+  if(initOn) wiz.scrollLeft=Math.max(0,initOn.offsetLeft-wiz.clientWidth/2+initOn.offsetWidth/2);
+  if(jump && initOn) jump.hidden=(initOn.getAttribute('data-step')!=='1');
+
+  /* the sticky head's height drives every anchor offset — it changes with the step,
+     with editing (buttons wrap on mobile) and on resize, so keep it measured */
+  var head=document.getElementById('stickyhead');
+  function measure(){
+    if(!head) return;
+    document.documentElement.style.setProperty('--stick-h', head.offsetHeight+'px');
+  }
+  measure();
+  window.addEventListener('resize',measure);
+  if(window.ResizeObserver && head) new ResizeObserver(measure).observe(head);
+
+  /* condense the head as soon as the page moves, so scrolling gets the most room */
+  var stuck=false, tick=false;
+  function onScroll(){
+    tick=false;
+    var s=window.scrollY>8;
+    if(s!==stuck){ stuck=s; head&&head.classList.toggle('is-stuck',s); }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){ tick=true; requestAnimationFrame(onScroll); } },{passive:true});
+  onScroll();
+  /* ---- Section BOQ: add / delete rows, running total ---- */
+  (function(){
+    var body=document.getElementById('boqBody'); if(!body) return;
+    var add=document.getElementById('boqAdd');
+    var totalCell=document.getElementById('boqTotal');
+    var TPL=body.rows[0]?body.rows[0].cloneNode(true):null;   // template so the last row can be deleted too
+
+    function dataRows(){ return Array.prototype.slice.call(body.rows).filter(function(r){ return !r.classList.contains('boq-empty'); }); }
+    function money(n){ return 'S$ '+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+    function sync(){
+      var rows=dataRows(), sum=0;
+      rows.forEach(function(r){
+        var a=r.querySelector('.boq-amt');
+        var v=parseFloat((a&&a.value||'').replace(/[^0-9.-]/g,''));
+        if(!isNaN(v)) sum+=v;
+      });
+      if(totalCell) totalCell.textContent=money(sum);
+      var empty=body.querySelector('.boq-empty');
+      if(!rows.length){
+        if(!empty){ empty=document.createElement('tr'); empty.className='boq-empty';
+          empty.innerHTML='<td colspan="7">No BOQ item added yet.</td>'; body.appendChild(empty); }
+      } else if(empty){ empty.remove(); }
+    }
+    if(add) add.addEventListener('click',function(){
+      var rows=dataRows();
+      var src=rows[rows.length-1]||TPL; if(!src) return;
+      var row=src.cloneNode(true);
+      Array.prototype.slice.call(row.querySelectorAll('input')).forEach(function(i){ i.value=''; });
+      body.appendChild(row);
+      sync();
+      var first=row.querySelector('input'); if(first) first.focus();
+    });
+    body.addEventListener('click',function(e){
+      var del=e.target.closest('.boq-del'); if(!del) return;
+      var row=del.closest('tr'); if(row) row.remove();
+      sync();
+    });
+    body.addEventListener('input',function(e){ if(e.target.classList.contains('boq-amt')) sync(); });
+    sync();
+  })();
+})();
+</script>
+<div class="tl-scrim" id="rtScrim"></div>
+<div class="tl-modal tl-sm" id="rtModal" role="dialog" aria-modal="true" aria-label="Return work instruction">
+  <div class="tl-head">
+    <strong>Return work instruction</strong>
+    <button class="tl-close" id="rtClose" type="button" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="tl-body">
+    <p class="rt-hint">Choose who this work instruction goes back to.</p>
+    <label class="rt-opt"><input type="radio" name="rtRole" value="Site Supervisor" checked><span><strong>Site Supervisor</strong><em>Site execution needs correcting</em></span></label>
+    <label class="rt-opt"><input type="radio" name="rtRole" value="QS"><span><strong>QS</strong><em>Quantities need re-measuring</em></span></label>
+    <label class="rt-opt"><input type="radio" name="rtRole" value="Engineer"><span><strong>Engineer</strong><em>Price schedule needs revising</em></span></label>
+    <div class="field" style="margin-top:16px">
+      <label for="rtRemarks">Remarks</label>
+      <textarea class="control" id="rtRemarks" placeholder="Reason for returning"></textarea>
+    </div>
+  </div>
+  <div class="rt-foot">
+    <button class="btn btn-ghost" id="rtCancel" type="button">Cancel</button>
+    <button class="btn btn-warn" id="rtConfirm" type="button">Return</button>
+  </div>
+</div>
+<div class="tl-scrim" id="tlScrim"></div>
+<div class="tl-modal" id="tlModal" role="dialog" aria-modal="true" aria-label="Timeline">
+  <div class="tl-head">
+    <strong>Timeline for · RMWP-TR388-RRFM-M-5</strong>
+    <button class="tl-close" id="tlClose" type="button" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="tl-body">
+    <div class="tl-item">
+      <span class="tl-time">02/06/2026 03:20 PM</span>
+      <div class="tl-title">Work Instruction created</div>
+      <div class="tl-meta">
+        <div><span>Status</span>Draft</div>
+        <div><span>Role</span><em class="rb rb-co">Contract Officer</em></div>
+        <div><span>Name</span>DEV CO01</div>
+        <div><span>Remarks</span>—</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <span class="tl-time">02/06/2026 03:40 PM</span>
+      <div class="tl-title">Submitted to Site Supervisor (Work-in-Progress)</div>
+      <div class="tl-meta">
+        <div><span>Status</span>Work-in-Progress</div>
+        <div><span>Role</span><em class="rb rb-co">Contract Officer</em></div>
+        <div><span>Name</span>DEV CO01</div>
+        <div><span>Remarks</span>N/A</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <span class="tl-time">02/06/2026 03:56 PM</span>
+      <div class="tl-title">Submitted to Engineer (Verification-in-Progress)</div>
+      <div class="tl-meta">
+        <div><span>Status</span>Verification-in-Progress</div>
+        <div><span>Role</span><em class="rb rb-ss">Site Supervisor</em></div>
+        <div><span>Name</span>DEV TR388SS01</div>
+        <div><span>Remarks</span>N/A</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <span class="tl-time">02/06/2026 04:13 PM</span>
+      <div class="tl-title">Submitted to Contract Officer (Approval-in-Progress)</div>
+      <div class="tl-meta">
+        <div><span>Status</span>Approval-in-Progress</div>
+        <div><span>Role</span><em class="rb rb-eng">Engineer</em></div>
+        <div><span>Name</span>DEV TR388ENG01</div>
+        <div><span>Remarks</span>N/A</div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+/* ===== Timeline modal + view/edit mode ===== */
+(function(){
+  var scrim=document.getElementById('tlScrim'), modal=document.getElementById('tlModal');
+  function open(){ scrim.classList.add('show'); modal.classList.add('show'); }
+  function close(){ scrim.classList.remove('show'); modal.classList.remove('show'); }
+  document.getElementById('btnTimeline').addEventListener('click',open);
+  // Return -> pick the role to send it back to
+  (function(){
+    var sc=document.getElementById('rtScrim'), md=document.getElementById('rtModal');
+    function rOpen(){ sc.classList.add('show'); md.classList.add('show'); }
+    function rClose(){ sc.classList.remove('show'); md.classList.remove('show'); }
+    document.getElementById('btnReturn').addEventListener('click',rOpen);
+    document.getElementById('rtClose').addEventListener('click',rClose);
+    document.getElementById('rtCancel').addEventListener('click',rClose);
+    sc.addEventListener('click',rClose);
+    document.getElementById('rtConfirm').addEventListener('click',rClose);
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape') rClose(); });
+  })();
+  document.getElementById('tlClose').addEventListener('click',close);
+  scrim.addEventListener('click',close);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
+
+  var PEN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+  var TICK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+  var btn=document.getElementById('btnEdit');
+  function setMode(view){
+    document.body.classList.toggle('view-mode',view);
+    btn.innerHTML=(view?PEN:TICK)+(view?'Edit':'Save');
+    btn.classList.add('ctx-btn-primary');
+    btn.title=view?'Edit':'Save';          // mobile shows the icon only
+    btn.setAttribute('aria-label',btn.title);
+  }
+  btn.addEventListener('click',function(){ setMode(!document.body.classList.contains('view-mode')); });
+  setMode(true);   // default: view / read-only
 })();
 </script>
 <div class="msheet-scrim" id="msheetScrim"></div>
@@ -1488,7 +2214,7 @@ document.addEventListener('change', function(e){
   // add-task on mobile → open the new task straight in the bottom-sheet
   site.addEventListener('click',function(e){
     if(!mq.matches) return;
-    var add=e.target.closest('.task-add'); if(!add) return;
+    var add=e.target.closest('.tt-add'); if(!add) return;
     var asset=add.closest('.asset-lite'); if(!asset) return;
     setTimeout(function(){
       var tasks=asset.querySelectorAll('.task-lite');
@@ -1497,7 +2223,6 @@ document.addEventListener('change', function(e){
   });
   function initMobile(){
     var m=mq.matches;
-    site.querySelectorAll('.asset-lite').forEach(function(a){ a.classList.toggle('collapsed',m); });
     if(!m && sheet.classList.contains('show')) closeSheet();
     injectSummaries();
   }
