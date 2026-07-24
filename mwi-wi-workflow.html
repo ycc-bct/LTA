@@ -856,6 +856,15 @@ body.view-mode .gate-note{display:none}
 .control.num{text-align:right}
 .ro-val{padding:11px 0;font-size:var(--fs-base);color:var(--grey-800);font-weight:560}
 .chip-appr{background:var(--navy-50);color:var(--navy-700)}
+.chip-ver{background:var(--teal-50);color:var(--teal-700)}
+/* role-driven wizard: steps the stage hasn't reached are removed, not just faded */
+.wiz-step[hidden],.wiz-sep[hidden]{display:none}
+/* the site-execution block is read-only for everyone except the Site Supervisor */
+.wip-ro.is-owner .control,.wip-ro.is-owner .xselect-trigger,.wip-ro.is-owner .xdate-trigger{
+  background:#fff;color:var(--grey-800);border-color:var(--grey-300);pointer-events:auto}
+body.view-mode .wip-ro.is-owner .control,
+body.view-mode .wip-ro.is-owner .xselect-trigger{
+  background:var(--grey-50);color:var(--grey-600);border-color:var(--grey-200);pointer-events:none}
 .empty-tasks,.empty-assets{font-size:var(--fs-sm);color:var(--grey-500);padding:14px 2px}
 
 /* ---- context-bar actions (Timeline / Edit) ---- */
@@ -1065,9 +1074,8 @@ body.view-mode .boq-actions{display:none}
     <div class="rolesw-menu" id="rolesw-menu">
       <div class="rolesw-head">Switch role</div>
       <button class="rolesw-opt" data-role="co"><span class="rs-av rs-co">DC</span><span class="m"><strong>DEV CO01</strong><span>Contract Officer</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
-      <!-- Site Supervisor / Engineer hidden until their screens are built (only CO exists for now) -->
-      <button class="rolesw-opt" data-role="ss" hidden><span class="rs-av rs-ss">DT</span><span class="m"><strong>DEV TR388SS01</strong><span>Site Supervisor</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
-      <button class="rolesw-opt" data-role="eng" hidden><span class="rs-av rs-eng">DT</span><span class="m"><strong>DEV TR388ENG01</strong><span>Engineer</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
+      <button class="rolesw-opt" data-role="ss"><span class="rs-av rs-ss">DT</span><span class="m"><strong>DEV TR388SS01</strong><span>Site Supervisor</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
+      <button class="rolesw-opt" data-role="eng"><span class="rs-av rs-eng">DT</span><span class="m"><strong>DEV TR388ENG01</strong><span>Engineer</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
     </div>
   </div>
 </header>
@@ -1564,10 +1572,10 @@ body.view-mode .boq-actions{display:none}
   <div class="inner">
     <div class="act-left">
       <button class="btn" id="btnReturn" type="button">Return</button>
-      <button class="btn" type="button" title="Reassign to LTA Officer"><span class="lbl-full">Reassign to LTA Officer</span><span class="lbl-short">Reassign</span></button>
+      <button class="btn" id="btnReassign" type="button"><span class="lbl-full">Reassign to LTA Officer</span><span class="lbl-short">Reassign</span></button>
     </div>
     <div class="act-right">
-      <button class="btn btn-primary" type="button">Approve</button>
+      <button class="btn btn-primary" id="btnForward" type="button"><span class="lbl-full">Approve</span><span class="lbl-short">Approve</span></button>
     </div>
   </div>
 </div>
@@ -1942,8 +1950,30 @@ body.view-mode .boq-actions{display:none}
 </script>
 <script>
 (function(){
-  var META={co:{ini:'DC',name:'DEV CO01',role:'Contract Officer'},ss:{ini:'DT',name:'DEV TR388SS01',role:'Site Supervisor'},eng:{ini:'DT',name:'DEV TR388ENG01',role:'Engineer'}};
+  /* One screen, three roles. Per SPEC_roles-workflow §2/§4 the wizard grows with the
+     stage (2 -> 3 -> 4 steps) and the bottom actions are role + stage specific, so the
+     whole page is driven from this table rather than duplicated into separate files. */
+  var META={
+    co :{ini:'DC',name:'DEV CO01',role:'Contract Officer',
+         status:{cls:'chip-appr',text:'Approval in progress'}, steps:4, owner:4,
+         reassign:'Reassign to LTA Officer', forward:'Approve',
+         returns:[['Site Supervisor','Site execution needs correcting'],
+                  ['QS','Quantities need re-measuring'],
+                  ['Engineer','Price schedule needs revising']]},
+    ss :{ini:'DT',name:'DEV TR388SS01',role:'Site Supervisor',
+         status:{cls:'chip-wip',text:'Work in progress'}, steps:2, owner:1,
+         reassign:'Reassign to Site Supervisor', forward:'Submit to Engineer',
+         returns:[['LTA Officer','Instruction needs correcting'],
+                  ['Engineer','Needs engineering input'],
+                  ['DRC','Defect review required']]},
+    eng:{ini:'DT',name:'DEV TR388ENG01',role:'Engineer',
+         status:{cls:'chip-ver',text:'Verification in progress'}, steps:3, owner:3,
+         reassign:'Reassign to QS', forward:'Submit to LTA Officer',
+         returns:[['Site Supervisor','Site execution needs correcting'],
+                  ['Engineer','Reassign within engineering']]}
+  };
   var SHOW={Reports:['co','eng'],Contract:['co','eng'],Configuration:['co']};
+  var TICK_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
   function getRole(){var m=/[?&]role=(co|ss|eng)/.exec(location.search);return m?m[1]:'co';}
   function apply(r){
     var M=META[r]||META.co;
@@ -1952,6 +1982,45 @@ body.view-mode .boq-actions{display:none}
     document.querySelectorAll('.rolesw-opt').forEach(function(b){b.classList.toggle('on',b.dataset.role===r);});
     document.querySelectorAll('.sidebar .nav-item').forEach(function(a){var t=(a.textContent||'').trim();if(SHOW[t])a.style.display=SHOW[t].indexOf(r)>=0?'':'none';});
     document.querySelectorAll('a[href]').forEach(function(a){var h=a.getAttribute('href');if(/^mwi-[a-z0-9-]+\.html/i.test(h)){a.setAttribute('href',h.split('?')[0].split('#')[0]+'?role='+r);}});
+
+    // status chip
+    var chip=document.querySelector('.ctx-meta .chip');
+    if(chip){ chip.className='chip chip-sm '+M.status.cls; chip.textContent=M.status.text; chip.title=M.status.text; }
+
+    // wizard: only the steps this stage has reached; the owner step is the active one
+    document.querySelectorAll('#wiz .wiz-step').forEach(function(b){
+      var n=+b.getAttribute('data-step'), show=n<=M.steps;
+      b.hidden=!show;
+      var sep=b.nextElementSibling;
+      if(sep && sep.classList.contains('wiz-sep')) sep.hidden=(n>=M.steps);
+      b.classList.toggle('is-on', n===M.owner);
+      var done = show && n<M.owner;
+      b.classList.toggle('is-done', done);
+      // the circle shows a tick once passed, otherwise its own number
+      var dot=b.querySelector('.wiz-n');
+      if(dot) dot.innerHTML = done ? TICK_SVG : String(n);
+    });
+    var panels=document.querySelectorAll('.step-panel');
+    panels.forEach(function(p){ p.classList.toggle('is-on', +p.getAttribute('data-panel')===M.owner); });
+    var jump=document.getElementById('secJump'); if(jump) jump.hidden=(M.owner!==1);
+
+    // the site-execution block is the Site Supervisor's to fill; everyone else reads it
+    document.querySelectorAll('.wip-ro').forEach(function(w){ w.classList.toggle('is-owner', r==='ss'); });
+
+    // bottom actions
+    var ra=document.getElementById('btnReassign');
+    if(ra){ ra.title=M.reassign; ra.querySelector('.lbl-full').textContent=M.reassign; }
+    var fw=document.getElementById('btnForward');
+    if(fw){ fw.querySelector('.lbl-full').textContent=M.forward;
+            fw.querySelector('.lbl-short').textContent=M.forward.split(' ')[0]; }
+
+    // Return targets differ by who is sending it back
+    window.dispatchEvent(new Event('resize'));   // re-run the section scroll-spy for the shown panel
+
+    var box=document.getElementById('rtOpts');
+    if(box){ box.innerHTML=M.returns.map(function(o,i){
+      return '<label class="rt-opt"><input type="radio" name="rtRole" value="'+o[0]+'"'+(i?'':' checked')+
+             '><span><strong>'+o[0]+'</strong><em>'+o[1]+'</em></span></label>'; }).join(''); }
   }
   function setRole(r){apply(r);try{history.replaceState(null,'',location.pathname+'?role='+r);}catch(e){}}
   var rs=document.getElementById('rolesw');
@@ -2184,9 +2253,7 @@ document.addEventListener('change', function(e){
   </div>
   <div class="tl-body">
     <p class="rt-hint">Choose who this work instruction goes back to.</p>
-    <label class="rt-opt"><input type="radio" name="rtRole" value="Site Supervisor" checked><span><strong>Site Supervisor</strong><em>Site execution needs correcting</em></span></label>
-    <label class="rt-opt"><input type="radio" name="rtRole" value="QS"><span><strong>QS</strong><em>Quantities need re-measuring</em></span></label>
-    <label class="rt-opt"><input type="radio" name="rtRole" value="Engineer"><span><strong>Engineer</strong><em>Price schedule needs revising</em></span></label>
+    <div id="rtOpts"></div>
     <div class="field" style="margin-top:16px">
       <label for="rtRemarks">Remarks</label>
       <textarea class="control" id="rtRemarks" placeholder="Reason for returning"></textarea>
