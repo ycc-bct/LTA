@@ -502,6 +502,9 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 .ro-row svg{width:15px;height:15px;color:var(--grey-400);flex:none}
 .ro-row b{color:var(--grey-800);font-weight:620}
 .ro-row .tag{margin-left:auto;font-size:var(--fs-xs);color:var(--grey-400);font-weight:560}
+/* single-line read-only value: matches input height, long values scroll sideways */
+.ro-row.ro-1line{height:46px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:thin}
+.ro-row.ro-1line b{flex:none;white-space:nowrap;color:var(--grey-700);font-weight:560}
 .toggle{display:flex;align-items:center;gap:12px;cursor:pointer}
 .toggle input{position:absolute;opacity:0;width:0;height:0}
 .toggle .tk{
@@ -517,6 +520,9 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 .toggle input:focus-visible+.tk{outline:2px solid var(--teal-600);outline-offset:2px}
 .toggle .tx strong{display:block;font-size:var(--fs-base);font-weight:620;color:var(--grey-800)}
 .toggle .tx span{font-size:var(--fs-xs);color:var(--grey-500)}
+/* inline header variant: label then switch, compact */
+.card-head .toggle-inline{gap:10px;flex-direction:row-reverse}
+.card-head .toggle-inline .tx strong{font-size:var(--fs-sm);font-weight:600;color:var(--grey-600)}
 .scope-note{
   display:flex;gap:8px;align-items:flex-start;background:var(--grey-50);border:1px dashed var(--grey-300);
   border-radius:var(--r-md);padding:12px 14px;font-size:var(--fs-sm);color:var(--grey-600);margin-bottom:26px;
@@ -576,9 +582,18 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 .card-body>.btn{grid-column:1 / -1}
 .card-body>.btn{justify-self:start}
 .action-bar .inner{max-width:none;margin:0 0 0 var(--sidebar-w);padding:0 32px}
+/* full-row textarea fields: on a wide screen the box itself is only half-width
+   (full 100% span is too wide); it fills the row again once the grid collapses */
+@media(min-width:1021px){
+  .card-body>.field:has(textarea):not(.f1) textarea.control{max-width:50%}
+}
+/* paired textareas (Work/defect description + WI remarks) sit side by side, half each */
+.card-body>.field-pair{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr;gap:20px 28px;align-items:start}
+@media(max-width:1020px){.card-body>.field-pair{grid-template-columns:1fr}}
 @media(max-width:1020px){
   .main.narrow{margin-left:0;padding-left:16px;padding-right:16px;max-width:none}
-  .card-body{grid-template-columns:1fr}
+  /* minmax(0,…) stops a wide min-content child (tab rows, tables) blowing the track out */
+  .card-body{grid-template-columns:minmax(0,1fr)}
   .action-bar .inner{margin-left:auto;margin-right:auto;padding:0 16px}
 }
 .field>label.toggle{display:flex}
@@ -695,12 +710,10 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
   .stickyhead>.sec-jump{margin:12px -16px 0;padding:0 16px}
 }
 
-/* condensed once the page is scrolled — padding only, so nothing reflows or resizes:
-   the layout is already compact at rest (no path subline, abbreviated status on mobile) */
-.stickyhead{transition:padding .18s ease,box-shadow .18s ease}
-.stickyhead.is-stuck{padding-top:8px;padding-bottom:8px;box-shadow:0 4px 14px rgba(22,31,38,.07)}
-.stickyhead.is-stuck>.wiz{margin-top:9px}
-.stickyhead.is-stuck>.sec-jump{margin-top:9px}
+/* once scrolled, only a drop shadow appears — NO size change, so the header height is
+   constant and never jumps when you scroll back to the very top (box-shadow is layout-neutral) */
+.stickyhead{transition:box-shadow .18s ease}
+.stickyhead.is-stuck{box-shadow:0 4px 14px rgba(22,31,38,.07)}
 
 /* ===== P1 UX adjustments: prerequisite · dependency · progress · asset nav ===== */
 /* 1 · Contract as prerequisite */
@@ -775,6 +788,14 @@ body.view-mode .at-add{display:none}
 .at-add:disabled,.tt-add:disabled{opacity:.4;cursor:not-allowed;border-style:dashed;
   border-color:var(--grey-200);color:var(--grey-400);background:transparent}
 .at-add:disabled:hover,.tt-add:disabled:hover{background:transparent}
+/* short reason shown beside a disabled "Add asset" / "Add task" */
+.at-hint,.tt-hint{flex:none;align-self:center;white-space:nowrap;font-size:var(--fs-sm);
+  font-weight:560;color:var(--warning-700)}
+/* task count pushed to the right of the task-tabs row (edit only) */
+.tt-count-r{margin-left:auto;flex:none;align-self:center;display:inline-flex;align-items:center;
+  background:var(--grey-100);color:var(--grey-600);font-weight:650;font-size:var(--fs-xs);
+  padding:5px 11px;border-radius:var(--r-pill);white-space:nowrap}
+body.view-mode .tt-count-r,body.view-mode .tt-hint{display:none}
 .gate-note{display:flex;align-items:flex-start;gap:7px;font-size:var(--fs-sm);color:var(--grey-600);
   background:var(--warning-50);border-radius:var(--r-sm);padding:8px 11px;margin:0 0 16px}
 .gate-note svg{width:15px;height:15px;flex:none;margin-top:1px;color:var(--warning-700)}
@@ -783,6 +804,21 @@ body.view-mode .at-add{display:none}
 .gate-note[hidden]{display:none}
 .task-tabs+.gate-note{margin:0 0 4px}
 body.view-mode .gate-note{display:none}
+
+/* asset tabs share a row with their gate note (note sits to the right; count at rest) */
+.asset-tabbar{display:flex;align-items:center;gap:12px;margin:0 0 16px}
+.asset-tabbar .asset-tabs{flex:1 1 auto;min-width:0;margin:0}
+.asset-tabbar .asset-gate{flex:0 1 auto;margin:0;max-width:56%}
+/* compact "N / 3" count — the resting state before the user engages with adding */
+.asset-gate.is-count{display:inline-flex;align-items:center;justify-content:center;
+  background:var(--grey-100);color:var(--grey-600);font-weight:650;white-space:nowrap;
+  padding:6px 13px;border-radius:var(--r-pill);flex:none}
+@media(max-width:1020px){
+  /* let a long hint drop below the tabs instead of squeezing them */
+  .asset-tabbar{flex-wrap:wrap}
+  .asset-tabbar .asset-gate{max-width:none}
+  .asset-tabbar .asset-gate:not(.is-count){flex:1 1 100%}
+}
 .asset-lite-head,.task-lite-head{cursor:pointer}
 .asset-lite-head strong,.task-lite-head strong{display:inline-flex;align-items:center}
 .al-chev{display:inline-flex;flex:none;margin-right:8px;color:var(--grey-400);transition:transform .2s}
@@ -802,10 +838,12 @@ body.view-mode .gate-note{display:none}
 .wiz-n{width:24px;height:24px;border-radius:var(--r-pill);display:grid;place-items:center;flex:none;
   font-size:12px;font-weight:700;background:#fff;border:1.5px solid var(--grey-300);color:var(--grey-500);transition:all .15s}
 .wiz-n svg{width:13px;height:13px;display:block}
+/* done: white fill, green ring + green tick — clearly distinct from the active step */
 .wiz-step.is-done{color:var(--teal-700)}
-.wiz-step.is-done .wiz-n{background:var(--teal-600);border-color:var(--teal-600);color:#fff}
-.wiz-step.is-on{color:var(--navy-700);font-weight:680}
-.wiz-step.is-on .wiz-n{background:var(--navy-700);border-color:var(--navy-700);color:#fff}
+.wiz-step.is-done .wiz-n{background:#fff;border-color:var(--teal-600);color:var(--teal-600)}
+/* active: solid green fill, white number — the strongest emphasis */
+.wiz-step.is-on{color:var(--teal-700);font-weight:680}
+.wiz-step.is-on .wiz-n{background:var(--teal-600);border-color:var(--teal-600);color:#fff}
 .wiz-sep{flex:1 0 32px;min-width:32px;height:1.5px;background:var(--grey-200);margin:0 14px}
 .wiz-step.is-done+.wiz-sep{background:var(--teal-200)}
 .step-panel{display:none}
@@ -854,6 +892,10 @@ body.view-mode .step-panel .xselect-trigger,
 body.view-mode .step-panel .xdate-trigger,
 body.view-mode .step-panel .boq td input{background:var(--grey-50);color:var(--grey-600);border-color:var(--grey-200);pointer-events:none}
 body.view-mode .step-panel .toggle{pointer-events:none;opacity:.65}
+/* Identity fields (Contract / WI no. / Department) stay locked even in edit mode */
+.locked-field .control,
+.locked-field .xselect-trigger{background:var(--grey-50);color:var(--grey-600);border-color:var(--grey-200);pointer-events:none}
+.locked-field .xselect-chev{display:none}
 body.view-mode .step-panel .capture,
 body.view-mode .step-panel .btn-map,
 body.view-mode #s-site .btn-ghost,
@@ -930,7 +972,12 @@ body.view-mode #boqAdd{display:none}
   border:1px solid transparent;font-weight:600}
 .btn-warn:hover{background:var(--sgds-yellow-300);color:var(--sgds-yellow-800);border-color:transparent}
 .btn-warn:active{background:var(--sgds-yellow-300);color:var(--sgds-yellow-800);border-color:transparent}
-body:not(.view-mode) .action-bar{display:none}   /* editing: only Save (top right) is available */
+/* Return / Reassign are SECONDARY outline buttons — white fill, green text, green border */
+.act-left .btn{background:#fff;color:var(--teal-700);border:1px solid var(--teal-600);font-weight:600}
+.action-bar .btn[hidden]{display:none}
+.action-bar .btn:disabled{opacity:.45;cursor:not-allowed}
+.action-bar .btn:disabled:hover{background:var(--teal-600)}
+.act-left .btn:hover{background:var(--teal-50);color:var(--teal-700);border-color:var(--teal-700)}
 .tl-modal.tl-sm{width:min(520px,calc(100vw - 32px))}
 .rt-hint{font-size:var(--fs-sm);color:var(--grey-600);margin:0 0 14px}
 .rt-opt{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--grey-200);
@@ -947,8 +994,9 @@ body:not(.view-mode) .action-bar{display:none}   /* editing: only Save (top righ
      own row LAST, the thumb zone at the bottom of a fixed bar. */
   .action-bar{padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
   .action-bar .inner{display:flex;flex-direction:column;align-items:stretch;gap:8px;overflow:visible;padding:0}
-  .act-left{display:grid;grid-template-columns:1fr 1fr;gap:8px;overflow:visible;flex:none;min-width:0}
-  .act-right{display:grid;grid-template-columns:1fr;gap:8px;flex:none}
+  .act-left{display:grid;grid-template-columns:1fr;gap:8px;overflow:visible;flex:none;min-width:0}
+  .act-right{display:flex;gap:8px;flex:none}
+  .act-right .btn{flex:1 1 0;width:auto;min-width:0}
   .action-bar .btn{flex:none;width:100%;min-height:46px;padding:8px 12px;
     white-space:nowrap;line-height:1.25;text-align:center}
   .main.narrow{padding-bottom:170px}      /* clear the two stacked rows */
@@ -958,7 +1006,7 @@ body:not(.view-mode) .action-bar{display:none}   /* editing: only Save (top righ
 
 /* ---- BOQ table (Price schedule) ---- */
 .boq-wrap{grid-column:1 / -1;overflow-x:auto;border:1px solid var(--grey-200);border-radius:var(--r-md)}
-.boq{width:100%;border-collapse:collapse;min-width:760px;font-size:var(--fs-sm)}
+.boq{width:100%;border-collapse:collapse;min-width:1040px;font-size:var(--fs-sm)}
 .boq th,.boq td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--grey-200)}
 .boq th{background:var(--grey-50);font-weight:640;color:var(--grey-600);font-size:var(--fs-xs);
   text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
@@ -984,31 +1032,16 @@ body:not(.view-mode) .action-bar{display:none}   /* editing: only Save (top righ
 body.view-mode .boq th.act,body.view-mode .boq td.act,
 body.view-mode .boq-actions{display:none}
 
-/* ---- Mobile Site & assets: accordion cards + task bottom-sheet (desktop unaffected) ---- */
-.al-sub,.tl-sub,.tl-edit{display:none}
+/* ---- Mobile Site & assets: tasks are edited inline, same as everywhere else ---- */
 @media(max-width:820px){
-  #s-site .asset-lite-head,#s-site .task-lite-head{flex-wrap:wrap;position:relative}
-  #s-site .al-sub,#s-site .tl-sub{display:block;flex-basis:100%;font-size:var(--fs-sm);color:var(--grey-500);font-weight:500;margin-top:4px;padding-right:56px}
-  #s-site .task-lite{cursor:pointer}
-  #s-site .task-lite>.asset-lite-grid,
-  #s-site .task-lite>.task-others,
-  #s-site .task-lite>.field{display:none}
-  #s-site .task-lite .task-lite-head .btn,#s-site .task-lite .al-chev{display:none}
-  #s-site .tl-edit{display:inline-flex;position:absolute;right:2px;top:2px;color:var(--teal-600);font-weight:600;font-size:var(--fs-sm)}
+  /* asset / task chips wrap onto new lines instead of scrolling sideways */
+  .asset-tabs,.task-tabs{flex-wrap:wrap;overflow-x:visible;row-gap:8px}
+  /* tabbar stays one row: chips wrap inside the nav, the count stays pinned right */
+  .asset-tabbar{flex-wrap:nowrap;align-items:flex-start}
+  .asset-tabbar .asset-tabs{flex:1 1 auto;min-width:0}
+  .asset-tabbar .asset-gate{flex:none;margin-left:0}
+  .tt-count-r{margin-left:0}
 }
-.msheet-scrim{position:fixed;inset:0;background:rgba(22,31,38,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60}
-.msheet-scrim.show{opacity:1;pointer-events:auto}
-.msheet{position:fixed;left:0;right:0;bottom:0;max-height:88vh;background:#fff;border-radius:16px 16px 0 0;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.15,1);z-index:61;display:flex;flex-direction:column;box-shadow:0 -8px 32px rgba(22,31,38,.18)}
-.msheet.show{transform:translateY(0)}
-.msheet-grab{width:38px;height:4px;border-radius:99px;background:var(--grey-300);margin:8px auto 0}
-.msheet-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 12px;border-bottom:1px solid var(--grey-200)}
-.msheet-title{font-weight:700;color:var(--grey-900);font-size:var(--fs-md)}
-.msheet-done{background:var(--teal-600);color:#fff;border:0;border-radius:8px;padding:9px 18px;font-weight:600;font-family:inherit;cursor:pointer}
-.msheet-body{overflow-y:auto;padding:16px}
-.msheet .task-lite{border:0;padding:0;margin:0;background:transparent}
-.msheet .task-lite .task-lite-head{display:none}
-.msheet .task-lite .asset-lite-grid{grid-template-columns:1fr;gap:16px}
-.msheet .task-lite>.field:not([hidden]){margin-top:16px}
 </style>
 </head>
 <body>
@@ -1067,31 +1100,20 @@ body.view-mode .boq-actions{display:none}
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
     </a>
     <div class="ctx">
-      <strong>RMWP-TR388-RRFM-M-5</strong>
+      <strong>New maintenance WI</strong>
       <div class="ctx-meta">
-        <span class="chip chip-sm chip-appr" title="Approval in progress"><span class="chip-full">Approval in progress</span><span class="chip-abbr">AIP</span></span>
+        <span class="chip chip-sm chip-draft">Draft</span>
       </div>
-    </div>
-    <div class="ctx-actions">
-      <button class="ctx-btn" id="btnTimeline" type="button" title="Timeline" aria-label="Timeline">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="7" r="2.4"/><circle cx="6" cy="17" r="2.4"/><path d="M11 7h8M11 17h8"/></svg>
-        Timeline
-      </button>
-      <button class="ctx-btn ctx-btn-primary" id="btnEdit" type="button"></button>
     </div>
   </div>
 
   <nav class="wiz" id="wiz" aria-label="Work instruction steps">
-    <button class="wiz-step is-done" data-step="1" type="button"><span class="wiz-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Work / Task / Site Detail</button>
+    <button class="wiz-step is-on" data-step="1" type="button"><span class="wiz-n">1</span>Work / Task / Site Detail</button>
     <span class="wiz-sep"></span>
-    <button class="wiz-step is-done" data-step="2" type="button"><span class="wiz-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Fund Detail</button>
-    <span class="wiz-sep"></span>
-    <button class="wiz-step is-done" data-step="3" type="button"><span class="wiz-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Price Schedule</button>
-    <span class="wiz-sep"></span>
-    <button class="wiz-step is-on" data-step="4" type="button"><span class="wiz-n">4</span>Approval</button>
+    <button class="wiz-step" data-step="2" type="button"><span class="wiz-n">2</span>Fund Detail</button>
   </nav>
 
-  <nav class="sec-jump" id="secJump" aria-label="Jump to section" hidden>
+  <nav class="sec-jump" id="secJump" aria-label="Jump to section">
     <button class="sj-chip is-on" data-target="s-ref"><span>Work instruction</span></button>
     <button class="sj-chip" data-target="s-desc"><span>Location</span></button>
     <button class="sj-chip" data-target="s-site"><span>Site &amp; assets</span></button>
@@ -1099,7 +1121,7 @@ body.view-mode .boq-actions{display:none}
   </nav>
   </div><!-- /.stickyhead -->
 
-  <div class="step-panel" data-panel="1">
+  <div class="step-panel is-on" data-panel="1">
 
   <section class="card" id="s-ref">
     <div class="card-head"><h2>Work instruction details</h2></div>
@@ -1107,13 +1129,13 @@ body.view-mode .boq-actions{display:none}
       <div class="field">
         <label for="e-con">Contract no. <span class="req">*</span></label>
         <select class="control" id="e-con">
-          <option disabled>Select contract…</option>
-          <option selected>TR388</option>
+          <option disabled selected>Select contract…</option>
+          <option>TR388</option>
         </select>
       </div>
-      <div class="field">
+      <div class="field locked-field">
         <label for="e-wino">Work instruction no.</label>
-        <input class="control" id="e-wino" type="text" value="RMWP-TR388-RRFM-M-5" readonly>
+        <input class="control" id="e-wino" type="text" placeholder="Auto-generated on save" readonly>
       </div>
       <div class="field-row">
         <div class="field">
@@ -1129,8 +1151,8 @@ body.view-mode .boq-actions{display:none}
         <div class="field">
           <label for="e-dept">Department <span class="req">*</span></label>
           <select class="control" id="e-dept">
-            <option disabled>Select department…</option>
-            <option selected>RRFM</option>
+            <option disabled selected>Select department…</option>
+            <option>RRFM</option>
             <option>PATH</option>
             <option>A&amp;C</option>
           </select>
@@ -1138,9 +1160,9 @@ body.view-mode .boq-actions{display:none}
         <div class="field">
           <label for="e-wt">Work type <span class="req">*</span></label>
           <select class="control" id="e-wt">
-            <option disabled>Select work type…</option>
+            <option disabled selected>Select work type…</option>
             <option>Simplified item</option>
-            <option selected>Works order — accident</option>
+            <option>Works order — accident</option>
             <option>Outcome-based defect</option>
           </select>
         </div>
@@ -1148,17 +1170,18 @@ body.view-mode .boq-actions{display:none}
       <div class="field-row">
         <div class="field">
           <label for="e-fb">Feedback date <span class="req">*</span></label>
-          <input class="control" id="e-fb" type="date" value="2026-06-02">
+          <input class="control" id="e-fb" type="date" value="2026-07-24">
         </div>
         <div class="field">
           <label for="e-in">Instruction date <span class="req">*</span></label>
-          <input class="control" id="e-in" type="date" value="2026-06-02">
+          <input class="control" id="e-in" type="date" value="2026-07-24">
         </div>
       </div>
       <div class="field">
         <label for="e-rep">Defect reported by</label>
         <select class="control" id="e-rep">
-          <option selected>Inspection</option>
+          <option disabled selected>Select source…</option>
+          <option>Inspection</option>
           <option>Public feedback</option>
           <option>Agency referral</option>
         </select>
@@ -1179,8 +1202,8 @@ body.view-mode .boq-actions{display:none}
       <div class="field dep-field">
         <label for="e-road">Road name <span class="req">*</span></label>
         <select class="control" id="e-road">
-          <option disabled>Search or select road…</option>
-          <option selected>Adis Road</option>
+          <option disabled selected>Search or select road…</option>
+          <option>Adis Road</option>
           <option>Admiralty Drive</option>
           <option>Admiralty Lane</option>
           <option>Palm Drive</option>
@@ -1189,38 +1212,43 @@ body.view-mode .boq-actions{display:none}
       <div class="field dep-field">
         <label for="e-ltag">Location tag</label>
         <select class="control" id="e-ltag">
-          <option disabled>Select location tag…</option>
-          <option selected>REX-ADI00Y-00000</option>
+          <option disabled selected>Select location tag…</option>
+          <option>REX-ADI00Y-00000</option>
           <option>REX-PAD06R-00000</option>
         </select>
       </div>
       <div class="field dep-field">
         <label for="e-sec">Sector <span class="req">*</span></label>
-        <select class="control" id="e-sec"><option disabled>Select sector…</option><option selected>NW3</option><option>NW2</option><option>NW1</option></select>
+        <select class="control" id="e-sec"><option disabled selected>Select sector…</option><option>NW3</option><option>NW2</option><option>NW1</option></select>
       </div>
       <div class="field dep-field">
         <label for="e-sub">Sub-sector <span class="req">*</span></label>
-        <select class="control" id="e-sub"><option disabled>Select sub-sector…</option><option selected>CS4</option><option>NW1</option><option>NW2</option></select>
+        <select class="control" id="e-sub"><option disabled selected>Select sub-sector…</option><option>CS4</option><option>NW1</option><option>NW2</option></select>
       </div>
-      <div class="field">
-        <label for="e-desc">Work / defect description</label>
-        <textarea class="control" id="e-desc" placeholder="Describe the work or defect in plain language"></textarea>
-      </div>
-      <div class="field">
-        <label for="e-rem">WI remarks</label>
-        <textarea class="control" id="e-rem" placeholder="Optional remarks visible to the site team"></textarea>
+      <div class="field-pair">
+        <div class="field">
+          <label for="e-desc">Work / defect description</label>
+          <textarea class="control" id="e-desc" placeholder="Describe the work or defect in plain language"></textarea>
+        </div>
+        <div class="field">
+          <label for="e-rem">WI remarks</label>
+          <textarea class="control" id="e-rem" placeholder="Optional remarks visible to the site team"></textarea>
+        </div>
       </div>
     </div>
   </section>
 
   <section class="card" id="s-site">
-    <div class="card-head"><h2>Site &amp; assets</h2></div>
-    <div class="card-body">
-      <label class="toggle" style="margin-bottom:18px">
+    <div class="card-head">
+      <h2>Site &amp; assets</h2>
+      <span class="spacer"></span>
+      <label class="toggle toggle-inline">
         <input type="checkbox">
         <span class="tk"></span>
-        <span class="tx"><strong>Asset not found</strong><span>Tick if the asset is not in the inventory</span></span>
+        <span class="tx"><strong>Asset not found</strong></span>
       </label>
+    </div>
+    <div class="card-body">
       <div class="dep-wrap" data-dep>
         <div class="dep-group">
       <div class="map-lite" role="img" aria-label="Map placeholder for asset selection">
@@ -1228,7 +1256,7 @@ body.view-mode .boq-actions{display:none}
         <strong>Map — select assets within the buffer</strong>
         <span>The interactive map renders for the Singapore region after a road is selected.</span>
       </div>
-      <nav class="asset-tabs" id="assetTabs" aria-label="Assets"></nav>
+      <div class="asset-tabbar"><nav class="asset-tabs" id="assetTabs" aria-label="Assets"></nav></div>
       <div class="asset-lite">
         <div class="asset-lite-head">
           <strong>Asset 1</strong>
@@ -1238,8 +1266,8 @@ body.view-mode .boq-actions{display:none}
           <div class="field">
             <label>Asset type name (code) <span class="req">*</span></label>
             <select class="control">
-              <option disabled>Select asset type…</option>
-              <option selected>Bollard</option>
+              <option disabled selected>Select asset type…</option>
+              <option>Bollard</option>
               <option>Footpath</option>
               <option>Traffic sign</option>
             </select>
@@ -1247,7 +1275,7 @@ body.view-mode .boq-actions{display:none}
           <div class="field">
             <label>Asset tag</label>
             <div class="with-map">
-              <select class="control"><option disabled>Select asset tag…</option><option selected>REX-BRR-BOLL-07896</option><option>REX-SNG-FTP-F2026</option><option>REX-ADI-TSGN-00312</option></select>
+              <select class="control"><option disabled selected>Select asset tag…</option><option>REX-BRR-BOLL-07896</option><option>REX-SNG-FTP-F2026</option><option>REX-ADI-TSGN-00312</option></select>
               <button class="btn-map" type="button">Map</button>
             </div>
           </div>
@@ -1266,8 +1294,8 @@ body.view-mode .boq-actions{display:none}
             <div class="field">
               <label>Element type <span class="req">*</span></label>
               <select class="control">
-                <option disabled>Select element type…</option>
-                <option selected>Bollard</option>
+                <option disabled selected>Select element type…</option>
+                <option>Bollard</option>
                 <option>Signage</option>
                 <option>Railing</option>
                 <option>Flexible pavement</option>
@@ -1277,8 +1305,8 @@ body.view-mode .boq-actions{display:none}
             <div class="field">
               <label>Defect type <span class="req">*</span></label>
               <select class="control defect-select">
-                <option disabled>Select defect type…</option>
-                <option selected>Hole</option>
+                <option disabled selected>Select defect type…</option>
+                <option>Hole</option>
                 <option>Damaged</option>
                 <option>Depression</option>
                 <option>Cracked surface</option>
@@ -1288,7 +1316,7 @@ body.view-mode .boq-actions{display:none}
             <div class="field">
               <label>Default X Y coordinates</label>
               <div class="with-map">
-                <input class="control" type="text" value="26495.53, 37133.86" placeholder="e.g. 26495.53, 37133.86">
+                <input class="control" type="text" placeholder="e.g. 26495.53, 37133.86">
                 <button class="btn-map" type="button">Map</button>
               </div>
             </div>
@@ -1300,39 +1328,10 @@ body.view-mode .boq-actions{display:none}
           <div class="asset-lite-grid" style="margin-top:16px">
             <div class="field">
               <label>Landmark</label>
-              <input class="control" type="text" value="Opp Blk 123 Adis Road" placeholder="Optional">
+              <input class="control" type="text" placeholder="Optional">
             </div>
-            <div class="field wip-ro"><label>Start work date</label><input class="control" type="text" value="05/06/2026" readonly></div>
-            <div class="field wip-ro"><label>End work date</label><input class="control" type="text" value="12/06/2026" readonly></div>
           </div>
 
-          <div class="wip-ro">
-            <div class="wip-sep">Site execution · recorded by the site supervisor</div>
-            <div class="photo-grid-ro">
-              <div class="photo-ro"><span class="lbl">Before photo</span><div class="ph ph-before"><span class="cap">Before</span></div></div>
-              <div class="photo-ro"><span class="lbl">During photo</span><div class="ph ph-during"><span class="cap">During</span></div></div>
-              <div class="photo-ro"><span class="lbl">After photo</span><div class="ph ph-after"><span class="cap">After</span></div></div>
-            </div>
-            <div class="asset-lite-grid" style="margin-top:18px">
-              <div class="field"><label>Defect cause</label><input class="control" type="text" value="Ageing" readonly></div>
-              <div class="field"><label>Action taken on site</label><input class="control" type="text" value="Repair" readonly></div>
-              <div class="field"><label>Unit</label><input class="control" type="text" value="M" readonly></div>
-              <div class="field"><label>Length</label><input class="control" type="text" value="1" readonly></div>
-              <div class="field"><label>Measurement</label><input class="control" type="text" value="1" readonly></div>
-              <div class="field"><label>Work progress status (10% – 100%)</label><input class="control" type="text" value="100%" readonly></div>
-            </div>
-            <div class="field" style="margin-top:16px">
-              <label>Task remarks</label>
-              <textarea class="control" readonly>Bollard hole patched and repainted; area made good.</textarea>
-            </div>
-            <div class="field">
-              <label>Attachment</label>
-              <div class="file-ro">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>
-                RRFM-M-5_site-record.pdf
-              </div>
-            </div>
-          </div>
         </div>
       </div>
         </div>
@@ -1344,11 +1343,7 @@ body.view-mode .boq-actions{display:none}
     <div class="card-head"><h2>Attachment</h2></div>
     <div class="card-body">
       <div class="field">
-        <div class="file-ro">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>
-          RRFM-M-5_work-instruction.pdf
-        </div>
-        <div class="capture" role="button" tabindex="0" style="min-height:84px;margin-top:12px">
+        <div class="capture" role="button" tabindex="0" style="min-height:84px">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></svg>
           <strong>Upload file</strong>
           <span>PDF, DOC, JPEG, JPG or PNG · max 5 MB · Official (Closed) / non-sensitive or below</span>
@@ -1362,72 +1357,45 @@ body.view-mode .boq-actions{display:none}
   <section class="card" id="s-fund">
     <div class="card-head"><h2>Funding</h2></div>
     <div class="card-body">
-      <div class="field-row">
-        <div class="field">
-          <label for="e-amt">Estimated amount (S$)</label>
-          <input class="control" id="e-amt" type="number" inputmode="decimal" value="234.56" placeholder="0.00">
-        </div>
-        <div class="field">
-          <label for="e-ecd">Estimated completion date <span class="req">*</span></label>
-          <input class="control" id="e-ecd" type="date" value="2026-06-17">
-        </div>
-      </div>
-      <div class="field">
-        <label for="e-sup">Supervision</label>
-        <select class="control" id="e-sup"><option selected>LTA project team</option><option>Contractor</option></select>
-      </div>
-      <div class="field">
-        <label for="e-frem">Fund remarks</label>
-        <textarea class="control" id="e-frem" placeholder="Optional"></textarea>
-      </div>
-    </div>
-  </section>
-  </div><!-- /step 2 -->
-
-  <div class="step-panel" data-panel="3">
-  <section class="card" id="s-price">
-    <div class="card-head"><h2>Price schedule</h2></div>
-    <div class="card-body">
-      <div class="field">
-        <label for="p-pay">Payment type</label>
-        <select class="control" id="p-pay"><option disabled>Select payment type…</option><option>Interim</option><option selected>Final</option></select>
-      </div>
-      <div class="field">
-        <label for="p-final">Final amount (S$)</label>
-        <input class="control num" id="p-final" type="text" value="234.56" placeholder="0.00">
-      </div>
-      <div class="field">
-        <label for="p-acd">Actual completion date</label>
-        <input class="control" id="p-acd" type="date" value="2026-06-02">
-      </div>
-      <div class="field">
-        <label>Funding source details</label>
-        <div class="ro-row"><b style="color:var(--grey-700);font-weight:560">EXT.ETRO.ASM(RD).E-TR388.000.3MINDE7115.TR388</b></div>
-      </div>
       <div class="boq-wrap">
         <table class="boq">
-          <thead><tr><th>Item</th><th>Description</th><th>Unit</th><th class="num">Rate (S$)</th><th class="num">Quantity</th><th class="num">Amount (S$)</th><th class="act" aria-label="Row actions"></th></tr></thead>
-          <tbody id="boqBody">
+          <thead><tr><th>Funding source</th><th>Fund owner</th><th>Section</th><th class="num">Estimated amount (S$)</th><th class="act" aria-label="Row actions"></th></tr></thead>
+          <tbody id="fundBody">
             <tr>
-              <td><input value="1.1"></td>
-              <td><input value="Supply and install replacement bollard"></td>
-              <td><input value="Nos"></td>
-              <td class="num"><input value="185.00"></td>
-              <td class="num"><input value="2"></td>
-              <td class="num"><input class="boq-amt" value="370.00"></td>
+              <td><input></td>
+              <td><input></td>
+              <td><input></td>
+              <td class="num"><input></td>
               <td class="act"><button class="boq-del" type="button" title="Delete row" aria-label="Delete row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button></td>
             </tr>
           </tbody>
           <tbody class="boq-actions">
-            <tr><td colspan="7">
-              <button class="boq-add" type="button" id="boqAdd">
+            <tr><td colspan="5">
+              <button class="boq-add" type="button" id="fundAdd">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                Add BOQ row
+                Add funding source
               </button>
             </td></tr>
           </tbody>
-          <tfoot><tr><td colspan="5">Total</td><td class="num" id="boqTotal">S$ 370.00</td><td class="act"></td></tr></tfoot>
         </table>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="e-amt">Estimated amount (S$)</label>
+          <input class="control" id="e-amt" type="number" inputmode="decimal" placeholder="0.00">
+        </div>
+        <div class="field">
+          <label for="e-ecd">Estimated completion date <span class="req">*</span></label>
+          <input class="control" id="e-ecd" type="date">
+        </div>
+      </div>
+      <div class="field">
+        <label for="e-sup">Supervision</label>
+        <select class="control" id="e-sup"><option disabled selected>Select supervision…</option><option>LTA project team</option><option>Contractor</option></select>
+      </div>
+      <div class="field">
+        <label for="e-frem">Fund remarks</label>
+        <textarea class="control" id="e-frem" placeholder="Optional"></textarea>
       </div>
       <div class="field">
         <label>Attachment</label>
@@ -1437,62 +1405,23 @@ body.view-mode .boq-actions{display:none}
           <span>PDF, DOC, JPEG, JPG or PNG · max 5 MB</span>
         </div>
       </div>
-      <div class="field">
-        <label for="p-rem">Price schedule remarks</label>
-        <textarea class="control" id="p-rem" placeholder="Optional"></textarea>
-      </div>
-      <div class="field">
-        <label class="toggle">
-          <input type="checkbox">
-          <span class="tk"></span>
-          <span class="tx"><strong>Contractor declaration — Certificate of Supervision</strong><span>The works were performed and supervised in accordance with the contract specification.</span></span>
-        </label>
-      </div>
     </div>
   </section>
-  </div><!-- /step 3 -->
+  </div><!-- /step 2 -->
 
-  <div class="step-panel is-on" data-panel="4">
-  <section class="card" id="s-appr">
-    <div class="card-head"><h2>Approval</h2></div>
-    <div class="card-body">
-      <div class="field">
-        <label for="a-pay">Payment type</label>
-        <select class="control" id="a-pay"><option>Interim</option><option selected>Final</option></select>
-      </div>
-      <div class="field">
-        <label for="a-final">Final amount (S$)</label>
-        <input class="control num" id="a-final" type="text" value="234.56" readonly>
-      </div>
-      <div class="field f1">
-        <label for="a-rem">Approval remarks</label>
-        <textarea class="control" id="a-rem" placeholder="Optional"></textarea>
-      </div>
-
-      <div class="field"><label for="a-instr">Instruction date</label><input class="control" id="a-instr" type="text" value="02/06/2026" readonly></div>
-      <div class="field"><label for="a-ecd">Estimated completion date</label><input class="control" id="a-ecd" type="text" value="17/06/2026" readonly></div>
-      <div class="field"><label for="a-acd">Actual completion date</label><input class="control" id="a-acd" type="text" value="02/06/2026" readonly></div>
-
-      <div class="field"><label for="a-fb">Feedback date</label><input class="control" id="a-fb" type="text" value="02/06/2026" readonly></div>
-      <div class="field"><label for="a-jm1">JM submission date (first)</label><input class="control" id="a-jm1" type="text" value="08/07/2026" readonly></div>
-      <div class="field"><label for="a-jm2">JM submission date (latest)</label><input class="control" id="a-jm2" type="text" value="08/07/2026" readonly></div>
-
-      <div class="field"><label for="a-days">Days taken to submit JM (to LTA)</label><input class="control" id="a-days" type="text" value="36 days" readonly></div>
-      <div class="field"><label>Payment status</label><div class="ro-val">Un Paid</div></div>
-    </div>
-  </section>
-  </div><!-- /step 4 -->
+  
 
 </main>
 
 <div class="action-bar">
   <div class="inner">
     <div class="act-left">
-      <button class="btn btn-warn" id="btnReturn" type="button">Return</button>
-      <button class="btn btn-warn" type="button" title="Reassign to LTA Officer"><span class="lbl-full">Reassign to LTA Officer</span><span class="lbl-short">Reassign</span></button>
+      <button class="btn" type="button"><span class="lbl-full">Save as draft</span><span class="lbl-short">Save</span></button>
     </div>
     <div class="act-right">
-      <button class="btn btn-primary" type="button">Approve and Close</button>
+      <button class="btn btn-primary" id="btnNext" type="button">Next</button>
+      <button class="btn btn-primary" id="btnReassign" type="button">Reassign</button>
+      <button class="btn btn-primary" id="btnSubmit" type="button"><span class="lbl-full">Submit to Site Supervisor</span><span class="lbl-short">Submit</span></button>
     </div>
   </div>
 </div>
@@ -1670,9 +1599,16 @@ body.view-mode .boq-actions{display:none}
   }
   function say(node,text,info){
     if(!text){ node.hidden=true; return; }
-    node.hidden=false; node.classList.toggle('is-info',!!info);
+    node.hidden=false; node.classList.remove('is-count');
+    node.classList.toggle('is-info',!!info);
     node.innerHTML=INFO+'<span></span>';
     node.lastChild.textContent=text;
+  }
+  function gateCount(node,n,max){       // compact "N / 3" resting indicator
+    node.hidden=false; node.classList.remove('is-info');
+    node.classList.add('is-count');
+    node.textContent=n+' / '+max;
+    node.title=n+(n===1?' asset':' assets')+' of '+max+' max';
   }
 
   var activeAsset=0;
@@ -1704,11 +1640,15 @@ body.view-mode .boq-actions{display:none}
       add.title=blocker?('Finish Asset '+blocker+' first'):('Add asset '+(list.length+1)+' of '+MAX_ASSETS);
       add.addEventListener('click',addAsset);
       bar.appendChild(add);
-      if(blocker) say(note,'Asset '+blocker+' is not finished — fill its required fields and complete every task in it before adding another asset.');
-      else say(note,'Finish the current asset and all its tasks before adding another. Up to '+MAX_ASSETS+' assets.',true);
-    } else {
-      say(note,'Maximum of '+MAX_ASSETS+' assets reached.',true);
+      // when Add is disabled, a short reason sits right beside it
+      if(blocker){
+        var hint=document.createElement('span');
+        hint.className='at-hint';
+        hint.textContent='Fill all required fields';
+        bar.appendChild(hint);
+      }
     }
+    gateCount(note,list.length,MAX_ASSETS);   // count is always the right-hand indicator
     bar.style.display=bar.children.length?'':'none';
   }
   function updateRemove(){
@@ -1782,7 +1722,6 @@ body.view-mode .boq-actions{display:none}
         b.addEventListener('click',function(){ a.dataset.activeTask=i; updateTaskRemove(a); });
         bar.appendChild(b);
       });
-      var note=noteAfter(bar,'task-gate');
       if(list.length<MAX_TASKS){
         var blocker=null;
         for(var j=0;j<list.length;j++){ if(!taskComplete(list[j])){ blocker=j+1; break; } }
@@ -1793,11 +1732,15 @@ body.view-mode .boq-actions{display:none}
         add.title=blocker?('Finish Task '+blocker+' first'):('Add task '+(list.length+1)+' of '+MAX_TASKS);
         add.addEventListener('click',function(){ addTask(a); });
         bar.appendChild(add);
-        if(blocker) say(note,'Task '+blocker+' is not finished — fill its required fields before adding another task.');
-        else say(note,'Finish the current task before adding another. Up to '+MAX_TASKS+' tasks per asset.',true);
-      } else {
-        say(note,'Maximum of '+MAX_TASKS+' tasks per asset reached.',true);
+        if(blocker){                              // short reason beside the disabled Add task
+          var hint=document.createElement('span'); hint.className='tt-hint';
+          hint.textContent='Fill all required fields'; bar.appendChild(hint);
+        }
       }
+      var cnt=document.createElement('span'); cnt.className='tt-count-r';   // "N / 3" on the right
+      cnt.textContent=list.length+' / '+MAX_TASKS;
+      cnt.title=list.length+(list.length===1?' task':' tasks')+' of '+MAX_TASKS+' max';
+      bar.appendChild(cnt);
       bar.style.display=bar.children.length?'':'none';
     }
     var e=a.querySelector('.empty-tasks');
@@ -1932,9 +1875,9 @@ document.addEventListener('change', function(e){
   }
   /* 2 · dependency gating */
   function applyLock(){
-    var locked=!chosen(con);
-    document.querySelectorAll('.dep-note').forEach(function(n){ n.classList.toggle('show',locked); });
-    document.querySelectorAll('.dep-field,.dep-group').forEach(function(f){ f.classList.toggle('locked',locked); });
+    /* create form: nothing is gated on Contract — every field is enabled from the start */
+    document.querySelectorAll('.dep-note').forEach(function(n){ n.classList.remove('show'); });
+    document.querySelectorAll('.dep-field,.dep-group').forEach(function(f){ f.classList.remove('locked'); });
   }
   /* 3 · section progress */
   function reqControls(sec){
@@ -2019,6 +1962,7 @@ document.addEventListener('change', function(e){
     var add=document.getElementById('boqAdd');
     var totalCell=document.getElementById('boqTotal');
     var TPL=body.rows[0]?body.rows[0].cloneNode(true):null;   // template so the last row can be deleted too
+    var COLS=body.rows[0]?body.rows[0].cells.length:9;        // derived, so adding columns can't desync it
 
     function dataRows(){ return Array.prototype.slice.call(body.rows).filter(function(r){ return !r.classList.contains('boq-empty'); }); }
     function money(n){ return 'S$ '+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
@@ -2033,7 +1977,7 @@ document.addEventListener('change', function(e){
       var empty=body.querySelector('.boq-empty');
       if(!rows.length){
         if(!empty){ empty=document.createElement('tr'); empty.className='boq-empty';
-          empty.innerHTML='<td colspan="7">No BOQ item added yet.</td>'; body.appendChild(empty); }
+          empty.innerHTML='<td colspan="'+COLS+'">No BOQ item added yet.</td>'; body.appendChild(empty); }
       } else if(empty){ empty.remove(); }
     }
     if(add) add.addEventListener('click',function(){
@@ -2053,198 +1997,126 @@ document.addEventListener('change', function(e){
     body.addEventListener('input',function(e){ if(e.target.classList.contains('boq-amt')) sync(); });
     sync();
   })();
+
+  /* ---- Funding source: add / delete rows (no total) ---- */
+  (function(){
+    var body=document.getElementById('fundBody'); if(!body) return;
+    var add=document.getElementById('fundAdd');
+    var TPL=body.rows[0]?body.rows[0].cloneNode(true):null;
+    var COLS=body.rows[0]?body.rows[0].cells.length:5;
+    function dataRows(){ return Array.prototype.slice.call(body.rows).filter(function(r){ return !r.classList.contains('boq-empty'); }); }
+    function sync(){
+      var empty=body.querySelector('.boq-empty');
+      if(!dataRows().length){
+        if(!empty){ empty=document.createElement('tr'); empty.className='boq-empty';
+          empty.innerHTML='<td colspan="'+COLS+'">No funding source added yet.</td>'; body.appendChild(empty); }
+      } else if(empty){ empty.remove(); }
+    }
+    if(add) add.addEventListener('click',function(){
+      var rows=dataRows();
+      var src=rows[rows.length-1]||TPL; if(!src) return;
+      var row=src.cloneNode(true);
+      Array.prototype.slice.call(row.querySelectorAll('input')).forEach(function(i){ i.value=''; });
+      body.appendChild(row); sync();
+      var first=row.querySelector('input'); if(first) first.focus();
+    });
+    body.addEventListener('click',function(e){
+      var del=e.target.closest('.boq-del'); if(!del) return;
+      var row=del.closest('tr'); if(row) row.remove(); sync();
+    });
+    sync();
+  })();
 })();
 </script>
 <div class="tl-scrim" id="rtScrim"></div>
-<div class="tl-modal tl-sm" id="rtModal" role="dialog" aria-modal="true" aria-label="Return work instruction">
+<div class="tl-modal tl-sm" id="rtModal" role="dialog" aria-modal="true" aria-label="Reassign work instruction">
   <div class="tl-head">
-    <strong>Return work instruction</strong>
+    <strong>Reassign work instruction</strong>
     <button class="tl-close" id="rtClose" type="button" aria-label="Close">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
   </div>
   <div class="tl-body">
-    <p class="rt-hint">Choose who this work instruction goes back to.</p>
-    <label class="rt-opt"><input type="radio" name="rtRole" value="Site Supervisor" checked><span><strong>Site Supervisor</strong><em>Site execution needs correcting</em></span></label>
-    <label class="rt-opt"><input type="radio" name="rtRole" value="QS"><span><strong>QS</strong><em>Quantities need re-measuring</em></span></label>
-    <label class="rt-opt"><input type="radio" name="rtRole" value="Engineer"><span><strong>Engineer</strong><em>Price schedule needs revising</em></span></label>
+    <p class="rt-hint">Choose who this work instruction is reassigned to.</p>
+    <label class="rt-opt"><input type="radio" name="rtRole" value="DRC" checked><span><strong>DRC</strong><em>Defect review committee</em></span></label>
+    <label class="rt-opt"><input type="radio" name="rtRole" value="Engineer"><span><strong>Engineer</strong><em>Contractor engineer</em></span></label>
     <div class="field" style="margin-top:16px">
       <label for="rtRemarks">Remarks</label>
-      <textarea class="control" id="rtRemarks" placeholder="Reason for returning"></textarea>
+      <textarea class="control" id="rtRemarks" placeholder="Reason for reassigning"></textarea>
     </div>
   </div>
   <div class="rt-foot">
     <button class="btn btn-ghost" id="rtCancel" type="button">Cancel</button>
-    <button class="btn btn-warn" id="rtConfirm" type="button">Return</button>
-  </div>
-</div>
-<div class="tl-scrim" id="tlScrim"></div>
-<div class="tl-modal" id="tlModal" role="dialog" aria-modal="true" aria-label="Timeline">
-  <div class="tl-head">
-    <strong>Timeline for · RMWP-TR388-RRFM-M-5</strong>
-    <button class="tl-close" id="tlClose" type="button" aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
-  </div>
-  <div class="tl-body">
-    <div class="tl-item">
-      <span class="tl-time">02/06/2026 03:20 PM</span>
-      <div class="tl-title">Work Instruction created</div>
-      <div class="tl-meta">
-        <div><span>Status</span>Draft</div>
-        <div><span>Role</span><em class="rb rb-co">Contract Officer</em></div>
-        <div><span>Name</span>DEV CO01</div>
-        <div><span>Remarks</span>—</div>
-      </div>
-    </div>
-    <div class="tl-item">
-      <span class="tl-time">02/06/2026 03:40 PM</span>
-      <div class="tl-title">Submitted to Site Supervisor (Work-in-Progress)</div>
-      <div class="tl-meta">
-        <div><span>Status</span>Work-in-Progress</div>
-        <div><span>Role</span><em class="rb rb-co">Contract Officer</em></div>
-        <div><span>Name</span>DEV CO01</div>
-        <div><span>Remarks</span>N/A</div>
-      </div>
-    </div>
-    <div class="tl-item">
-      <span class="tl-time">02/06/2026 03:56 PM</span>
-      <div class="tl-title">Submitted to Engineer (Verification-in-Progress)</div>
-      <div class="tl-meta">
-        <div><span>Status</span>Verification-in-Progress</div>
-        <div><span>Role</span><em class="rb rb-ss">Site Supervisor</em></div>
-        <div><span>Name</span>DEV TR388SS01</div>
-        <div><span>Remarks</span>N/A</div>
-      </div>
-    </div>
-    <div class="tl-item">
-      <span class="tl-time">02/06/2026 04:13 PM</span>
-      <div class="tl-title">Submitted to Contract Officer (Approval-in-Progress)</div>
-      <div class="tl-meta">
-        <div><span>Status</span>Approval-in-Progress</div>
-        <div><span>Role</span><em class="rb rb-eng">Engineer</em></div>
-        <div><span>Name</span>DEV TR388ENG01</div>
-        <div><span>Remarks</span>N/A</div>
-      </div>
-    </div>
+    <button class="btn btn-primary" id="rtConfirm" type="button">Reassign</button>
   </div>
 </div>
 <script>
-/* ===== Timeline modal + view/edit mode ===== */
+/* ===== Create-page modals: Reassign + Submit to Site Supervisor ===== */
 (function(){
-  var scrim=document.getElementById('tlScrim'), modal=document.getElementById('tlModal');
-  function open(){ scrim.classList.add('show'); modal.classList.add('show'); }
-  function close(){ scrim.classList.remove('show'); modal.classList.remove('show'); }
-  document.getElementById('btnTimeline').addEventListener('click',open);
-  // Return -> pick the role to send it back to
-  (function(){
-    var sc=document.getElementById('rtScrim'), md=document.getElementById('rtModal');
-    function rOpen(){ sc.classList.add('show'); md.classList.add('show'); }
-    function rClose(){ sc.classList.remove('show'); md.classList.remove('show'); }
-    document.getElementById('btnReturn').addEventListener('click',rOpen);
-    document.getElementById('rtClose').addEventListener('click',rClose);
-    document.getElementById('rtCancel').addEventListener('click',rClose);
-    sc.addEventListener('click',rClose);
-    document.getElementById('rtConfirm').addEventListener('click',rClose);
-    document.addEventListener('keydown',function(e){ if(e.key==='Escape') rClose(); });
-  })();
-  document.getElementById('tlClose').addEventListener('click',close);
-  scrim.addEventListener('click',close);
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
-
-  var PEN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
-  var TICK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
-  var btn=document.getElementById('btnEdit');
-  function setMode(view){
-    document.body.classList.toggle('view-mode',view);
-    btn.innerHTML=(view?PEN:TICK)+(view?'Edit':'Save');
-    btn.classList.add('ctx-btn-primary');
-    btn.title=view?'Edit':'Save';          // mobile shows the icon only
-    btn.setAttribute('aria-label',btn.title);
+  function wire(btnId,scrimId,modalId,closeId,cancelId,confirmId){
+    var b=document.getElementById(btnId),sc=document.getElementById(scrimId),md=document.getElementById(modalId);
+    if(!b||!sc||!md) return;
+    function open(){ sc.classList.add('show'); md.classList.add('show'); }
+    function close(){ sc.classList.remove('show'); md.classList.remove('show'); }
+    b.addEventListener('click',open);
+    [closeId,cancelId,confirmId].forEach(function(id){
+      var el=document.getElementById(id); if(el) el.addEventListener('click',close);
+    });
+    sc.addEventListener('click',close);
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
   }
-  btn.addEventListener('click',function(){ setMode(!document.body.classList.contains('view-mode')); });
-  setMode(true);   // default: view / read-only
+  wire('btnReassign','rtScrim','rtModal','rtClose','rtCancel','rtConfirm');
 })();
 </script>
-<div class="msheet-scrim" id="msheetScrim"></div>
-<div class="msheet" id="msheet" role="dialog" aria-modal="true">
-  <div class="msheet-grab"></div>
-  <div class="msheet-head"><div class="msheet-title" id="msheetTitle">Task</div>
-    <button class="msheet-done" id="msheetDone" type="button">Done</button></div>
-  <div class="msheet-body" id="msheetBody"></div>
-</div>
 <script>
-/* ===== Mobile Site & assets: accordion cards + task bottom-sheet (desktop untouched) ===== */
+/* ===== Step-aware action bar: Next on step 1, Reassign/Submit on step 2.
+   Each is enabled only once the required fields it depends on are filled. ===== */
 (function(){
-  var mq=window.matchMedia('(max-width:820px)');
-  var site=document.getElementById('s-site'); if(!site) return;
-  var scrim=document.getElementById('msheetScrim'),sheet=document.getElementById('msheet'),
-      sbody=document.getElementById('msheetBody'),stitle=document.getElementById('msheetTitle'),
-      sdone=document.getElementById('msheetDone');
-  function pick(sel){ return (sel && sel.selectedIndex>0 && !sel.options[sel.selectedIndex].disabled)?sel.options[sel.selectedIndex].textContent:''; }
-  function assetSummary(a){
-    var sels=a.querySelectorAll(':scope > .asset-lite-grid select');
-    var typ=pick(sels[0])||'No asset type', tag=pick(sels[1]);
-    var nt=a.querySelectorAll(':scope .task-lite').length;
-    return typ+(tag?(' · '+tag):'')+' · '+nt+' task'+(nt>1?'s':'');
+  var next=document.getElementById('btnNext'),
+      rea=document.getElementById('btnReassign'),
+      sub=document.getElementById('btnSubmit');
+  if(!next||!rea||!sub) return;
+
+  function fieldOk(f){
+    if(!f || f.hidden) return true;              // conditional fields (Others…) don't count until shown
+    var sel=f.querySelector('select.control');
+    if(sel){ var o=sel.options[sel.selectedIndex]; return !!(o && !o.disabled); }
+    var i=f.querySelector('input.control,textarea.control');
+    return i ? !!(i.value||'').trim() : true;
   }
-  function taskSummary(t){
-    var sels=t.querySelectorAll(':scope > .asset-lite-grid select');
-    return (pick(sels[0])||'Element?')+' · '+(pick(sels[1])||'Defect?');
+  function complete(scope){
+    if(!scope) return false;
+    return Array.prototype.slice.call(scope.querySelectorAll('.field'))
+      .filter(function(f){ return f.querySelector('label .req'); })
+      .every(fieldOk);
   }
-  function injectSummaries(){
-    site.querySelectorAll('.asset-lite').forEach(function(a){
-      var head=a.querySelector(':scope > .asset-lite-head'); if(!head) return;
-      var sub=head.querySelector('.al-sub'); if(!sub){ sub=document.createElement('div'); sub.className='al-sub'; head.appendChild(sub); }
-      sub.textContent=assetSummary(a);
-    });
-    site.querySelectorAll('.task-lite').forEach(function(t){
-      var head=t.querySelector(':scope > .task-lite-head'); if(!head) return;
-      var sub=head.querySelector('.tl-sub'); if(!sub){ sub=document.createElement('div'); sub.className='tl-sub'; head.appendChild(sub);
-        var ed=document.createElement('span'); ed.className='tl-edit'; ed.textContent='Edit ›'; head.appendChild(ed); }
-      sub.textContent=taskSummary(t);
-    });
+  function panel(n){ return document.querySelector('.step-panel[data-panel="'+n+'"]'); }
+  function currentStep(){
+    var on=document.querySelector('.step-panel.is-on');
+    return on ? on.getAttribute('data-panel') : '1';
   }
-  var current=null, ph=null;
-  function openSheet(t){
-    current=t; ph=document.createComment('ph'); t.parentNode.insertBefore(ph,t);
-    sbody.appendChild(t);
-    var h=t.querySelector('.task-lite-head strong'); stitle.textContent=h?h.textContent.replace(/\s+/g,' ').trim():'Task';
-    scrim.classList.add('show'); sheet.classList.add('show'); document.body.style.overflow='hidden';
+  function sync(){
+    var onStep2 = currentStep()==='2';
+    next.hidden = onStep2;
+    rea.hidden = sub.hidden = !onStep2;
+    // Next only needs step 1; submitting needs the whole work instruction
+    next.disabled = !complete(panel('1'));
+    var all = complete(panel('1')) && complete(panel('2'));
+    rea.disabled = sub.disabled = !all;
+    next.title = next.disabled ? 'Fill all required fields in this step' : 'Go to Fund detail';
+    sub.title  = sub.disabled  ? 'Fill all required fields first' : 'Submit to Site Supervisor';
+    rea.title  = rea.disabled  ? 'Fill all required fields first' : 'Reassign this work instruction';
   }
-  function closeSheet(){
-    if(!current) return;
-    if(ph&&ph.parentNode){ ph.parentNode.insertBefore(current,ph); ph.remove(); }
-    scrim.classList.remove('show'); sheet.classList.remove('show'); document.body.style.overflow='';
-    current=null; ph=null; injectSummaries();
-  }
-  sdone.addEventListener('click',closeSheet);
-  scrim.addEventListener('click',closeSheet);
-  // tap a task (mobile) → open sheet; capture phase to beat the collapse handler
-  site.addEventListener('click',function(e){
-    if(!mq.matches) return;
-    var head=e.target.closest('.task-lite-head');
-    if(head && !e.target.closest('.btn')){ e.stopPropagation(); openSheet(head.parentNode); }
-  },true);
-  // add-task on mobile → open the new task straight in the bottom-sheet
-  site.addEventListener('click',function(e){
-    if(!mq.matches) return;
-    var add=e.target.closest('.tt-add'); if(!add) return;
-    var asset=add.closest('.asset-lite'); if(!asset) return;
-    setTimeout(function(){
-      var tasks=asset.querySelectorAll('.task-lite');
-      if(tasks.length) openSheet(tasks[tasks.length-1]);
-    },0);
+  next.addEventListener('click',function(){
+    if(next.disabled) return;
+    var s2=document.querySelector('.wiz-step[data-step="2"]'); if(s2) s2.click();
+    sync();                                   // reflect the new step immediately
   });
-  function initMobile(){
-    var m=mq.matches;
-    if(!m && sheet.classList.contains('show')) closeSheet();
-    injectSummaries();
-  }
-  mq.addEventListener('change',initMobile);
-  site.addEventListener('change',injectSummaries);
-  document.addEventListener('click',function(e){ if(e.target.closest('#s-site')) setTimeout(injectSummaries,10); });
-  initMobile();
+  document.addEventListener('input',sync);
+  document.addEventListener('change',sync);
+  document.addEventListener('click',function(e){ if(e.target.closest('.wiz-step,.at-chip,.tt-chip,.at-add,.tt-add,.asset-remove,.task-remove')){ sync(); setTimeout(sync,0); } });
+  sync();
 })();
-</script></body>
+</script>
+</body>
 </html>
