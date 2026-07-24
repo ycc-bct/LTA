@@ -116,7 +116,8 @@ button{font-family:inherit;cursor:pointer}
 .nav-item.sub.current{color:var(--teal-700);font-weight:620;background:linear-gradient(to right,var(--teal-50),transparent)}
 .nav-ico{width:18px;height:18px;flex:none;color:var(--grey-400)}
 
-.main{margin-left:var(--sidebar-w);padding:calc(var(--topbar-h) + 24px) 32px 96px;max-width:1220px}
+.main{margin-left:var(--sidebar-w);padding:calc(var(--topbar-h) + 24px) 32px 96px;max-width:1220px;
+  min-height:100vh;display:flex;flex-direction:column}
 
 /* ---------- Page header ---------- */
 .breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:var(--fs-sm);color:var(--grey-500);margin-bottom:14px}
@@ -342,8 +343,9 @@ button{font-family:inherit;cursor:pointer}
 
 /* ============ WI list page ============ */
 .list-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+.list-toolbar .btn-ghost{margin-left:auto}   /* Filter sits at the right edge */
 .search-box{
-  flex:1;min-width:200px;display:flex;align-items:center;gap:10px;
+  flex:0 1 50%;min-width:200px;display:flex;align-items:center;gap:10px;
   background:#fff;border:1px solid var(--grey-300);border-radius:var(--r-md);
   padding:10px 14px;color:var(--grey-400);
 }
@@ -404,7 +406,8 @@ button{font-family:inherit;cursor:pointer}
 .sort-row select{font-family:inherit;font-size:var(--fs-base);padding:8px 12px;border-radius:var(--r-md);border:1px solid var(--grey-300);background:#fff;color:var(--grey-800);flex:1}
 
 /* pager */
-.pager{display:flex;align-items:center;gap:8px;justify-content:space-between;margin-top:18px}
+.pager{display:flex;align-items:center;gap:8px;justify-content:space-between;margin-top:auto;padding-top:18px}
+.pager[hidden]{display:none}   /* nothing to page through */
 .pager .pages{display:flex;align-items:center;gap:6px}
 .page-btn{
   min-width:36px;height:36px;padding:0 10px;border-radius:var(--r-md);
@@ -602,16 +605,9 @@ button{font-family:inherit;cursor:pointer}
 
 <main class="main">
 
-  <nav class="breadcrumb" aria-label="Breadcrumb">
-    <a href="#">Work instruction</a><span class="sep">/</span>
-    <span>Maintenance WI</span>
-  </nav>
-
   <div class="page-head">
     <div>
-      <div class="eyebrow">Work instruction</div>
       <h1>Maintenance work instructions</h1>
-      <p class="page-sub">All maintenance WIs under contract TR388.</p>
     </div>
     <div class="head-actions">
       <a class="btn btn-primary" href="mwi-wi-create.html" style="text-decoration:none">
@@ -636,7 +632,6 @@ button{font-family:inherit;cursor:pointer}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5Z"/></svg>
       Filter
     </button>
-    <span class="result-count">41 work instructions</span>
   </div>
 
   <div class="table-wrap">
@@ -954,6 +949,7 @@ button{font-family:inherit;cursor:pointer}
   cards.forEach(function(c,i){var wi=txt(c.querySelector('.num'));if((META[wi]||{}).st==='draft')c.setAttribute('href','mwi-wi-draft.html');var m=META[wi]||{st:'draft',a:false};c.dataset.wi=wi;c._i=i;var re=c.querySelector('.road');var road=re?txt(re.childNodes[0]):'';var sub=txt(c.querySelector('.road small'));var sec=(sub.match(/Sector\s+([A-Za-z0-9]+)/)||[])[1]||'';var ms=c.querySelectorAll('.meta span');var asset=ms[0]?txt(ms[0].querySelector('strong')||ms[0]):'—';var wt=ms[1]?txt(ms[1]):'';c.dataset.fstatus=m.st;c.dataset.fsector=sec;c.dataset.fworktype=wt;c.dataset.fasset=asset;c.dataset.froad=road;c.dataset.fest=pDate(txt(c.querySelector('.due b')));var ch=c.querySelector('.chip');if(ch){ch.className='chip chip-sm st-'+m.st;ch.textContent=LABEL[m.st];}});
   var CATS=[{k:'fstatus',label:'Status',opts:SORD.slice(),disp:function(v){return LABEL[v];}},{k:'fsector',label:'Sector'},{k:'fworktype',label:'Work type'},{k:'fasset',label:'Asset type'},{k:'froad',label:'Road'}];
   CATS.forEach(function(cat){if(!cat.opts){var s=[];rows.forEach(function(tr){var v=tr.dataset[cat.k];if(v&&v!=='—'&&s.indexOf(v)<0)s.push(v);});cat.opts=s.sort();}if(!cat.disp)cat.disp=function(v){return v;};});
+  var PAGE_SIZE=10;
   var FILT={},SORT='newest',cur='todo';CATS.forEach(function(c){FILT[c.k]=[];});
   // drawer
   var bd=document.createElement('div');bd.className='filter-bd';bd.innerHTML='<div class="filter-drawer"><div class="fd-head"><h2>Filter &amp; sort</h2><button class="fd-close" aria-label="Close">✕</button></div><div class="fd-body"></div><div class="fd-foot"><button class="clear">Clear all</button><button class="btn btn-primary apply">Apply</button></div></div>';document.body.appendChild(bd);
@@ -970,7 +966,7 @@ button{font-family:inherit;cursor:pointer}
   var fbtn=[].slice.call(document.querySelectorAll('.list-toolbar .btn-ghost')).filter(function(b){return /Filter/.test(b.textContent);})[0];
   var flabel;if(fbtn){[].slice.call(fbtn.childNodes).forEach(function(n){if(n.nodeType===3)fbtn.removeChild(n);});flabel=document.createElement('span');flabel.textContent='Filter';flabel.style.marginLeft='4px';fbtn.appendChild(flabel);fbtn.addEventListener('click',function(){bd.classList.add('show');});}
   // clear-filters link near count
-  var cf=document.createElement('button');cf.className='clear-filters';cf.textContent='Clear filters';var rc0=document.querySelector('.result-count');if(rc0&&rc0.parentNode)rc0.parentNode.insertBefore(cf,rc0.nextSibling);cf.addEventListener('click',function(){CATS.forEach(function(c){FILT[c.k]=[];});body.querySelectorAll('.fd-chip.on').forEach(function(x){x.classList.remove('on');});CATS.forEach(function(cat){cat._cnt.style.display='none';});render();});
+  var cf=document.createElement('button');cf.className='clear-filters';cf.textContent='Clear filters';var tb=document.querySelector('.list-toolbar');if(tb)tb.appendChild(cf);cf.addEventListener('click',function(){CATS.forEach(function(c){FILT[c.k]=[];});body.querySelectorAll('.fd-chip.on').forEach(function(x){x.classList.remove('on');});CATS.forEach(function(cat){cat._cnt.style.display='none';});render();});
   function passF(el){for(var i=0;i<CATS.length;i++){var k=CATS[i].k;if(FILT[k].length&&FILT[k].indexOf(el.dataset[k])<0)return false;}return true;}
   function fcount(){var n=0;CATS.forEach(function(c){n+=FILT[c.k].length;});return n;}
   function srt(arr){var a=arr.slice();a.sort(function(x,y){if(SORT==='newest')return x._i-y._i;if(SORT==='est')return (+x.dataset.fest)-(+y.dataset.fest);if(SORT==='road')return (x.dataset.froad||'').localeCompare(y.dataset.froad||'');if(SORT==='status')return SORD.indexOf(x.dataset.fstatus)-SORD.indexOf(y.dataset.fstatus);return 0;});return a;}
@@ -989,7 +985,10 @@ button{font-family:inherit;cursor:pointer}
     table.classList.toggle('show-act',cur==='inprogress');
     var cnt={todo:0,inprogress:0,submitted:0};rows.forEach(function(tr){var b=bkt(tr);if(b&&cnt[b]!=null)cnt[b]++;});
     document.getElementById('c-todo').textContent=cnt.todo;document.getElementById('c-inprogress').textContent=cnt.inprogress;document.getElementById('c-submitted').textContent=cnt.submitted;
-    var vis=rows.filter(function(tr){return tr.style.display!=='none';}).length;var rc=document.querySelector('.result-count');if(rc)rc.textContent=vis+' work instruction'+(vis!==1?'s':'');
+    var vis=rows.filter(function(tr){return tr.style.display!=='none';}).length;
+    var pg=document.querySelector('.pager');            // only worth showing past one page
+    if(pg){ pg.hidden = vis<=PAGE_SIZE;
+      var info=pg.querySelector('.info'); if(info) info.textContent='1–'+Math.min(vis,PAGE_SIZE)+' of '+vis; }
     var n=fcount();if(flabel)flabel.textContent=n?('Filter · '+n):'Filter';cf.style.display=n?'':'none';
     document.querySelectorAll('.wi-tab').forEach(function(t){t.classList.toggle('active',t.dataset.bucket===cur);});
   }
