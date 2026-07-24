@@ -859,12 +859,29 @@ body.view-mode .gate-note{display:none}
 .chip-ver{background:var(--teal-50);color:var(--teal-700)}
 /* role-driven wizard: steps the stage hasn't reached are removed, not just faded */
 .wiz-step[hidden],.wiz-sep[hidden]{display:none}
-/* the site-execution block is read-only for everyone except the Site Supervisor */
-.wip-ro.is-owner .control,.wip-ro.is-owner .xselect-trigger,.wip-ro.is-owner .xdate-trigger{
-  background:#fff;color:var(--grey-800);border-color:var(--grey-300);pointer-events:auto}
-body.view-mode .wip-ro.is-owner .control,
-body.view-mode .wip-ro.is-owner .xselect-trigger{
+/* Step ownership — pressing Edit only unlocks the step this role is responsible for.
+   Everything else keeps the read-only treatment even in edit mode. */
+body:not(.view-mode) .step-panel.role-ro .control,
+body:not(.view-mode) .step-panel.role-ro .xselect-trigger,
+body:not(.view-mode) .step-panel.role-ro .xdate-trigger,
+body:not(.view-mode) .step-panel.role-ro .boq td input{
   background:var(--grey-50);color:var(--grey-600);border-color:var(--grey-200);pointer-events:none}
+body:not(.view-mode) .step-panel.role-ro .toggle{pointer-events:none;opacity:.65}
+body:not(.view-mode) .step-panel.role-ro .capture,
+body:not(.view-mode) .step-panel.role-ro .btn-map,
+body:not(.view-mode) .step-panel.role-ro .btn-ghost,
+body:not(.view-mode) .step-panel.role-ro .boq-actions,
+body:not(.view-mode) .step-panel.role-ro .boq-del,
+body:not(.view-mode) .step-panel.role-ro .at-add,
+body:not(.view-mode) .step-panel.role-ro .tt-add,
+body:not(.view-mode) .step-panel.role-ro .gate-note{display:none}
+/* ...except the site-execution block, which the Site Supervisor owns even though
+   step 1 as a whole is not theirs — hence the extra specificity here. */
+body:not(.view-mode) .step-panel .wip-ro.is-owner .control,
+body:not(.view-mode) .step-panel .wip-ro.is-owner .xselect-trigger,
+body:not(.view-mode) .step-panel .wip-ro.is-owner .xdate-trigger{
+  background:#fff;color:var(--grey-800);border-color:var(--grey-300);pointer-events:auto}
+body:not(.view-mode) .step-panel .wip-ro.is-owner .capture{display:flex}
 .empty-tasks,.empty-assets{font-size:var(--fs-sm);color:var(--grey-500);padding:14px 2px}
 
 /* ---- context-bar actions (Timeline / Edit) ---- */
@@ -1973,6 +1990,14 @@ body.view-mode .boq-actions{display:none}
                   ['Engineer','Reassign within engineering']]}
   };
   var SHOW={Reports:['co','eng'],Contract:['co','eng'],Configuration:['co']};
+  /* Which parts of the screen each role may actually edit once they press Edit.
+     Everything outside their own step stays read-only. CO is intentionally left
+     owning every step — its screen is already signed off. */
+  var OWNS={
+    co :{panels:[1,2,3,4], wip:false},
+    ss :{panels:[],        wip:true },   // only the site-execution block inside step 1
+    eng:{panels:[3],       wip:false}    // Price Schedule
+  };
   var TICK_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
   function getRole(){var m=/[?&]role=(co|ss|eng)/.exec(location.search);return m?m[1]:'co';}
   function apply(r){
@@ -2004,8 +2029,13 @@ body.view-mode .boq-actions{display:none}
     panels.forEach(function(p){ p.classList.toggle('is-on', +p.getAttribute('data-panel')===M.owner); });
     var jump=document.getElementById('secJump'); if(jump) jump.hidden=(M.owner!==1);
 
-    // the site-execution block is the Site Supervisor's to fill; everyone else reads it
-    document.querySelectorAll('.wip-ro').forEach(function(w){ w.classList.toggle('is-owner', r==='ss'); });
+    // step ownership: panels this role doesn't own stay read-only even in edit mode
+    var own=OWNS[r]||OWNS.co;
+    document.querySelectorAll('.step-panel').forEach(function(pn){
+      pn.classList.toggle('role-ro', own.panels.indexOf(+pn.getAttribute('data-panel'))<0);
+    });
+    // the site-execution block is separately owned by the Site Supervisor
+    document.querySelectorAll('.wip-ro').forEach(function(w){ w.classList.toggle('is-owner', own.wip); });
 
     // bottom actions
     var ra=document.getElementById('btnReassign');
