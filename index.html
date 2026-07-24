@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-SG">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RMWP · Maintenance WI prototypes</title>
+<style>
+:root{
+  --teal-50:#E9F5F5; --teal-100:#CDE9E9; --teal-200:#A3D7D8; --teal-600:#00747A;
+  --teal-700:#005F64; --navy-700:#1B365D;
+  --grey-25:#FCFDFD; --grey-50:#F7F9FA; --grey-100:#EFF2F4; --grey-200:#E2E7EA;
+  --grey-300:#CBD4D9; --grey-500:#6E7E88; --grey-600:#51616B; --grey-800:#27333B; --grey-900:#161F26;
+  --warning-50:#FEF3E2; --warning-700:#7A4506;
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --r-md:10px; --r-lg:14px; --r-pill:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--grey-50);color:var(--grey-800);
+  line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:940px;margin:0 auto;padding:56px 24px 80px}
+header{margin-bottom:8px}
+.kicker{font-size:.8125rem;font-weight:600;color:var(--teal-700);
+  text-transform:uppercase;letter-spacing:.06em}
+h1{font-size:1.75rem;font-weight:680;color:var(--grey-900);margin:6px 0 10px;letter-spacing:-.01em}
+.lede{color:var(--grey-600);max-width:62ch}
+.note{display:flex;gap:9px;align-items:flex-start;background:var(--warning-50);
+  color:var(--warning-700);border-radius:var(--r-md);padding:11px 14px;margin:22px 0 34px;font-size:.875rem}
+.note svg{width:16px;height:16px;flex:none;margin-top:2px}
+h2{font-size:.75rem;font-weight:650;color:var(--grey-500);text-transform:uppercase;
+  letter-spacing:.06em;margin:34px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.card{display:block;text-decoration:none;background:#fff;border:1px solid var(--grey-200);
+  border-radius:var(--r-lg);padding:18px 20px;transition:border-color .15s,box-shadow .15s,transform .15s}
+.card:hover{border-color:var(--teal-200);box-shadow:0 2px 10px rgba(22,31,38,.06);transform:translateY(-1px)}
+.card .top{display:flex;align-items:center;gap:9px;margin-bottom:5px}
+.card strong{font-size:1rem;font-weight:640;color:var(--grey-900)}
+.card p{font-size:.875rem;color:var(--grey-600)}
+.tag{font-size:.6875rem;font-weight:650;padding:2px 9px;border-radius:var(--r-pill);
+  background:var(--teal-50);color:var(--teal-700);white-space:nowrap}
+.tag.roles{background:var(--grey-100);color:var(--grey-600)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--grey-200);
+  font-size:.8125rem;color:var(--grey-500)}
+footer code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  background:var(--grey-100);padding:1px 6px;border-radius:5px;font-size:.9em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Land Transport Authority</div>
+    <h1>Road Maintenance Workflow Platform</h1>
+    <p class="lede">Redesign prototypes for the Maintenance Work Instruction flow. Each page is a
+      self-contained HTML file &mdash; click through them as you would the real system.</p>
+  </header>
+
+  <div class="note">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+    <span>Prototypes for design review &mdash; the data is illustrative and nothing is saved.
+      Field sets follow <strong>SPEC_field-matrix.md</strong>; items still marked
+      &ldquo;to be confirmed&rdquo; there are noted in the handoff docs.</span>
+  </div>
+
+  <h2>Start here</h2>
+  <div class="grid">
+    <a class="card" href="mwi-list-redesign.html">
+      <div class="top"><strong>Work instruction list</strong><span class="tag">Entry point</span></div>
+      <p>To&nbsp;do / In&nbsp;progress / Submitted buckets, search, filter and sort. Opens every other screen.</p>
+    </a>
+  </div>
+
+  <h2>Contract Officer</h2>
+  <div class="grid">
+    <a class="card" href="mwi-wi-create.html">
+      <div class="top"><strong>Create a work instruction</strong><span class="tag">Draft</span></div>
+      <p>Two-step form for a brand-new WI. Next unlocks once the required fields are filled.</p>
+    </a>
+    <a class="card" href="mwi-wi-draft.html">
+      <div class="top"><strong>Existing draft</strong><span class="tag">Draft</span></div>
+      <p>A saved draft, read-only until you press Edit. Same field set as the create screen.</p>
+    </a>
+  </div>
+
+  <h2>Role-aware workflow</h2>
+  <div class="grid">
+    <a class="card" href="mwi-wi-workflow.html">
+      <div class="top"><strong>Work instruction workflow</strong><span class="tag roles">3 roles</span></div>
+      <p>Switch between Contract Officer, Site Supervisor and Engineer from the top right &mdash; the
+        stage, wizard steps, editable fields and bottom actions all follow the role.</p>
+    </a>
+  </div>
+
+  <h2>Earlier screens</h2>
+  <div class="grid">
+    <a class="card" href="mwi-view-redesign.html">
+      <div class="top"><strong>View work instruction</strong></div>
+      <p>Read-only detail view.</p>
+    </a>
+    <a class="card" href="mwi-wi-edit.html">
+      <div class="top"><strong>Edit work instruction</strong></div>
+      <p>Field-for-field twin of the create screen, populated with an existing WI.</p>
+    </a>
+    <a class="card" href="mwi-task-edit.html">
+      <div class="top"><strong>Task entry (mobile)</strong></div>
+      <p>Site Supervisor filling a task on site &mdash; best viewed at phone width.</p>
+    </a>
+  </div>
+
+  <footer>
+    Source: <code>ycc-bct/LTA</code> &middot; branch <code>wip</code>
+  </footer>
+
+</div>
+</body>
+</html>
