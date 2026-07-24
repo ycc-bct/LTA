@@ -947,6 +947,23 @@ body.view-mode #boqAdd{display:none}
   .photo-grid-ro{grid-template-columns:1fr;gap:12px}   /* one photo per row on mobile */
   .photo-ro .ph{height:150px}
 }
+/* ---- Photo slots: only the Site Supervisor, and only in edit mode, can add/remove ---- */
+.photo-ro{position:relative}
+.photo-ro .ph{position:relative;background-size:cover;background-position:center}
+.ph-add,.ph-del{display:none;position:absolute;font-family:inherit;cursor:pointer}
+.ph-add{inset:0;width:100%;height:100%;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  border:1.5px dashed var(--teal-300);border-radius:var(--r-md);background:var(--teal-50);
+  color:var(--teal-700);font-size:var(--fs-sm);font-weight:600}
+.ph-add:hover{background:var(--teal-100);border-color:var(--teal-600)}
+.ph-add svg{width:22px;height:22px}
+.ph-del{top:6px;right:6px;width:26px;height:26px;border-radius:var(--r-pill);border:0;
+  background:rgba(22,31,38,.62);color:#fff;align-items:center;justify-content:center}
+.ph-del:hover{background:var(--danger-600)}
+.ph-del svg{width:13px;height:13px;display:block}
+/* owner + editing: empty slots offer Add, filled slots offer Remove */
+body:not(.view-mode) .wip-ro.is-owner .ph.is-empty .ph-add{display:flex}
+body:not(.view-mode) .wip-ro.is-owner .ph:not(.is-empty) .ph-del{display:flex}
+body:not(.view-mode) .wip-ro.is-owner .ph.is-empty .cap{display:none}
 .file-ro{display:inline-flex;align-items:center;gap:9px;font-size:var(--fs-sm);color:var(--grey-700);
   background:var(--grey-50);border:1px solid var(--grey-200);border-radius:var(--r-sm);padding:10px 13px}
 .file-ro svg{width:16px;height:16px;color:var(--grey-500);flex:none}
@@ -1369,9 +1386,9 @@ body.view-mode .boq-actions{display:none}
           <div class="wip-ro">
             <div class="wip-sep">Site execution · recorded by the site supervisor</div>
             <div class="photo-grid-ro">
-              <div class="photo-ro"><span class="lbl">Before photo</span><div class="ph ph-before"><span class="cap">Before</span></div></div>
-              <div class="photo-ro"><span class="lbl">During photo</span><div class="ph ph-during"><span class="cap">During</span></div></div>
-              <div class="photo-ro"><span class="lbl">After photo</span><div class="ph ph-after"><span class="cap">After</span></div></div>
+              <div class="photo-ro"><span class="lbl">Before photo</span><div class="ph ph-before"><span class="cap">Before</span><button class="ph-add" type="button" aria-label="Add before photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Add photo</button><button class="ph-del" type="button" aria-label="Remove before photo" title="Remove photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
+              <div class="photo-ro"><span class="lbl">During photo</span><div class="ph ph-during"><span class="cap">During</span><button class="ph-add" type="button" aria-label="Add during photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Add photo</button><button class="ph-del" type="button" aria-label="Remove during photo" title="Remove photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
+              <div class="photo-ro"><span class="lbl">After photo</span><div class="ph ph-after"><span class="cap">After</span><button class="ph-add" type="button" aria-label="Add after photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Add photo</button><button class="ph-del" type="button" aria-label="Remove after photo" title="Remove photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
             </div>
             <div class="asset-lite-grid" style="margin-top:18px">
               <div class="field"><label>Defect cause</label><input class="control" type="text" value="Ageing" readonly></div>
@@ -2345,6 +2362,32 @@ document.addEventListener('change', function(e){
     </div>
   </div>
 </div>
+<input type="file" id="phPicker" accept="image/*" hidden>
+<script>
+/* ===== Photo slots: add / remove (Site Supervisor, edit mode) ===== */
+(function(){
+  var picker=document.getElementById('phPicker'), target=null;
+  function setEmpty(ph,empty){
+    ph.classList.toggle('is-empty',empty);
+    if(empty){ ph.style.backgroundImage=''; if(ph.dataset.url){ URL.revokeObjectURL(ph.dataset.url); delete ph.dataset.url; } }
+  }
+  document.addEventListener('click',function(e){
+    var add=e.target.closest('.ph-add');
+    if(add){ e.preventDefault(); e.stopPropagation(); target=add.closest('.ph'); picker.value=''; picker.click(); return; }
+    var del=e.target.closest('.ph-del');
+    if(del){ e.preventDefault(); e.stopPropagation(); setEmpty(del.closest('.ph'),true); }
+  });
+  picker.addEventListener('change',function(){
+    var f=picker.files&&picker.files[0];
+    if(!f||!target) return;
+    var url=URL.createObjectURL(f);
+    target.dataset.url=url;
+    target.style.backgroundImage='url("'+url+'")';
+    setEmpty(target,false);
+    target=null;
+  });
+})();
+</script>
 <script>
 /* ===== Timeline modal + view/edit mode ===== */
 (function(){
