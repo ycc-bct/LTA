@@ -835,13 +835,11 @@ button{font-family:inherit;cursor:pointer}
   document.querySelectorAll('.row-link').forEach(function(r){
     function go(){
       var target=(r.dataset.fstatus==='draft') ? 'mwi-wi-draft.html' : r.getAttribute('data-href');
-      /* When the prototype is viewed through htmlpreview.github.io the page is served
-         from that host with the real source URL in the query string, so a bare relative
-         path 404s. Rebuild the link against the source URL instead. */
       var src=location.search.replace(/^\?/,'');
-      if(/^https?:\/\//.test(src)){ window.location.href=location.origin+'/?'+src.replace(/[^\/]*$/,target); return; }
-      var mm=/[?&]role=(co|ss|eng)/.exec(location.search);
-      window.location.href=target+(mm?'?role='+mm[1]:'');
+      if(/^https?:\/\//.test(src)){   // served through htmlpreview — rebuild against the source URL
+        window.location.href=location.origin+'/?'+src.replace(/[^\/]*$/,target); return; }
+      var rr=document.body.dataset.role;
+      window.location.href=target+(rr?'?role='+rr:'');
     }
     r.addEventListener('click',go);
     r.addEventListener('keydown',function(e){if(e.key==='Enter')go();});
@@ -917,6 +915,7 @@ button{font-family:inherit;cursor:pointer}
   function apply(r){
     var M=META[r]||META.co;
     var i=document.getElementById('rs-ini'),n=document.getElementById('rs-name'),o=document.getElementById('rs-role');
+    document.body.dataset.role=r;      // single source of truth for the other scripts
     if(i){i.textContent=M.ini;i.className='rs-av rs-'+r;} if(n)n.textContent=M.name; if(o)o.textContent=M.role;
     document.querySelectorAll('.rolesw-opt').forEach(function(b){b.classList.toggle('on',b.dataset.role===r);});
     document.querySelectorAll('.sidebar .nav-item').forEach(function(a){var t=(a.textContent||'').trim();if(SHOW[t])a.style.display=SHOW[t].indexOf(r)>=0?'':'none';});
@@ -939,14 +938,27 @@ button{font-family:inherit;cursor:pointer}
   var META={'RMWP-TR388-RRFM-M-17':{st:'draft',a:false},'RMWP-TR388-RRFM-M-7':{st:'draft',a:false},'RMWP-TR388-RRFM-M-13':{st:'draft',a:true},'RMWP-TR388-RRFM-M-12':{st:'draft',a:false},'RMWP-TR388-RRFM-M-24':{st:'wip',a:false},'RMWP-TR388-RRFM-M-27':{st:'wip',a:true},'RMWP-TR388-RRFM-M-8':{st:'ver',a:true},'RMWP-TR388-RRFM-M-14':{st:'appr',a:true},'RMWP-TR388-PATH-M-4':{st:'closed',a:false},'RMWP-TR388-PATH-M-1':{st:'ver',a:false}};
   var LABEL={draft:'Draft',wip:'Work in progress',ver:'Verification in progress',appr:'Approval in progress',closed:'Approved & closed'};
   var SORD=['draft','wip','ver','appr','closed'];
-  function role(){var m=/[?&]role=(co|ss|eng)/.exec(location.search);return m?m[1]:'co';}
+  // Resolve a sibling page for whatever host we're on. Under htmlpreview the real
+  // source URL lives in the query string, so a bare relative path would 404.
+  function siblingUrl(file){
+    var q=location.search.replace(/^\?/,'');
+    if(/^https?:\/\//.test(q)) return location.origin+'/?'+q.replace(/[^\/]*$/,file);
+    return file;
+  }
+  function role(){
+    // body.dataset.role is the live value; the URL param only seeds the first load,
+    // and is unavailable when the page is served through htmlpreview
+    var d=document.body.dataset.role;
+    if(d) return d;
+    var m=/[?&]role=(co|ss|eng)/.exec(location.search);return m?m[1]:'co';
+  }
   function txt(el){return el?el.textContent.trim():'';}
   function pDate(s){if(!s||/not set/i.test(s))return Infinity;var m=s.match(/(\d+)\s+([A-Za-z]+)\s+(\d+)/);if(!m)return Infinity;var mo={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11}[m[2].slice(0,3)];return new Date(+m[3],mo,+m[1]).getTime();}
   var rows=[].slice.call(document.querySelectorAll('.wi-table tbody tr.row-link'));
   var cards=[].slice.call(document.querySelectorAll('.wi-cards .wi-card'));
   var tbody=document.querySelector('.wi-table tbody'),ul=document.querySelector('.wi-cards'),table=document.querySelector('.wi-table');
   rows.forEach(function(tr,i){var wi=txt(tr.querySelector('.wi-num'));var m=META[wi]||{st:'draft',a:false};tr.dataset.wi=wi;tr._i=i;var t=tr.children;var road=txt(t[1].querySelector('.cell-main'));var sub=txt(t[1].querySelector('.cell-sub'));var sec=(sub.match(/Sector\s+([A-Za-z0-9]+)/)||[])[1]||'';var asset=txt(t[2].querySelector('.cell-main'))||'—';var wt=txt(t[3]);tr.dataset.fstatus=m.st;tr.dataset.fsector=sec;tr.dataset.fworktype=wt;tr.dataset.fasset=asset;tr.dataset.froad=road;tr.dataset.fest=pDate(txt(t[4]));var c=tr.querySelector('.chip');if(c){c.className='chip chip-sm st-'+m.st;c.textContent=LABEL[m.st];}var td=document.createElement('td');td.className='act-col act-cell';var chev=tr.querySelector('.row-chevron');tr.insertBefore(td,chev?chev.closest('td'):tr.lastElementChild);});
-  cards.forEach(function(c,i){var wi=txt(c.querySelector('.num'));if((META[wi]||{}).st==='draft')c.setAttribute('href','mwi-wi-draft.html');var m=META[wi]||{st:'draft',a:false};c.dataset.wi=wi;c._i=i;var re=c.querySelector('.road');var road=re?txt(re.childNodes[0]):'';var sub=txt(c.querySelector('.road small'));var sec=(sub.match(/Sector\s+([A-Za-z0-9]+)/)||[])[1]||'';var ms=c.querySelectorAll('.meta span');var asset=ms[0]?txt(ms[0].querySelector('strong')||ms[0]):'—';var wt=ms[1]?txt(ms[1]):'';c.dataset.fstatus=m.st;c.dataset.fsector=sec;c.dataset.fworktype=wt;c.dataset.fasset=asset;c.dataset.froad=road;c.dataset.fest=pDate(txt(c.querySelector('.due b')));var ch=c.querySelector('.chip');if(ch){ch.className='chip chip-sm st-'+m.st;ch.textContent=LABEL[m.st];}});
+  cards.forEach(function(c,i){var wi=txt(c.querySelector('.num'));if((META[wi]||{}).st==='draft')c.setAttribute('href',siblingUrl('mwi-wi-draft.html'));var m=META[wi]||{st:'draft',a:false};c.dataset.wi=wi;c._i=i;var re=c.querySelector('.road');var road=re?txt(re.childNodes[0]):'';var sub=txt(c.querySelector('.road small'));var sec=(sub.match(/Sector\s+([A-Za-z0-9]+)/)||[])[1]||'';var ms=c.querySelectorAll('.meta span');var asset=ms[0]?txt(ms[0].querySelector('strong')||ms[0]):'—';var wt=ms[1]?txt(ms[1]):'';c.dataset.fstatus=m.st;c.dataset.fsector=sec;c.dataset.fworktype=wt;c.dataset.fasset=asset;c.dataset.froad=road;c.dataset.fest=pDate(txt(c.querySelector('.due b')));var ch=c.querySelector('.chip');if(ch){ch.className='chip chip-sm st-'+m.st;ch.textContent=LABEL[m.st];}});
   var CATS=[{k:'fstatus',label:'Status',opts:SORD.slice(),disp:function(v){return LABEL[v];}},{k:'fsector',label:'Sector'},{k:'fworktype',label:'Work type'},{k:'fasset',label:'Asset type'},{k:'froad',label:'Road'}];
   CATS.forEach(function(cat){if(!cat.opts){var s=[];rows.forEach(function(tr){var v=tr.dataset[cat.k];if(v&&v!=='—'&&s.indexOf(v)<0)s.push(v);});cat.opts=s.sort();}if(!cat.disp)cat.disp=function(v){return v;};});
   var PAGE_SIZE=10;
