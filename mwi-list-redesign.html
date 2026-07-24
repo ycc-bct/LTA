@@ -838,7 +838,16 @@ button{font-family:inherit;cursor:pointer}
   }
   btn.addEventListener('click',function(){set(!sb.classList.contains('open'));});
   document.querySelectorAll('.row-link').forEach(function(r){
-    function go(){var mm=/[?&]role=(co|ss|eng)/.exec(location.search);window.location.href=r.getAttribute('data-href')+(mm?'?role='+mm[1]:'');}
+    function go(){
+      var target=r.getAttribute('data-href');
+      /* When the prototype is viewed through htmlpreview.github.io the page is served
+         from that host with the real source URL in the query string, so a bare relative
+         path 404s. Rebuild the link against the source URL instead. */
+      var src=location.search.replace(/^\?/,'');
+      if(/^https?:\/\//.test(src)){ window.location.href=location.origin+'/?'+src.replace(/[^\/]*$/,target); return; }
+      var mm=/[?&]role=(co|ss|eng)/.exec(location.search);
+      window.location.href=target+(mm?'?role='+mm[1]:'');
+    }
     r.addEventListener('click',go);
     r.addEventListener('keydown',function(e){if(e.key==='Enter')go();});
   });
