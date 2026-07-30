@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en-SG">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Road Maintenance Operation Dashboard · RMWP</title>
+<style>
+/* ============================================================
+   RMWP Design Tokens — SGDS-informed, LTA-branded
+   (shared with mwi-*.html and overview-dashboard.html;
+   pure CSS custom properties, OutSystems-portable)
+   ============================================================ */
+:root{
+  --teal-50:#E9F5F5; --teal-100:#CDE9E9; --teal-200:#A3D7D8;
+  --teal-300:#6FBFC1; --teal-400:#3FA6A9; --teal-500:#1B8D91;
+  --teal-600:#00747A; --teal-700:#005F64; --teal-800:#074A4E; --teal-900:#0A393C;
+  --navy-50:#EEF2F8; --navy-100:#DCE4F0; --navy-200:#B9C9E0;
+  --navy-300:#8FA7C8; --navy-400:#6485AD; --navy-500:#426690;
+  --navy-600:#2B4E77; --navy-700:#1B365D; --navy-800:#142848; --navy-900:#0E1D35;
+  --grey-25:#FCFDFD; --grey-50:#F7F9FA; --grey-100:#EFF2F4;
+  --grey-200:#E2E7EA; --grey-300:#CBD4D9; --grey-400:#9DAAB2;
+  --grey-500:#6E7E88; --grey-600:#51616B; --grey-700:#3A4952;
+  --grey-800:#27333B; --grey-900:#161F26;
+  --success-50:#EAF5EE; --success-600:#177245; --success-700:#0F5C37;
+  --warning-50:#FEF3E2; --warning-600:#A15C07; --warning-700:#7A4506;
+  --danger-50:#F9ECEB;  --danger-600:#A93A32;  --danger-700:#8F2D2B;
+  --info-50:#EBF1FB;    --info-600:#175CD3;    --info-700:#1247A4;
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --fs-xs:.75rem; --fs-sm:.8125rem; --fs-base:.875rem;
+  --fs-md:.9375rem; --fs-lg:1.0625rem; --fs-xl:1.375rem; --fs-2xl:1.75rem;
+  --r-sm:6px; --r-md:10px; --r-lg:14px; --r-pill:999px;
+  --shadow-sm:0 1px 2px rgba(22,31,38,.06);
+  --shadow-md:0 2px 8px rgba(22,31,38,.07),0 1px 2px rgba(22,31,38,.05);
+  --shadow-lg:0 8px 24px rgba(22,31,38,.10);
+  --sidebar-w:232px; --topbar-h:72px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-sans);font-size:var(--fs-base);color:var(--grey-800);
+  background:var(--grey-50);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:var(--teal-600);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--teal-600);outline-offset:2px;border-radius:var(--r-sm)}
+button{font-family:inherit;cursor:pointer}
+
+/* ---------- App frame ---------- */
+.topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar-h);z-index:40;
+  background:#fff;border-bottom:1px solid var(--grey-200);
+  display:flex;align-items:center;gap:16px;padding:0 20px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-logo-img{height:52px;width:auto;flex:none;display:block}
+.brand-name{border-left:1px solid var(--grey-200);padding-left:14px;margin-left:2px;
+  font-weight:650;color:var(--navy-700);font-size:var(--fs-md);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-name small{display:block;font-weight:450;color:var(--grey-500);font-size:var(--fs-xs)}
+.topbar-spacer{flex:1}
+.icon-btn{width:38px;height:38px;border-radius:var(--r-md);border:1px solid transparent;
+  background:transparent;color:var(--grey-600);position:relative;
+  display:inline-flex;align-items:center;justify-content:center}
+.icon-btn:hover{background:var(--grey-100)}
+.badge-dot{position:absolute;top:4px;right:4px;min-width:16px;height:16px;padding:0 4px;
+  border-radius:var(--r-pill);background:var(--danger-600);color:#fff;
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.avatar{display:flex;align-items:center;gap:10px;padding:4px 8px 4px 4px;
+  border-radius:var(--r-pill);border:1px solid var(--grey-200);background:#fff}
+.avatar-circle{width:32px;height:32px;border-radius:50%;flex:none;background:var(--teal-600);
+  color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.avatar-meta{line-height:1.15;text-align:left}
+.avatar-meta strong{font-size:var(--fs-sm);color:var(--grey-800);display:block}
+.avatar-meta span{font-size:var(--fs-xs);color:var(--grey-500)}
+
+.sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);z-index:30;
+  background:#fff;border-right:1px solid var(--grey-200);padding:16px 12px;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r-md);
+  color:var(--grey-600);font-size:var(--fs-base);font-weight:480;margin-bottom:2px}
+.nav-item:hover{background:var(--grey-100);text-decoration:none;color:var(--grey-800)}
+.nav-item.active{background:var(--teal-50);color:var(--teal-700);font-weight:620}
+.nav-item.active .nav-ico{color:var(--teal-600)}
+.nav-ico{width:18px;height:18px;flex:none;color:var(--grey-400)}
+.nav-chev{margin-left:auto;width:14px;height:14px;color:var(--grey-300);flex:none;transition:transform .18s}
+.nav-item.open .nav-chev{transform:rotate(180deg)}
+.nav-sub{display:flex;align-items:center;gap:10px;padding:7px 12px 7px 40px;border-radius:var(--r-md);
+  color:var(--grey-500);font-size:var(--fs-sm);font-weight:460;margin-bottom:2px}
+.nav-sub:hover{background:var(--grey-100);text-decoration:none;color:var(--grey-800)}
+.nav-sub.current{color:var(--teal-700);font-weight:640;background:linear-gradient(to right,var(--teal-50),transparent)}
+
+.main{margin-left:var(--sidebar-w);padding:calc(var(--topbar-h) + 24px) 32px 96px;max-width:1320px;min-height:100vh}
+.menu-btn{display:none}
+.backdrop{position:fixed;inset:0;background:rgba(22,31,38,.4);z-index:50;opacity:0;pointer-events:none;transition:opacity .22s ease}
+.backdrop.show{opacity:1;pointer-events:auto}
+
+/* ---------- Page header + filters ---------- */
+.page-head{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:flex-start;justify-content:space-between;margin-bottom:6px}
+.page-head h1{font-size:var(--fs-2xl);line-height:1.2;color:var(--grey-900);font-weight:680;letter-spacing:-.01em}
+.page-sub{color:var(--grey-500);font-size:var(--fs-sm);margin-top:5px}
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.filters-label{font-size:var(--fs-sm);color:var(--grey-500);font-weight:560;margin-right:2px}
+.filt-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:var(--r-pill);
+  background:var(--grey-100);border:1px solid var(--grey-200);font-size:var(--fs-sm);color:var(--grey-700);white-space:nowrap}
+.filt-chip b{font-weight:640;color:var(--grey-900)}
+.filt-chip .more{font-size:11px;font-weight:700;color:var(--teal-700);background:var(--teal-50);padding:1px 7px;border-radius:var(--r-pill)}
+.btn-filter{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:var(--r-pill);
+  border:1px solid var(--teal-600);background:#fff;color:var(--teal-700);font-size:var(--fs-sm);font-weight:620}
+.btn-filter:hover{background:var(--teal-50)}
+.btn-filter svg{width:15px;height:15px}
+.head-rule{border:none;border-top:1px solid var(--grey-200);margin:16px 0 0}
+
+/* ---------- KPI strip ---------- */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;gap:12px;margin-top:24px}
+@media(min-width:1200px){.kpi-strip{grid-template-columns:repeat(8,minmax(0,1fr))}}
+.kpi{background:#fff;border:1px solid var(--grey-200);border-radius:var(--r-lg);
+  box-shadow:var(--shadow-sm);padding:16px 16px 15px;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--k,var(--teal-600))}
+.kpi .k-label{display:flex;align-items:center;gap:7px;font-size:var(--fs-sm);font-weight:600;color:var(--grey-600)}
+.kpi .k-dot{width:9px;height:9px;border-radius:50%;background:var(--k,var(--teal-600));flex:none}
+.kpi .k-value{font-size:var(--fs-2xl);font-weight:720;color:var(--grey-900);letter-spacing:-.02em;margin-top:8px;line-height:1}
+.kpi .k-value.ph{color:var(--grey-300);font-weight:600}
+/* generic placeholder / empty state */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  text-align:center;color:var(--grey-400);padding:32px 16px}
+.empty-state svg{width:26px;height:26px;color:var(--grey-300)}
+.empty-state .es-title{font-size:var(--fs-sm);font-weight:600;color:var(--grey-500)}
+.empty-state .es-note{font-size:var(--fs-xs);color:var(--grey-400)}
+.kpi .k-sub{font-size:11px;color:var(--grey-400);margin-top:5px}
+.kpi-div{display:none}
+
+/* ---------- Map panel ---------- */
+.panel{background:#fff;border:1px solid var(--grey-200);border-radius:var(--r-lg);box-shadow:var(--shadow-sm)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px 12px}
+.panel-head h2{font-size:var(--fs-md);font-weight:660;color:var(--grey-900)}
+.panel-head .p-note{font-size:var(--fs-xs);color:var(--grey-500)}
+.map-section{margin-top:20px}
+.map-frame{position:relative;height:clamp(320px,46vh,480px);border-top:1px solid var(--grey-100);
+  overflow:hidden;background:var(--navy-50);border-radius:0 0 var(--r-lg) var(--r-lg)}
+.map-frame>svg.map-svg{position:absolute;inset:0;width:100%;height:100%}
+.map-zoom{position:absolute;top:14px;left:14px;display:flex;flex-direction:column;
+  border:1px solid var(--grey-300);border-radius:var(--r-sm);overflow:hidden;background:#fff;box-shadow:var(--shadow-sm)}
+.map-zoom button{width:34px;height:34px;border:none;background:#fff;color:var(--grey-700);font-size:19px;line-height:1;display:flex;align-items:center;justify-content:center}
+.map-zoom button+button{border-top:1px solid var(--grey-200)}
+.map-zoom button:hover{background:var(--grey-100)}
+.map-full{position:absolute;top:14px;right:14px;width:34px;height:34px;border:1px solid var(--grey-300);
+  border-radius:var(--r-sm);background:#fff;color:var(--grey-700);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm)}
+.map-full:hover{background:var(--grey-100)}
+.map-legend{position:absolute;left:14px;bottom:30px;background:rgba(255,255,255,.94);backdrop-filter:blur(4px);
+  border:1px solid var(--grey-200);border-radius:var(--r-md);box-shadow:var(--shadow-md);padding:10px 13px;display:flex;flex-direction:column;gap:6px}
+.map-legend .lg-row{display:flex;align-items:center;gap:8px;font-size:var(--fs-xs);color:var(--grey-700)}
+.map-legend .lg-dot{width:11px;height:11px;border-radius:50%;flex:none}
+.map-esri{position:absolute;right:10px;bottom:8px;font-size:11px;color:var(--grey-500)}
+.map-empty{display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(var(--grey-100) 1px,transparent 1px) 0 0/44px 44px,
+    linear-gradient(90deg,var(--grey-100) 1px,transparent 1px) 0 0/44px 44px,var(--navy-50)}
+.map-empty .map-zoom,.map-empty .map-full{opacity:.5;pointer-events:none}
+.pin-ring{animation:pulse 2.4s ease-out infinite;transform-origin:center}
+@keyframes pulse{0%{opacity:.9;transform:scale(.6)}70%{opacity:0;transform:scale(2.2)}100%{opacity:0}}
+
+/* ---------- Bottom charts ---------- */
+.charts-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
+.chart-body{padding:6px 20px 20px}
+/* donut */
+.donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.donut{position:relative;width:150px;height:150px;flex:none}
+.donut svg{transform:rotate(-90deg);width:100%;height:100%}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-center b{font-size:var(--fs-xl);font-weight:720;color:var(--grey-900);line-height:1}
+.donut-center span{font-size:var(--fs-xs);color:var(--grey-500);margin-top:2px}
+.legend{display:flex;flex-direction:column;gap:8px;flex:1;min-width:130px}
+.legend .lg{display:flex;align-items:center;gap:9px;font-size:var(--fs-sm);color:var(--grey-700)}
+.legend .lg i{width:10px;height:10px;border-radius:3px;flex:none}
+.legend .lg b{margin-left:auto;font-weight:680;color:var(--grey-900)}
+/* horizontal bars */
+.hbars{display:flex;flex-direction:column;gap:14px}
+.hbar .hb-top{display:flex;justify-content:space-between;gap:10px;font-size:var(--fs-sm);margin-bottom:5px}
+.hbar .hb-name{color:var(--grey-700);font-weight:520}
+.hbar .hb-val{color:var(--grey-900);font-weight:680;flex:none}
+.hbar .track{height:9px;border-radius:var(--r-pill);background:var(--grey-100);overflow:hidden}
+.hbar .track>i{display:block;height:100%;border-radius:var(--r-pill);background:var(--hbc,var(--teal-600))}
+
+@media(max-width:1120px){ .charts-grid{grid-template-columns:1fr;gap:16px} }
+@media(max-width:1020px){
+  .menu-btn{display:inline-flex}
+  .sidebar{z-index:60;transform:translateX(-105%);transition:transform .25s ease;box-shadow:none;width:min(300px,84vw)}
+  .sidebar.open{transform:none;box-shadow:var(--shadow-lg)}
+  .main{margin-left:0;padding:calc(var(--topbar-h) + 16px) 16px 72px}
+  .avatar-meta{display:none}
+  .brand-logo-img{height:42px}
+}
+@media(max-width:560px){
+  .brand-name{display:none}
+  .page-head h1{font-size:var(--fs-xl)}
+  .kpi-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+  <div class="brand">
+    <img class="brand-logo-img" src="logo.png" alt="Land Transport Authority">
+    <div class="brand-name">RMWP<small>Road Maintenance Workflow Platform</small></div>
+  </div>
+  <div class="topbar-spacer"></div>
+  <button class="icon-btn" aria-label="Notifications (14 unread)">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    <span class="badge-dot">14</span>
+  </button>
+  <div class="avatar">
+    <span class="avatar-circle">DS</span>
+    <span class="avatar-meta"><strong>DEV SA04</strong><span>System Administrator</span></span>
+  </div>
+</header>
+
+<nav class="sidebar" id="sidebar" aria-label="Main navigation">
+  <a class="nav-item" href="overview-dashboard.html"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/><path d="M9 22V12h6v10"/></svg>Overview</a>
+  <a class="nav-item" href="mwi-list-redesign.html"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>Work instruction<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-item active open" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15.9A10 10 0 1 1 8 2.8"/><path d="M22 12A10 10 0 0 0 12 2v10Z"/></svg>Dashboard<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-sub current" href="dashboard-operations.html">Road Maintenance Operations</a>
+  <a class="nav-sub" href="#">Maintenance Performance</a>
+  <a class="nav-sub" href="#">WI Payment</a>
+  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Reports<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>User<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Sector<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg>Contract<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.3 9 5.2M21 8l-9-5-9 5v8l9 5 9-5Z"/></svg>Asset inventory<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>Configuration<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+</nav>
+
+<div class="backdrop" id="backdrop"></div>
+
+<main class="main">
+
+  <div class="page-head">
+    <div>
+      <h1>Road Maintenance Operation Dashboard</h1>
+      <p class="page-sub">Layout &amp; colour direction &mdash; data, map and charts are placeholders while the work-instruction details are confirmed.</p>
+    </div>
+    <div class="filters">
+      <span class="filters-label">Filters applied</span>
+      <span class="filt-chip">Contract <b>TR388</b><span class="more">+1</span></span>
+      <span class="filt-chip">Sector <b>NW1</b><span class="more">+39</span></span>
+      <span class="filt-chip">Work type <b>WORKS ORDER - ACCIDENT</b><span class="more">+4</span></span>
+      <button class="btn-filter" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+        Show filters
+      </button>
+    </div>
+  </div>
+  <hr class="head-rule">
+
+  <!-- ============ KPI strip ============ -->
+  <div class="kpi-strip">
+    <div class="kpi" style="--k:var(--teal-600)"><div class="k-label"><span class="k-dot"></span>WI</div><div class="k-value ph">&mdash;</div><div class="k-sub">Total work instructions</div></div>
+    <div class="kpi" style="--k:var(--info-600)"><div class="k-label"><span class="k-dot"></span>WIP</div><div class="k-value ph">&mdash;</div><div class="k-sub">Work in progress</div></div>
+    <div class="kpi" style="--k:var(--teal-500)"><div class="k-label"><span class="k-dot"></span>VIP</div><div class="k-value ph">&mdash;</div><div class="k-sub">Verification in progress</div></div>
+    <div class="kpi" style="--k:var(--navy-600)"><div class="k-label"><span class="k-dot"></span>AIP</div><div class="k-value ph">&mdash;</div><div class="k-sub">Approval in progress</div></div>
+    <div class="kpi" style="--k:var(--success-600)"><div class="k-label"><span class="k-dot"></span>A&amp;C</div><div class="k-value ph">&mdash;</div><div class="k-sub">Approved &amp; closed</div></div>
+    <span class="kpi-div"></span>
+    <div class="kpi" style="--k:var(--teal-600)"><div class="k-label"><span class="k-dot"></span>% A&amp;C</div><div class="k-value ph">&mdash;</div><div class="k-sub">Closure rate</div></div>
+    <div class="kpi" style="--k:var(--warning-600)"><div class="k-label"><span class="k-dot"></span>Draft WI</div><div class="k-value ph">&mdash;</div><div class="k-sub">Not yet submitted</div></div>
+    <div class="kpi" style="--k:var(--danger-600)"><div class="k-label"><span class="k-dot"></span>Cancelled WI</div><div class="k-value ph">&mdash;</div><div class="k-sub">Withdrawn / cancelled</div></div>
+  </div>
+
+  <!-- ============ Map ============ -->
+  <section class="panel map-section">
+    <div class="panel-head">
+      <h2>Geospatial distribution</h2>
+      <span class="p-note">Work sites across the selected sectors</span>
+    </div>
+    <div class="map-frame map-empty" role="img" aria-label="Esri geospatial map placeholder — renders here once data is confirmed">
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20 3 17V4l6 3m0 13 6-3m-6 3V7m6 10 6 3V7l-6-3m0 13V4m0 0L9 7"/><circle cx="15.5" cy="10.5" r="0"/></svg>
+        <div class="es-title">Esri map renders here</div>
+        <div class="es-note">Geospatial view of work-instruction sites &mdash; pending confirmed data</div>
+      </div>
+      <div class="map-zoom"><button type="button" aria-label="Zoom in">+</button><button type="button" aria-label="Zoom out">&minus;</button></div>
+      <button class="map-full" type="button" aria-label="Full screen">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      </button>
+      <span class="map-esri">Powered by <a href="https://www.esri.com/" target="_blank" rel="noopener">Esri</a></span>
+    </div>
+  </section>
+
+  <!-- ============ Bottom charts ============ -->
+  <div class="charts-grid">
+    <section class="panel">
+      <div class="panel-head"><h2>Work Status</h2><span class="p-note">by lifecycle state</span></div>
+      <div class="chart-body">
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15.9A10 10 0 1 1 8 2.8"/><path d="M22 12A10 10 0 0 0 12 2v10Z"/></svg>
+          <div class="es-title">Donut chart renders here</div>
+          <div class="es-note">Draft &middot; WIP &middot; VIP &middot; AIP &middot; A&amp;C</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Work Type Overview</h2><span class="p-note">count by work type</span></div>
+      <div class="chart-body">
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="6"/><rect x="12" y="7" width="3" height="10"/><rect x="17" y="13" width="3" height="4"/></svg>
+          <div class="es-title">Bar chart renders here</div>
+          <div class="es-note">Count by work type</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Progress Summary</h2><span class="p-note">by completion band</span></div>
+      <div class="chart-body">
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l3-3 3 2 4-5"/></svg>
+          <div class="es-title">Bar chart renders here</div>
+          <div class="es-note">By completion band</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<script>
+/* ---------- Mobile sidebar drawer ---------- */
+(function(){
+  var btn=document.getElementById('menu-btn'),sb=document.getElementById('sidebar'),bd=document.getElementById('backdrop');
+  if(!btn||!sb||!bd)return;
+  function set(o){sb.classList.toggle('open',o);bd.classList.toggle('show',o);btn.setAttribute('aria-expanded',o);}
+  btn.addEventListener('click',function(){set(!sb.classList.contains('open'));});
+  bd.addEventListener('click',function(){set(false);});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});
+})();
+</script>
+</body>
+</html>

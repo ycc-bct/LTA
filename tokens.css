@@ -1,0 +1,57 @@
+/* ============================================================
+   RMWP Design Tokens — single source of truth
+   SGDS-informed foundations (designsystem.tech.gov.sg):
+   10-step colour scales, semantic colours, perceptual curve.
+   Primary = LTA teal, secondary = LTA navy, danger = LTA maroon.
+   ------------------------------------------------------------
+   CANONICAL FILE. The mwi-*.html / dashboard-*.html prototypes
+   currently inline an identical :root block so each page stays
+   self-contained (portable to OutSystems, works through
+   htmlpreview). When we move off htmlpreview / into OutSystems,
+   swap the inline blocks for  <link rel="stylesheet" href="tokens.css">
+   and map these custom properties onto the OutSystems theme.
+   Change tokens HERE first, then propagate to the inline copies.
+   ============================================================ */
+:root{
+  /* Brand · LTA teal (primary) */
+  --teal-50:#E9F5F5; --teal-100:#CDE9E9; --teal-200:#A3D7D8;
+  --teal-300:#6FBFC1; --teal-400:#3FA6A9; --teal-500:#1B8D91;
+  --teal-600:#00747A; --teal-700:#005F64; --teal-800:#074A4E;
+  --teal-900:#0A393C;
+  /* Brand · LTA navy (secondary) */
+  --navy-50:#EEF2F8; --navy-100:#DCE4F0; --navy-200:#B9C9E0;
+  --navy-300:#8FA7C8; --navy-400:#6485AD; --navy-500:#426690;
+  --navy-600:#2B4E77; --navy-700:#1B365D; --navy-800:#142848;
+  --navy-900:#0E1D35;
+  /* Neutrals (cool grey, 10 steps) */
+  --grey-25:#FCFDFD; --grey-50:#F7F9FA; --grey-100:#EFF2F4;
+  --grey-200:#E2E7EA; --grey-300:#CBD4D9; --grey-400:#9DAAB2;
+  --grey-500:#6E7E88; --grey-600:#51616B; --grey-700:#3A4952;
+  --grey-800:#27333B; --grey-900:#161F26;
+  /* Semantic */
+  --success-50:#EAF5EE; --success-600:#177245; --success-700:#0F5C37;
+  --warning-50:#FEF3E2; --warning-600:#A15C07; --warning-700:#7A4506;
+  --danger-50:#F9ECEB;  --danger-600:#A93A32;  --danger-700:#8F2D2B; /* LTA maroon */
+  --info-50:#EBF1FB;    --info-600:#175CD3;    --info-700:#1247A4;
+  /* Typography */
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --fs-xs:.75rem; --fs-sm:.8125rem; --fs-base:.875rem;
+  --fs-md:.9375rem; --fs-lg:1.0625rem; --fs-xl:1.375rem; --fs-2xl:1.75rem;
+  /* Shape & elevation */
+  --r-sm:6px; --r-md:10px; --r-lg:14px; --r-pill:999px;
+  --shadow-sm:0 1px 2px rgba(22,31,38,.06);
+  --shadow-md:0 2px 8px rgba(22,31,38,.07),0 1px 2px rgba(22,31,38,.05);
+  --shadow-lg:0 8px 24px rgba(22,31,38,.10);
+  /* Layout */
+  --sidebar-w:232px; --topbar-h:72px;
+}
+
+/* ---- 5-state status colour mapping (semantic → lifecycle) ----
+   Draft                     warning-50 / warning-700
+   Work in progress          info-50    / info-700
+   Verification in progress  teal-50    / teal-700
+   Approval in progress      navy-50    / navy-700
+   Approved & closed         success-50 / success-700
+   Cancelled                 grey-100   / grey-600
+   ------------------------------------------------------------ */

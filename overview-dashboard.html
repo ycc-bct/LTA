@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en-SG">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Overview Dashboard · RMWP</title>
+<style>
+/* ============================================================
+   RMWP Design Tokens — SGDS-informed, LTA-branded
+   (shared with mwi-*.html; pure CSS custom properties,
+   OutSystems-portable, no framework dependency)
+   ============================================================ */
+:root{
+  /* Brand · LTA teal (primary) */
+  --teal-50:#E9F5F5; --teal-100:#CDE9E9; --teal-200:#A3D7D8;
+  --teal-300:#6FBFC1; --teal-400:#3FA6A9; --teal-500:#1B8D91;
+  --teal-600:#00747A; --teal-700:#005F64; --teal-800:#074A4E;
+  --teal-900:#0A393C;
+  /* Brand · LTA navy (secondary) */
+  --navy-50:#EEF2F8; --navy-100:#DCE4F0; --navy-200:#B9C9E0;
+  --navy-300:#8FA7C8; --navy-400:#6485AD; --navy-500:#426690;
+  --navy-600:#2B4E77; --navy-700:#1B365D; --navy-800:#142848;
+  --navy-900:#0E1D35;
+  /* Neutrals (cool grey, 10 steps) */
+  --grey-25:#FCFDFD; --grey-50:#F7F9FA; --grey-100:#EFF2F4;
+  --grey-200:#E2E7EA; --grey-300:#CBD4D9; --grey-400:#9DAAB2;
+  --grey-500:#6E7E88; --grey-600:#51616B; --grey-700:#3A4952;
+  --grey-800:#27333B; --grey-900:#161F26;
+  /* Semantic */
+  --success-50:#EAF5EE; --success-600:#177245; --success-700:#0F5C37;
+  --warning-50:#FEF3E2; --warning-600:#A15C07; --warning-700:#7A4506;
+  --danger-50:#F9ECEB;  --danger-600:#A93A32;  --danger-700:#8F2D2B; /* LTA maroon */
+  --info-50:#EBF1FB;    --info-600:#175CD3;    --info-700:#1247A4;
+  /* Typography */
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --fs-xs:.75rem; --fs-sm:.8125rem; --fs-base:.875rem;
+  --fs-md:.9375rem; --fs-lg:1.0625rem; --fs-xl:1.375rem; --fs-2xl:1.75rem;
+  /* Shape & elevation */
+  --r-sm:6px; --r-md:10px; --r-lg:14px; --r-pill:999px;
+  --shadow-sm:0 1px 2px rgba(22,31,38,.06);
+  --shadow-md:0 2px 8px rgba(22,31,38,.07),0 1px 2px rgba(22,31,38,.05);
+  --shadow-lg:0 8px 24px rgba(22,31,38,.10);
+  /* Layout */
+  --sidebar-w:232px; --topbar-h:72px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-sans);font-size:var(--fs-base);
+  color:var(--grey-800);background:var(--grey-50);
+  -webkit-font-smoothing:antialiased;line-height:1.5;
+}
+a{color:var(--teal-600);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--teal-600);outline-offset:2px;border-radius:var(--r-sm)}
+button{font-family:inherit;cursor:pointer}
+
+/* ---------- App frame ---------- */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--topbar-h);z-index:40;
+  background:#fff;border-bottom:1px solid var(--grey-200);
+  display:flex;align-items:center;gap:16px;padding:0 20px;
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-logo-img{height:52px;width:auto;flex:none;display:block}
+.brand-name{border-left:1px solid var(--grey-200);padding-left:14px;margin-left:2px;
+  font-weight:650;color:var(--navy-700);font-size:var(--fs-md);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-name small{display:block;font-weight:450;color:var(--grey-500);font-size:var(--fs-xs)}
+.topbar-spacer{flex:1}
+.icon-btn{
+  width:38px;height:38px;border-radius:var(--r-md);border:1px solid transparent;
+  background:transparent;color:var(--grey-600);position:relative;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.icon-btn:hover{background:var(--grey-100)}
+.badge-dot{
+  position:absolute;top:4px;right:4px;min-width:16px;height:16px;padding:0 4px;
+  border-radius:var(--r-pill);background:var(--danger-600);color:#fff;
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;
+}
+.avatar{
+  display:flex;align-items:center;gap:10px;padding:4px 8px 4px 4px;
+  border-radius:var(--r-pill);border:1px solid var(--grey-200);background:#fff;
+}
+.avatar-circle{
+  width:32px;height:32px;border-radius:50%;flex:none;
+  background:var(--teal-600);color:#fff;font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.avatar-meta{line-height:1.15;text-align:left}
+.avatar-meta strong{font-size:var(--fs-sm);color:var(--grey-800);display:block}
+.avatar-meta span{font-size:var(--fs-xs);color:var(--grey-500)}
+
+.sidebar{
+  position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);z-index:30;
+  background:#fff;border-right:1px solid var(--grey-200);
+  padding:16px 12px;overflow-y:auto;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r-md);
+  color:var(--grey-600);font-size:var(--fs-base);font-weight:480;margin-bottom:2px;
+}
+.nav-item:hover{background:var(--grey-100);text-decoration:none;color:var(--grey-800)}
+.nav-item.active{background:var(--teal-50);color:var(--teal-700);font-weight:620}
+.nav-item.active .nav-ico{color:var(--teal-600)}
+.nav-ico{width:18px;height:18px;flex:none;color:var(--grey-400)}
+.nav-chev{margin-left:auto;width:14px;height:14px;color:var(--grey-300);flex:none}
+
+.main{margin-left:var(--sidebar-w);padding:calc(var(--topbar-h) + 24px) 32px 96px;max-width:1220px;min-height:100vh}
+
+.menu-btn{display:none}
+.backdrop{position:fixed;inset:0;background:rgba(22,31,38,.4);z-index:50;opacity:0;pointer-events:none;transition:opacity .22s ease}
+.backdrop.show{opacity:1;pointer-events:auto}
+
+/* ---------- Page header ---------- */
+.page-head{margin-bottom:8px}
+.page-head h1{font-size:var(--fs-2xl);line-height:1.2;color:var(--grey-900);font-weight:680;letter-spacing:-.01em}
+.page-sub{color:var(--grey-600);font-size:var(--fs-md);margin-top:6px;max-width:66ch}
+.head-rule{border:none;border-top:1px solid var(--grey-200);margin:18px 0 4px}
+
+/* ---------- Section ---------- */
+.section{margin-top:34px}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:14px}
+.section-head h2{font-size:var(--fs-lg);color:var(--grey-900);font-weight:660;letter-spacing:-.01em}
+.section-note{font-size:var(--fs-sm);color:var(--grey-500);white-space:nowrap}
+
+/* ---------- Card base ---------- */
+.card{background:#fff;border:1px solid var(--grey-200);border-radius:var(--r-lg);box-shadow:var(--shadow-sm)}
+
+/* ---------- System monitoring ---------- */
+.mon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:14px}
+.mon-card{padding:18px 18px 16px;display:flex;flex-direction:column;gap:10px;
+  border-left:3px solid var(--success-600);transition:box-shadow .15s,transform .15s}
+.mon-card.down{border-left-color:var(--danger-600)}
+.mon-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.mon-title{font-size:var(--fs-md);font-weight:640;color:var(--grey-900)}
+.pill{display:inline-flex;align-items:center;gap:7px;align-self:flex-start;
+  padding:4px 11px 4px 9px;border-radius:var(--r-pill);font-size:var(--fs-sm);font-weight:640}
+.pill .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.pill.op{background:var(--success-50);color:var(--success-700)}
+.pill.op .dot{background:var(--success-600)}
+.pill.down{background:var(--danger-50);color:var(--danger-700)}
+.pill.down .dot{background:var(--danger-600)}
+.mon-time{font-size:var(--fs-xs);color:var(--grey-500);margin-top:2px}
+.mon-time b{font-weight:600;color:var(--grey-600)}
+
+/* ---------- Licence availability ---------- */
+.lic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.lic-card{padding:20px}
+.lic-label{font-size:var(--fs-sm);font-weight:600;color:var(--grey-600)}
+.lic-value{font-size:var(--fs-2xl);font-weight:720;color:var(--grey-900);letter-spacing:-.02em;margin:6px 0 2px}
+.lic-value small{font-size:var(--fs-md);font-weight:600;color:var(--grey-400)}
+.lic-pct{font-size:var(--fs-sm);color:var(--grey-500);margin-bottom:14px}
+.meter{height:8px;border-radius:var(--r-pill);background:var(--grey-100);overflow:hidden}
+.meter>i{display:block;height:100%;border-radius:var(--r-pill);background:var(--teal-600)}
+
+/* ---------- Licence allocation ---------- */
+.alloc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px}
+.alloc-card{padding:18px 20px}
+.alloc-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid var(--grey-100)}
+.alloc-name{font-size:var(--fs-md);font-weight:660;color:var(--grey-900)}
+.alloc-total{font-size:var(--fs-xs);font-weight:600;color:var(--teal-700);
+  background:var(--teal-50);padding:3px 10px;border-radius:var(--r-pill);white-space:nowrap}
+.alloc-rows{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.alloc-cell .who{font-size:var(--fs-xs);font-weight:650;color:var(--grey-500);text-transform:uppercase;letter-spacing:.04em}
+.alloc-cell .num{font-size:var(--fs-lg);font-weight:700;color:var(--grey-900);margin:4px 0 8px}
+.alloc-cell .num small{font-size:var(--fs-sm);font-weight:500;color:var(--grey-400)}
+.meter.sm{height:6px}
+.meter.sm>i{background:var(--navy-500)}
+.alloc-cell .foot{font-size:11px;color:var(--grey-400);margin-top:6px}
+
+/* ---------- Role chart ---------- */
+.chart-card{padding:22px 22px 12px}
+.chart-wrap{width:100%;overflow-x:auto}
+#roleChart{display:block;width:100%;min-width:560px;height:auto}
+.chart-legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;padding-top:14px;border-top:1px solid var(--grey-100)}
+.chart-legend span{display:flex;align-items:center;gap:7px;font-size:var(--fs-xs);color:var(--grey-600)}
+.chart-legend i{width:10px;height:10px;border-radius:3px;flex:none}
+
+/* ---------- Responsive ---------- */
+@media(max-width:1020px){
+  .menu-btn{display:inline-flex}
+  .sidebar{z-index:60;transform:translateX(-105%);transition:transform .25s ease;box-shadow:none;width:min(300px,84vw)}
+  .sidebar.open{transform:none;box-shadow:var(--shadow-lg)}
+  .main{margin-left:0;padding:calc(var(--topbar-h) + 16px) 16px 72px}
+  .avatar-meta{display:none}
+  .brand-logo-img{height:42px}
+}
+@media(max-width:640px){
+  .brand-name{display:none}
+  .page-head h1{font-size:var(--fs-xl)}
+  .mon-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:460px){
+  .mon-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+  <div class="brand">
+    <img class="brand-logo-img" src="logo.png" alt="Land Transport Authority">
+    <div class="brand-name">RMWP<small>Road Maintenance Workflow Platform</small></div>
+  </div>
+  <div class="topbar-spacer"></div>
+  <button class="icon-btn" aria-label="Notifications (14 unread)">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    <span class="badge-dot">14</span>
+  </button>
+  <div class="avatar">
+    <span class="avatar-circle">DS</span>
+    <span class="avatar-meta"><strong>DEV SA01</strong><span>System Administrator</span></span>
+  </div>
+</header>
+
+<nav class="sidebar" id="sidebar" aria-label="Main navigation">
+  <a class="nav-item active" href="overview-dashboard.html"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/><path d="M9 22V12h6v10"/></svg>Overview</a>
+  <a class="nav-item" href="mwi-list-redesign.html"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>Work instruction<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15.9A10 10 0 1 1 8 2.8"/><path d="M22 12A10 10 0 0 0 12 2v10Z"/></svg>Dashboard<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Reports<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>User<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Sector<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg>Contract<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.3 9 5.2M21 8l-9-5-9 5v8l9 5 9-5Z"/></svg>Asset inventory<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>Configuration<svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+</nav>
+
+<div class="backdrop" id="backdrop"></div>
+
+<main class="main">
+
+  <div class="page-head">
+    <h1>Overview Dashboard</h1>
+    <p class="page-sub">System health, licence usage and user distribution at a glance.</p>
+  </div>
+  <hr class="head-rule">
+
+  <!-- ============ System Monitoring ============ -->
+  <section class="section">
+    <div class="section-head">
+      <h2>System Monitoring</h2>
+      <span class="section-note">8 integrations &middot; 1 needs attention</span>
+    </div>
+    <div class="mon-grid">
+      <div class="card mon-card">
+        <div class="mon-title">RMWP status</div>
+        <span class="pill op"><span class="dot"></span>Operational</span>
+        <div class="mon-time">Last processed on <b>28/01/2026 02:20</b></div>
+      </div>
+      <div class="card mon-card">
+        <div class="mon-title">Singpass status</div>
+        <span class="pill op"><span class="dot"></span>Operational</span>
+        <div class="mon-time">Last processed on <b>27/07/2026 11:16</b></div>
+      </div>
+      <div class="card mon-card">
+        <div class="mon-title">WOG AD Status</div>
+        <span class="pill op"><span class="dot"></span>Operational</span>
+        <div class="mon-time">Last processed on <b>27/07/2026 11:37</b></div>
+      </div>
+      <div class="card mon-card">
+        <div class="mon-title">Ignite Status</div>
+        <span class="pill op"><span class="dot"></span>Operational</span>
+        <div class="mon-time">Last processed on <b>27/07/2026 11:37</b></div>
+      </div>
+      <div class="card mon-card">
+        <div class="mon-title">VEBITS Status</div>
+        <span class="pill op"><span class="dot"></span>Operational</span>
+        <div class="mon-time">Last processed on <b>05/06/2026 14:12</b></div>
+      </div>
+      <div class="card mon-card down">
+        <div class="mon-title">AWS to PLANET</div>
+        <span class="pill down"><span class="dot"></span>Non-Operational</span>
+        <div class="mon-time">Last processed on <b>27/07/2026 11:37</b></div>
+      </div>
+      <div class="card mon-card">
+        <div class="mon-title">AWS S3 Status</div>
+        <span class="pill op"><span class="dot"></span>Operational</span>
+        <div class="mon-time">Last processed on <b>22/07/2026 23:01</b></div>
+      </div>
+      <div class="card mon-card">
+        <div class="mon-title">File Scan Status</div>
+        <span class="pill op"><span class="dot"></span>Operational</span>
+        <div class="mon-time">Last processed on <b>22/07/2026 23:01</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Licence Availability ============ -->
+  <section class="section">
+    <div class="section-head">
+      <h2>Licence Availability</h2>
+    </div>
+    <div class="lic-grid">
+      <div class="card lic-card">
+        <div class="lic-label">Internal End User</div>
+        <div class="lic-value">0 <small>of 100</small></div>
+        <div class="lic-pct">0% in use</div>
+        <div class="meter"><i style="width:0%"></i></div>
+      </div>
+      <div class="card lic-card">
+        <div class="lic-label">External End User</div>
+        <div class="lic-value">61 <small>of 1000</small></div>
+        <div class="lic-pct">6.1% in use</div>
+        <div class="meter"><i style="width:6.1%"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Licence Allocation ============ -->
+  <section class="section">
+    <div class="section-head">
+      <h2>Licence Allocation</h2>
+      <span class="section-note">By division</span>
+    </div>
+    <div class="alloc-grid">
+
+      <div class="card alloc-card">
+        <div class="alloc-head"><span class="alloc-name">RRFM</span><span class="alloc-total">90 allocated</span></div>
+        <div class="alloc-rows">
+          <div class="alloc-cell"><div class="who">LTA</div><div class="num">8 <small>of 50</small></div><div class="meter sm"><i style="width:16%"></i></div><div class="foot">in use of allocated</div></div>
+          <div class="alloc-cell"><div class="who">Contractor</div><div class="num">15 <small>of 40</small></div><div class="meter sm"><i style="width:37.5%"></i></div><div class="foot">in use of allocated</div></div>
+        </div>
+      </div>
+
+      <div class="card alloc-card">
+        <div class="alloc-head"><span class="alloc-name">PATH</span><span class="alloc-total">150 allocated</span></div>
+        <div class="alloc-rows">
+          <div class="alloc-cell"><div class="who">LTA</div><div class="num">4 <small>of 100</small></div><div class="meter sm"><i style="width:4%"></i></div><div class="foot">in use of allocated</div></div>
+          <div class="alloc-cell"><div class="who">Contractor</div><div class="num">9 <small>of 50</small></div><div class="meter sm"><i style="width:18%"></i></div><div class="foot">in use of allocated</div></div>
+        </div>
+      </div>
+
+      <div class="card alloc-card">
+        <div class="alloc-head"><span class="alloc-name">CFM</span><span class="alloc-total">180 allocated</span></div>
+        <div class="alloc-rows">
+          <div class="alloc-cell"><div class="who">LTA</div><div class="num">3 <small>of 120</small></div><div class="meter sm"><i style="width:2.5%"></i></div><div class="foot">in use of allocated</div></div>
+          <div class="alloc-cell"><div class="who">Contractor</div><div class="num">8 <small>of 60</small></div><div class="meter sm"><i style="width:13.3%"></i></div><div class="foot">in use of allocated</div></div>
+        </div>
+      </div>
+
+      <div class="card alloc-card">
+        <div class="alloc-head"><span class="alloc-name">BDG</span><span class="alloc-total">90 allocated</span></div>
+        <div class="alloc-rows">
+          <div class="alloc-cell"><div class="who">LTA</div><div class="num">4 <small>of 60</small></div><div class="meter sm"><i style="width:6.7%"></i></div><div class="foot">in use of allocated</div></div>
+          <div class="alloc-cell"><div class="who">Contractor</div><div class="num">5 <small>of 30</small></div><div class="meter sm"><i style="width:16.7%"></i></div><div class="foot">in use of allocated</div></div>
+        </div>
+      </div>
+
+      <div class="card alloc-card">
+        <div class="alloc-head"><span class="alloc-name">LTA Project Team</span><span class="alloc-total">80 allocated</span></div>
+        <div class="alloc-rows">
+          <div class="alloc-cell"><div class="who">LTA</div><div class="num">5 <small>of 80</small></div><div class="meter sm"><i style="width:6.25%"></i></div><div class="foot">in use of allocated</div></div>
+          <div class="alloc-cell"><div class="who">Contractor</div><div class="num">0 <small>of 0</small></div><div class="meter sm"><i style="width:0%"></i></div><div class="foot">in use of allocated</div></div>
+        </div>
+      </div>
+
+      <div class="card alloc-card">
+        <div class="alloc-head"><span class="alloc-name">RFC</span><span class="alloc-total">100 allocated</span></div>
+        <div class="alloc-rows">
+          <div class="alloc-cell"><div class="who">LTA</div><div class="num">0 <small>of 60</small></div><div class="meter sm"><i style="width:0%"></i></div><div class="foot">in use of allocated</div></div>
+          <div class="alloc-cell"><div class="who">Contractor</div><div class="num">0 <small>of 40</small></div><div class="meter sm"><i style="width:0%"></i></div><div class="foot">in use of allocated</div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ Role-wise Users Distribution ============ -->
+  <section class="section">
+    <div class="section-head">
+      <h2>Role-wise Users Distribution</h2>
+      <span class="section-note">76 users across 8 roles</span>
+    </div>
+    <div class="card chart-card">
+      <div class="chart-wrap">
+        <svg id="roleChart" viewBox="0 0 760 360" preserveAspectRatio="xMidYMid meet" role="img"
+             aria-label="Role-wise users distribution: Engineer Lead 10, Division Representative 12, DRC 7, Site Supervisor 8, System Administrator 5, Engineer 15, QS 5, Contract Officer 14."></svg>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* ---------- Mobile sidebar drawer ---------- */
+(function(){
+  var btn=document.getElementById('menu-btn'),
+      sb=document.getElementById('sidebar'),
+      bd=document.getElementById('backdrop');
+  if(!btn||!sb||!bd)return;
+  function set(open){sb.classList.toggle('open',open);bd.classList.toggle('show',open);btn.setAttribute('aria-expanded',open);}
+  btn.addEventListener('click',function(){set(!sb.classList.contains('open'));});
+  bd.addEventListener('click',function(){set(false);});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});
+})();
+
+/* ---------- Role-wise bar chart (inline SVG, data-driven, no library) ---------- */
+(function(){
+  var data=[
+    {label:'Engineer Lead',value:10},
+    {label:'Division Representative',value:12},
+    {label:'DRC',value:7},
+    {label:'Site Supervisor',value:8},
+    {label:'System Administrator',value:5},
+    {label:'Engineer',value:15},
+    {label:'QS',value:5},
+    {label:'Contract Officer',value:14}
+  ];
+  var palette=['#00747A','#2B4E77','#3FA6A9','#6485AD','#005F64','#1B8D91','#426690','#8FA7C8'];
+  var svg=document.getElementById('roleChart');
+  if(!svg)return;
+  var W=760,H=360,padL=38,padR=16,padT=18,padB=96;
+  var plotW=W-padL-padR, plotH=H-padT-padB, base=padT+plotH, max=20, step=5;
+  var NS='http://www.w3.org/2000/svg';
+  function el(name,attrs,text){var e=document.createElementNS(NS,name);for(var k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;return e;}
+
+  // gridlines + y labels
+  for(var v=0;v<=max;v+=step){
+    var y=base-(v/max)*plotH;
+    svg.appendChild(el('line',{x1:padL,y1:y,x2:W-padR,y2:y,stroke:(v===0?'#CBD4D9':'#EFF2F4'),'stroke-width':1}));
+    svg.appendChild(el('text',{x:padL-8,y:y+4,'text-anchor':'end','font-size':12,fill:'#9DAAB2','font-family':'sans-serif'},String(v)));
+  }
+  // bars
+  var slot=plotW/data.length, barW=Math.min(46,slot*0.5);
+  data.forEach(function(d,i){
+    var h=(d.value/max)*plotH, x=padL+i*slot+(slot-barW)/2, y=base-h, cx=padL+i*slot+slot/2;
+    var r=el('rect',{x:x,y:y,width:barW,height:h,rx:5,fill:palette[i%palette.length]});
+    r.appendChild(el('title',{},d.label+': '+d.value));
+    svg.appendChild(r);
+    // value label
+    svg.appendChild(el('text',{x:cx,y:y-8,'text-anchor':'middle','font-size':13,'font-weight':700,fill:'#27333B','font-family':'sans-serif'},String(d.value)));
+    // category label (rotated)
+    var t=el('text',{x:cx,y:base+16,'text-anchor':'end','font-size':11.5,fill:'#51616B','font-family':'sans-serif',transform:'rotate(-32 '+cx+' '+(base+16)+')'},d.label);
+    svg.appendChild(t);
+  });
+})();
+</script>
+</body>
+</html>
