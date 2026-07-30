@@ -219,7 +219,10 @@ button{font-family:inherit;cursor:pointer}
 .boq tfoot td.num{text-align:right;color:var(--teal-700)}
 
 .actionbar{position:fixed;left:var(--sidebar-w);right:0;bottom:0;background:#fff;border-top:1px solid var(--grey-200);box-shadow:0 -2px 10px rgba(22,31,38,.05);padding:14px 32px;display:flex;align-items:center;gap:12px;z-index:35}
-.ab-spacer{flex:1}
+.ab-inner{display:flex;align-items:center;gap:12px;width:100%}
+.act-left{display:flex;gap:12px}
+.act-right{margin-left:auto;display:flex;gap:12px}
+.lbl-short{display:none}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:var(--r-sm);font-size:.875rem;font-weight:640;border:1px solid transparent}
 .btn-primary{background:var(--teal-700);color:#fff}.btn-primary:hover{background:var(--teal-800)}
 .btn-out{background:#fff;color:var(--teal-700);border-color:var(--teal-600)}.btn-out:hover{background:var(--teal-50)}
@@ -229,8 +232,15 @@ button{font-family:inherit;cursor:pointer}
   .nav-toggle{display:none}
   .sidebar{z-index:60;transform:translateX(-105%);transition:transform .25s ease;box-shadow:none;width:min(300px,84vw)}
   .sidebar.open{transform:none;box-shadow:var(--shadow-lg)}
-  .main{margin-left:0;padding:calc(var(--topbar-h) + 16px) 16px 110px}
-  .actionbar{left:0;padding:12px 16px}
+  .main{margin-left:0;padding:calc(var(--topbar-h) + 16px) 16px 170px}
+  /* action bar: two rows — reversing pair on top, primary CTA alone in the thumb zone */
+  .actionbar{left:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+  .ab-inner{flex-direction:column;align-items:stretch;gap:8px}
+  .act-left{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .act-right{margin-left:0;display:grid;grid-template-columns:1fr;gap:8px}
+  .actionbar .btn{width:100%;min-height:46px;white-space:nowrap;line-height:1.25}
+  .lbl-full{display:none}
+  .lbl-short{display:inline}
   .rolesw-trg .rs-meta{display:none}
 }
 @media(max-width:1020px){
@@ -510,10 +520,15 @@ button{font-family:inherit;cursor:pointer}
 </main>
 
 <div class="actionbar">
-  <button class="btn btn-out" type="button">Return</button>
-  <button class="btn btn-out" type="button">Reassign to LTA Officer</button>
-  <div class="ab-spacer"></div>
-  <button class="btn btn-primary" type="button">Approve</button>
+  <div class="ab-inner">
+    <div class="act-left">
+      <button class="btn btn-out" type="button">Return</button>
+      <button class="btn btn-out" type="button"><span class="lbl-full">Reassign to LTA Officer</span><span class="lbl-short">Reassign</span></button>
+    </div>
+    <div class="act-right">
+      <button class="btn btn-primary" type="button">Approve</button>
+    </div>
+  </div>
 </div>
 
 <script>

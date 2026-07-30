@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RMWP-TR388-RRFM-M-5 · RMWP</title>
+<title>RMWP-TR388-RRFM-M-5 · Photo swipe · RMWP</title>
 <style>
 /* ============================================================
    RMWP Design Tokens — SGDS-informed, LTA-branded
@@ -944,8 +944,12 @@ body.view-mode #boqAdd{display:none}
 .ph.is-empty{background:var(--grey-100)}
 .ph.is-empty .cap{background:var(--grey-300);color:var(--grey-600)}
 @media(max-width:820px){
-  .photo-grid-ro{grid-template-columns:1fr;gap:12px}   /* one photo per row on mobile */
-  .photo-ro .ph{height:150px}
+  /* Mobile: horizontal swipe carousel instead of stacked photos */
+  .photo-grid-ro{display:flex;overflow-x:auto;gap:12px;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:6px}
+  .photo-grid-ro::-webkit-scrollbar{display:none}
+  .photo-ro{flex:0 0 78%;scroll-snap-align:center}
+  .photo-ro .ph{height:180px}
 }
 /* ---- Photo slots: only the Site Supervisor, and only in edit mode, can add/remove ---- */
 .photo-ro{position:relative}
