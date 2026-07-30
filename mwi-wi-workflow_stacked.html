@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RMWP-TR388-RRFM-M-5 · RMWP</title>
+<title>RMWP-TR388-RRFM-M-5 · Stacked assets · RMWP</title>
 <style>
 /* ============================================================
    RMWP Design Tokens — SGDS-informed, LTA-branded
@@ -479,6 +479,7 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 .map-lite strong{color:var(--grey-700);font-size:var(--fs-base)}
 .map-lite span{color:var(--grey-500);font-size:var(--fs-xs);max-width:44ch}
 .asset-lite{border:1px solid var(--grey-200);border-radius:var(--r-md);padding:16px;background:var(--grey-25)}
+.asset-lite+.asset-lite{margin-top:16px}
 .asset-lite-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .asset-lite-head strong{font-size:var(--fs-md);font-weight:650;color:var(--navy-700)}
 .asset-lite-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 20px;align-items:start}
@@ -826,6 +827,7 @@ body.view-mode .gate-note{display:none}
 .asset-lite.collapsed .asset-lite-head .al-chev svg,
 .task-lite.collapsed .task-lite-head .al-chev svg{transform:rotate(-90deg)}
 .asset-lite.collapsed>:not(.asset-lite-head){display:none}
+.asset-lite.collapsed .asset-lite-head,.task-lite.collapsed .task-lite-head{margin-bottom:0}
 .task-lite.collapsed>:not(.task-lite-head){display:none}
 
 /* ---- Wizard steps (CO @ Approval-in-Progress = full 4 steps) ---- */
@@ -1755,6 +1757,13 @@ body.view-mode .boq-actions{display:none}
 <script>
 (function(){
   var MAX_ASSETS=3, MAX_TASKS=3;          // Arjun: 3 assets x 3 tasks (still to be confirmed)
+  function jumpTo(el){                     // stacked variant: chips scroll to the block instead of switching
+    if(!el) return;
+    var head=document.getElementById('stickyhead');
+    var off=(head?Math.max(head.getBoundingClientRect().bottom,0):0)+12;
+    el.style.scrollMarginTop=off+'px';
+    el.scrollIntoView({behavior:'smooth',block:'start'});
+  }
   var ASSET_TPL=null, TASK_TPL=null;      // templates so everything can be re-added after deleting all
   function assets(){ return Array.prototype.slice.call(document.querySelectorAll('.asset-lite')); }
   function setLabel(h,text){              // renumber without wiping the injected collapse chevron
@@ -1806,15 +1815,14 @@ body.view-mode .boq-actions{display:none}
     if(activeAsset>=list.length) activeAsset=Math.max(0,list.length-1);
     bar.innerHTML='';
     list.forEach(function(a,i){
-      a.hidden=(i!==activeAsset);
-      a.classList.remove('collapsed');            // tabs replace the accordion
+      a.hidden=false;                             // stacked: every asset stays visible
       var b=document.createElement('button');
       b.type='button'; b.className='at-chip'+(i===activeAsset?' is-on':'');
       var n=tasksIn(a).length;
       b.innerHTML='<span></span><span class="at-count'+(n?'':' is-zero')+'">'+n+'</span>';
       b.firstChild.textContent='Asset '+(i+1);
       b.title=n+(n===1?' task':' tasks');
-      b.addEventListener('click',function(){ activeAsset=i; buildAssetTabs(); });
+      b.addEventListener('click',function(){ activeAsset=i; buildAssetTabs(); a.classList.remove('collapsed'); jumpTo(a); });
       bar.appendChild(b);
     });
     var note=noteAfter(bar,'asset-gate');
@@ -1895,8 +1903,7 @@ body.view-mode .boq-actions{display:none}
     if(act>=list.length) act=Math.max(0,list.length-1);
     a.dataset.activeTask=act;
     list.forEach(function(t,i){
-      t.hidden=(i!==act);
-      t.classList.remove('collapsed');
+      t.hidden=false;                             // stacked: every task stays visible
       var rm=t.querySelector('.task-remove'); if(rm) rm.style.display='';   // always deletable
       var h=t.querySelector('.task-lite-head strong'); if(h) setLabel(h,'Task '+(i+1));
     });
@@ -1907,7 +1914,7 @@ body.view-mode .boq-actions{display:none}
         var b=document.createElement('button');
         b.type='button'; b.className='tt-chip'+(i===act?' is-on':'');
         b.textContent='Task '+(i+1);
-        b.addEventListener('click',function(){ a.dataset.activeTask=i; updateTaskRemove(a); });
+        b.addEventListener('click',function(){ a.dataset.activeTask=i; updateTaskRemove(a); t.classList.remove('collapsed'); jumpTo(t); });
         bar.appendChild(b);
       });
       if(list.length<MAX_TASKS){
@@ -1941,7 +1948,7 @@ body.view-mode .boq-actions{display:none}
   function addTask(a){
     var list=tasksIn(a); if(list.length>=MAX_TASKS) return;
     var src=list[list.length-1]||TASK_TPL; if(!src) return;
-    var clone=src.cloneNode(true); resetClone(clone);
+    var clone=src.cloneNode(true); resetClone(clone); clone.classList.remove('collapsed');
     clone.hidden=false;
     if(list.length) list[list.length-1].parentNode.insertBefore(clone,list[list.length-1].nextSibling);
     else { var bar=taskTabsOf(a);
@@ -1954,6 +1961,7 @@ body.view-mode .boq-actions{display:none}
     wireTaskRemove(a,clone);
     a.dataset.activeTask=tasksIn(a).indexOf(clone);
     refreshGates();
+    jumpTo(clone);
   }
   function wireTasks(a){
     tasksIn(a).forEach(function(t){ var rm=t.querySelector('.task-lite-head .btn'); if(rm) rm.classList.add('task-remove'); wireTaskRemove(a,t); });
@@ -1962,7 +1970,7 @@ body.view-mode .boq-actions{display:none}
   function addAsset(){
     var list=assets(); if(list.length>=MAX_ASSETS) return;
     var src=list[list.length-1]||ASSET_TPL; if(!src) return;
-    var clone=src.cloneNode(true); resetClone(clone);
+    var clone=src.cloneNode(true); resetClone(clone); clone.classList.remove('collapsed');
     tasksIn(clone).slice(1).forEach(function(t){ t.remove(); }); // fresh asset starts with one task
     clone.hidden=false;
     if(list.length) list[list.length-1].parentNode.insertBefore(clone,list[list.length-1].nextSibling);
@@ -1972,6 +1980,7 @@ body.view-mode .boq-actions{display:none}
     wireRemove(clone); wireTasks(clone);
     activeAsset=assets().indexOf(clone);
     updateRemove();
+    jumpTo(clone);
   }
   (function(){ var f=assets()[0]; if(f){ ASSET_TPL=f.cloneNode(true); var t=f.querySelector('.task-lite'); if(t) TASK_TPL=t.cloneNode(true); } })();
   assets().forEach(function(a){ var rm=a.querySelector('.asset-lite-head .btn'); if(rm) rm.classList.add('asset-remove'); wireRemove(a); wireTasks(a); });
@@ -2425,6 +2434,53 @@ document.addEventListener('change', function(e){
   setMode(true);   // default: view / read-only
 })();
 </script>
+<script>
+/* Stacked variant: collapsible asset / task blocks (default expanded) */
+(function(){
+  var CHEV='<span class="al-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>';
+  function ensure(){
+    document.querySelectorAll('.asset-lite-head strong,.task-lite-head strong').forEach(function(st){
+      if(!st.querySelector('.al-chev')) st.insertAdjacentHTML('afterbegin',CHEV);
+    });
+  }
+  document.addEventListener('click',function(e){
+    var h=e.target.closest('.asset-lite-head,.task-lite-head');
+    if(!h||e.target.closest('button'))return;
+    var b=h.closest(h.classList.contains('asset-lite-head')?'.asset-lite':'.task-lite');
+    if(b)b.classList.toggle('collapsed');
+  });
+  document.querySelectorAll('.asset-lite-head,.task-lite-head').forEach(function(h){h.style.cursor='pointer';});
+  var mo=new MutationObserver(function(){
+    ensure();
+    document.querySelectorAll('.asset-lite-head,.task-lite-head').forEach(function(h){h.style.cursor='pointer';});
+  });
+  mo.observe(document.body,{childList:true,subtree:true});
+  ensure();
+})();
+</script>
+<script>
+/* Stacked variant: scroll-spy keeps the Asset / Task chips in sync while scrolling */
+(function(){
+  function spy(){
+    var head=document.getElementById('stickyhead');
+    var off=(head?head.getBoundingClientRect().bottom:150)+20;
+    var list=Array.prototype.slice.call(document.querySelectorAll('.asset-lite')).filter(function(a){ return a.offsetParent!==null; });
+    if(!list.length) return;
+    var ai=0;
+    list.forEach(function(a,i){ if(a.getBoundingClientRect().top<=off) ai=i; });
+    var bar=document.getElementById('assetTabs');
+    if(bar) Array.prototype.slice.call(bar.querySelectorAll('.at-chip')).forEach(function(c,i){ c.classList.toggle('is-on',i===ai); });
+    list.forEach(function(a){
+      var ts=Array.prototype.slice.call(a.querySelectorAll('.task-lite'));
+      var tb=a.querySelector('.task-tabs'); if(!tb||!ts.length) return;
+      var ti=0;
+      ts.forEach(function(t,i){ if(t.getBoundingClientRect().top<=off) ti=i; });
+      Array.prototype.slice.call(tb.querySelectorAll('.tt-chip')).forEach(function(c,i){ c.classList.toggle('is-on',i===ti); });
+    });
+  }
+  window.addEventListener('scroll',spy,{passive:true});
+})();
+</script>
 <style>
 /* Demo-only: floating layout switcher for side-by-side comparison */
 .ver-switch{position:fixed;left:16px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:46;display:flex;align-items:center;background:#fff;border:1px solid var(--grey-200);border-radius:999px;padding:4px;box-shadow:0 4px 16px rgba(22,31,38,.16)}
@@ -2436,8 +2492,8 @@ document.addEventListener('change', function(e){
 </style>
 <div class="ver-switch" role="navigation" aria-label="Prototype layout switcher">
   <span class="vs-label">Assets UX</span>
-  <a class="vs-opt is-on" href="mwi-wi-workflow.html">Tab switch</a>
-  <a class="vs-opt" href="mwi-wi-workflow_stacked.html">Stacked</a>
+  <a class="vs-opt" href="mwi-wi-workflow.html">Tab switch</a>
+  <a class="vs-opt is-on" href="mwi-wi-workflow_stacked.html">Stacked</a>
 </div>
 </body>
 </html>
