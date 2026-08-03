@@ -93,6 +93,13 @@ button{font-family:inherit;cursor:pointer}
   body.nav-collapsed .nav-item{width:44px;height:44px;margin:2px auto;padding:0;justify-content:center;border-radius:12px}
   body.nav-collapsed .ni-label,body.nav-collapsed .ni-chev,body.nav-collapsed .ni-badge{display:none}
   body.nav-collapsed .nav-group.open .nav-sub-list{display:none}
+  /* collapsed rail: hover flyout for the sub menu (reference-style) */
+  body.nav-collapsed .sidebar{overflow:visible}
+  body.nav-collapsed .nav-group{position:relative}
+  body.nav-collapsed .nav-group::after{content:"";position:absolute;left:100%;top:0;width:12px;height:100%}
+  body.nav-collapsed .nav-group:hover .nav-sub-list{display:block;position:absolute;left:calc(100% + 10px);top:0;margin:0;padding:8px;width:196px;background:var(--teal-700);border:1px solid rgba(255,255,255,.15);border-radius:12px;box-shadow:var(--shadow-lg);z-index:70}
+  body.nav-collapsed .nav-group:hover .nav-sub-list::before{content:"Work instruction";position:static;width:auto;height:auto;display:block;background:none;font-size:.75rem;font-weight:650;color:rgba(255,255,255,.6);padding:6px 10px 8px}
+  body.nav-collapsed .nav-group:hover .nav-sub{margin-left:0}
 }
 
 .main{margin-left:var(--sidebar-w);padding:var(--topbar-h) 32px 110px}
@@ -100,8 +107,12 @@ button{font-family:inherit;cursor:pointer}
 .back:hover{color:var(--teal-700)}.back svg{width:15px;height:15px}
 
 /* ==== sticky page head (Layout A) ==== */
-.pagehead{position:sticky;top:var(--topbar-h);z-index:25;background:var(--grey-50);padding:18px 0 12px;margin-bottom:8px}
+.pagehead{position:sticky;top:var(--topbar-h);z-index:25;background:var(--grey-50);padding:12px 0;margin-bottom:8px}
 .b-top{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.ph-back{display:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--grey-200);background:#fff;align-items:center;justify-content:center;color:var(--grey-700);flex:none}
+.ph-back svg{width:17px;height:17px}
+.ph-id{display:flex;align-items:center;gap:12px;min-width:0}
+.ph-id h1{overflow:hidden;text-overflow:ellipsis}
 .b-top h1{font-size:1.375rem;font-weight:700;letter-spacing:-.01em;color:var(--grey-900)}
 .chip{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:var(--r-pill);font-size:.75rem;font-weight:650;background:var(--navy-50);color:var(--navy-700)}
 .chip .d{width:8px;height:8px;border-radius:50%;background:var(--navy-600)}
@@ -238,22 +249,43 @@ button{font-family:inherit;cursor:pointer}
   .ab-inner{flex-direction:column;align-items:stretch;gap:8px}
   .act-left{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .act-right{margin-left:0;display:grid;grid-template-columns:1fr;gap:8px}
-  .actionbar .btn{width:100%;min-height:46px;white-space:nowrap;line-height:1.25}
+  .actionbar .btn{width:100%;min-height:44px;white-space:nowrap;line-height:1.25}
   .lbl-full{display:none}
   .lbl-short{display:inline}
   .rolesw-trg .rs-meta{display:none}
 }
 @media(max-width:1020px){
   .body-grid{display:block}
-  .rail{position:static;margin-bottom:16px;flex:none;height:auto}
-  .rsubs.on{display:none}
+  .rail{position:sticky;top:calc(var(--topbar-h) + var(--phh,64px));z-index:24;margin-bottom:16px;flex:none;height:auto;transition:top .25s ease}
+  body.hd-hide .rail{top:calc(var(--topbar-h) + 12px)}
+  .rail:has(.rsubs.on){padding-bottom:50px}
+  .rsubs.on{position:absolute;left:14px;right:14px;bottom:10px;display:flex;flex-direction:row;overflow-x:auto;gap:4px;margin:0;scrollbar-width:none}
+  .rsubs.on::-webkit-scrollbar{display:none}
+  .rsubs::before{display:none}
+  .rsub{flex:0 0 auto;padding:6px 12px;margin:0;white-space:nowrap}
   .steps{flex-direction:row;overflow-x:auto;scrollbar-width:none}
   .steps::-webkit-scrollbar{display:none}
   .step{width:auto;flex:0 0 auto}
   .step .ss{display:none}
   .rconn{display:none}
 }
-@media(max-width:680px){ .fgrid,.field-row,.al-grid,.photo-grid-ro{grid-template-columns:1fr} .brand-name{display:none} .b-top h1{font-size:1.25rem} }
+@media(max-width:1020px){
+  /* scroll UX: pagehead slides away going down, comes back going up; rail stays sticky */
+  .pagehead{transition:transform .25s ease,opacity .18s ease}
+  body.hd-hide .pagehead{transform:translateY(-130%);opacity:0;pointer-events:none}
+  /* pagehead -> compact context bar (photoswipe-navy style) */
+  .b-top{flex-wrap:nowrap;gap:10px}
+  .ph-back{display:inline-flex}
+  .ph-id{flex:1;flex-direction:column;align-items:flex-start;gap:5px}
+  .b-top h1{font-size:1rem;white-space:nowrap;max-width:100%}
+  /* type hierarchy: section titles sit below the 16px page id */
+  .sec-title{font-size:.9375rem}
+  .b-actions{gap:8px}
+  .b-btn{width:40px;height:40px;padding:0;justify-content:center;border-radius:10px}
+  .b-btn .bl{display:none}
+  .b-btn svg{width:17px;height:17px}
+}
+@media(max-width:680px){ .fgrid,.field-row,.al-grid,.photo-grid-ro{grid-template-columns:1fr} .brand-name{display:none} }
 </style>
 </head>
 <body>
@@ -302,11 +334,14 @@ button{font-family:inherit;cursor:pointer}
 <main class="main">
   <div class="pagehead">
     <div class="b-top">
-      <h1>RMWP-TR388-RRFM-M-5</h1>
-      <span class="chip"><span class="d"></span>Approval in progress</span>
+      <a class="ph-back" href="mwi-list-redesign.html" aria-label="Back to work instructions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></a>
+      <div class="ph-id">
+        <h1>RMWP-TR388-RRFM-M-5</h1>
+        <span class="chip"><span class="d"></span>Approval in progress</span>
+      </div>
       <div class="b-actions">
-        <button class="b-btn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/></svg>Timeline</button>
-        <button class="b-btn primary" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>Edit</button>
+        <button class="b-btn" type="button" title="Timeline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/></svg><span class="bl">Timeline</span></button>
+        <button class="b-btn primary" type="button" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg><span class="bl">Edit</span></button>
       </div>
     </div>
   </div>
@@ -546,11 +581,22 @@ button{font-family:inherit;cursor:pointer}
       window.scrollTo({top:0,behavior:'smooth'});
     });
   });
+  var mqm=window.matchMedia('(max-width:1020px)');
   subBtns.forEach(function(b){
     b.addEventListener('click',function(){
       var t=document.querySelector('.sec[data-sec="'+b.getAttribute('data-target')+'"]');
       if(!t)return;
       subBtns.forEach(function(x){x.classList.toggle('active',x===b);});
+      if(mqm.matches){
+        /* mobile: land below the actual sticky stack (pagehead state depends on direction) */
+        var rail=document.querySelector('.rail'),ph=document.querySelector('.pagehead');
+        var down=t.getBoundingClientRect().top>rail.getBoundingClientRect().bottom;
+        document.body.classList.toggle('hd-hide',down);
+        var stack=down?(84+rail.offsetHeight):(72+ph.offsetHeight+rail.offsetHeight);
+        t.style.scrollMarginTop=(stack+10)+'px';
+      }else{
+        t.style.scrollMarginTop='';
+      }
       t.scrollIntoView({behavior:'smooth',block:'start'});
     });
   });
@@ -558,7 +604,7 @@ button{font-family:inherit;cursor:pointer}
   var spySecs=Array.prototype.slice.call(document.querySelectorAll('.step-group[data-group="1"] .sec'));
   function spy(){
     if(!document.querySelector('.step-group[data-group="1"]').classList.contains('on'))return;
-    var line=170,cur=spySecs[0];
+    var line=mqm.matches?document.querySelector('.rail').getBoundingClientRect().bottom+20:170,cur=spySecs[0];
     spySecs.forEach(function(s){if(s.getBoundingClientRect().top<=line)cur=s;});
     var se=document.scrollingElement;
     if(se.scrollTop+window.innerHeight>=se.scrollHeight-4)cur=spySecs[spySecs.length-1];
@@ -728,6 +774,23 @@ button{font-family:inherit;cursor:pointer}
       nm.textContent=opt.getAttribute('data-name');rl.textContent=opt.getAttribute('data-title');close();
     });
   });
+})();
+</script>
+<script>
+/* Mobile: hide the page head while scrolling down, bring it back on scroll up */
+(function(){
+  var mq=window.matchMedia('(max-width:1020px)'),ph=document.querySelector('.pagehead');
+  if(!ph)return;
+  function measure(){document.documentElement.style.setProperty('--phh',ph.offsetHeight+'px');}
+  measure();window.addEventListener('resize',measure);
+  var lastY=window.scrollY||0;
+  window.addEventListener('scroll',function(){
+    var y=window.scrollY;
+    if(!mq.matches){document.body.classList.remove('hd-hide');lastY=y;return;}
+    if(y<60||y<lastY-2)document.body.classList.remove('hd-hide');
+    else if(y>lastY+2)document.body.classList.add('hd-hide');
+    lastY=y;
+  },{passive:true});
 })();
 </script>
 </body>
