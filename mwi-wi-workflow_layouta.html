@@ -109,7 +109,7 @@ button{font-family:inherit;cursor:pointer}
 /* ==== sticky page head (Layout A) ==== */
 .pagehead{position:sticky;top:var(--topbar-h);z-index:25;background:var(--grey-50);padding:12px 0;margin-bottom:8px}
 .b-top{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
-.ph-back{display:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--grey-200);background:#fff;align-items:center;justify-content:center;color:var(--grey-700);flex:none}
+.ph-back{display:inline-flex;width:38px;height:38px;border-radius:50%;border:1px solid var(--grey-200);background:#fff;align-items:center;justify-content:center;color:var(--grey-700);flex:none}
 .ph-back svg{width:17px;height:17px}
 .ph-id{display:flex;align-items:center;gap:12px;min-width:0}
 .ph-id h1{overflow:hidden;text-overflow:ellipsis}
@@ -287,6 +287,14 @@ button{font-family:inherit;cursor:pointer}
 }
 @media(max-width:680px){ .fgrid,.field-row,.al-grid,.photo-grid-ro{grid-template-columns:1fr} .brand-name{display:none} }
 </style>
+<style>
+/* Demo: prototype-version switcher inside the role menu */
+.rolesw-sep{height:1px;background:var(--grey-200);margin:6px 8px}
+.ver-seg{display:flex;gap:4px;padding:2px 8px 10px}
+.ver-seg .vs-opt{flex:1;text-align:center;padding:7px 6px;border-radius:var(--r-sm,8px);font-size:var(--fs-xs,.75rem);font-weight:650;color:var(--grey-600);background:var(--grey-100);text-decoration:none;white-space:nowrap}
+.ver-seg .vs-opt:hover{background:var(--grey-200);color:var(--grey-900)}
+.ver-seg .vs-opt.is-on{background:var(--teal-700);color:#fff}
+</style>
 </head>
 <body>
 
@@ -306,6 +314,13 @@ button{font-family:inherit;cursor:pointer}
       <button class="rolesw-opt on" data-role="co" data-name="DEV CO01" data-title="Contract Officer" data-av="DC"><span class="rs-av rs-co">DC</span><span class="m"><strong>DEV CO01</strong><span>Contract Officer</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
       <button class="rolesw-opt" data-role="ss" data-name="DEV TR388SS01" data-title="Site Supervisor" data-av="DT"><span class="rs-av rs-ss">DT</span><span class="m"><strong>DEV TR388SS01</strong><span>Site Supervisor</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
       <button class="rolesw-opt" data-role="eng" data-name="DEV TR388ENG01" data-title="Engineer" data-av="DT"><span class="rs-av rs-eng">DT</span><span class="m"><strong>DEV TR388ENG01</strong><span>Engineer</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
+      <div class="rolesw-sep"></div>
+      <div class="rolesw-head">Prototype version</div>
+      <div class="ver-seg" role="group" aria-label="Prototype version">
+        <a class="vs-opt" href="mwi-wi-workflow.html">Original</a>
+        <a class="vs-opt is-on" href="mwi-wi-workflow_layouta.html">Green</a>
+        <a class="vs-opt" href="mwi-wi-workflow_photoswipe-navy.html">Navy</a>
+      </div>
     </div>
   </div>
 </header>
@@ -315,7 +330,7 @@ button{font-family:inherit;cursor:pointer}
   <div class="nav-group open" id="grpWI">
     <button class="nav-item active" type="button" id="grpWItrg" aria-expanded="true"><span class="ni-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg></span><span class="ni-label">Work instruction</span><svg class="ni-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
     <div class="nav-sub-list">
-      <a class="nav-sub active" href="mwi-list-redesign.html"><span>Maintenance WI</span></a>
+      <a class="nav-sub active" href="mwi-list-redesign-a.html"><span>Maintenance WI</span></a>
       <a class="nav-sub" href="#"><span>Inspection WI</span></a>
       <a class="nav-sub" href="#"><span>WI template</span></a>
     </div>
@@ -328,13 +343,13 @@ button{font-family:inherit;cursor:pointer}
   <a class="nav-item" href="#"><span class="ni-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.3 9 5.2M21 8l-9-5-9 5v8l9 5 9-5Z"/></svg></span><span class="ni-label">Asset inventory</span></a>
   <a class="nav-item" href="#"><span class="ni-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg></span><span class="ni-label">Configuration</span></a>
 </nav>
-<button class="nav-toggle" id="navToggle" type="button" aria-label="Collapse menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+<button class="nav-toggle" id="navToggle" type="button" aria-label="Collapse menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9.5 3v18"/></svg></button>
 <div class="backdrop" id="backdrop"></div>
 
 <main class="main">
   <div class="pagehead">
     <div class="b-top">
-      <a class="ph-back" href="mwi-list-redesign.html" aria-label="Back to work instructions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></a>
+      <a class="ph-back" href="mwi-list-redesign-a.html" aria-label="Back to work instructions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></a>
       <div class="ph-id">
         <h1>RMWP-TR388-RRFM-M-5</h1>
         <span class="chip"><span class="d"></span>Approval in progress</span>

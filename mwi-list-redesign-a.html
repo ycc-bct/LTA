@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Maintenance Work Instructions · RMWP</title>
+<title>Maintenance Work Instructions · Layout A · RMWP</title>
 <style>
 /* ============================================================
    RMWP Design Tokens — SGDS-informed, LTA-branded
@@ -47,7 +47,7 @@
   --shadow-md:0 2px 8px rgba(22,31,38,.07),0 1px 2px rgba(22,31,38,.05);
   --shadow-lg:0 8px 24px rgba(22,31,38,.10);
   /* Layout */
-  --sidebar-w:232px; --topbar-h:72px; --sectionnav-h:48px;
+  --sidebar-w:248px; --topbar-h:72px; --sectionnav-h:48px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -101,20 +101,24 @@ button{font-family:inherit;cursor:pointer}
 
 .sidebar{
   position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);z-index:30;
-  background:#fff;border-right:1px solid var(--grey-200);
-  padding:16px 12px;overflow-y:auto;
+  background:var(--teal-700);border-right:1px solid var(--teal-800);
+  padding:18px 14px;overflow-y:auto;transition:width .2s ease;
 }
 .nav-group-label{font-size:var(--fs-xs);font-weight:650;color:var(--grey-400);text-transform:uppercase;letter-spacing:.06em;padding:14px 12px 6px}
+.nav-group,.nav-sub-list{display:contents}
 .nav-item{
-  display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r-md);
-  color:var(--grey-600);font-size:var(--fs-base);font-weight:480;margin-bottom:2px;
+  display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;
+  color:rgba(255,255,255,.82);font-size:var(--fs-base);font-weight:600;margin-bottom:3px;
 }
-.nav-item:hover{background:var(--grey-100);text-decoration:none;color:var(--grey-800)}
-.nav-item.active{background:var(--teal-50);color:var(--teal-700);font-weight:620}
-.nav-item.active .nav-ico{color:var(--teal-600)}
-.nav-item.sub{padding-left:38px;font-size:var(--fs-sm)}
-.nav-item.sub.current{color:var(--teal-700);font-weight:620;background:linear-gradient(to right,var(--teal-50),transparent)}
-.nav-ico{width:18px;height:18px;flex:none;color:var(--grey-400)}
+.nav-item:hover{background:rgba(255,255,255,.12);text-decoration:none;color:#fff}
+.nav-item.active{background:rgba(255,255,255,.12);color:#fff;font-weight:700}
+.nav-item.active .nav-ico{color:#fff}
+.nav-item.sub{margin-left:30px;padding:9px 14px;font-size:var(--fs-sm);color:rgba(255,255,255,.68);font-weight:500;position:relative}
+.nav-item.sub::before{content:"";position:absolute;left:-11px;top:-3px;bottom:0;width:1.5px;background:rgba(255,255,255,.25)}
+.nav-item.sub:hover{color:#fff;background:rgba(255,255,255,.12)}
+.nav-item.sub.current{color:var(--teal-700);font-weight:700;background:#fff}
+.nav-ico{width:18px;height:18px;flex:none;color:rgba(255,255,255,.72)}
+.nav-item:hover .nav-ico{color:#fff}
 
 .main{margin-left:var(--sidebar-w);padding:calc(var(--topbar-h) + 24px) 32px 96px;max-width:none;
   min-height:100vh;display:flex;flex-direction:column}
@@ -313,6 +317,26 @@ button{font-family:inherit;cursor:pointer}
 .menu-btn{display:none}
 .backdrop{position:fixed;inset:0;background:rgba(22,31,38,.4);z-index:50;opacity:0;pointer-events:none;transition:opacity .22s ease}
 .backdrop.show{opacity:1;pointer-events:auto}
+
+/* Collapse-to-rail toggle (Layout A style) */
+.nav-toggle{position:fixed;top:calc(var(--topbar-h) + 20px);left:calc(var(--sidebar-w) - 16px);z-index:41;width:32px;height:32px;border-radius:50%;background:#fff;border:1px solid var(--grey-200);box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;color:var(--grey-600);transition:left .2s ease;cursor:pointer}
+.nav-toggle:hover{color:var(--grey-900)}
+.nav-toggle svg{width:16px;height:16px;transition:transform .2s}
+@media(max-width:1020px){.nav-toggle{display:none}}
+@media(min-width:1021px){
+  body.nav-collapsed{--sidebar-w:76px}
+  body.nav-collapsed .nav-toggle svg{transform:rotate(180deg)}
+  body.nav-collapsed .nav-item{width:44px;height:44px;margin:2px auto;padding:0;justify-content:center;font-size:0;gap:0;border-radius:12px}
+  body.nav-collapsed .nav-item.sub{display:none}
+  body.nav-collapsed .nav-sub-list{display:none}
+  body.nav-collapsed .sidebar{overflow:visible}
+  body.nav-collapsed .nav-group{display:block;position:relative}
+  body.nav-collapsed .nav-group::after{content:"";position:absolute;left:100%;top:0;width:12px;height:100%}
+  body.nav-collapsed .nav-group:hover .nav-sub-list{display:block;position:absolute;left:calc(100% + 10px);top:0;margin:0;padding:8px;width:196px;background:var(--teal-700);border:1px solid rgba(255,255,255,.15);border-radius:12px;box-shadow:var(--shadow-lg);z-index:70}
+  body.nav-collapsed .nav-group:hover .nav-sub-list::before{content:"Work instruction";display:block;font-size:11px;font-weight:650;color:rgba(255,255,255,.6);padding:6px 10px 8px}
+  body.nav-collapsed .nav-group:hover .nav-item.sub{display:flex;width:auto;height:auto;margin:0 0 2px 0;padding:9px 14px;font-size:var(--fs-sm);justify-content:flex-start}
+  body.nav-collapsed .nav-group:hover .nav-item.sub::before{display:none}
+}
 
 /* ---------- Responsive ---------- */
 @media(max-width:1020px){
@@ -563,6 +587,14 @@ button{font-family:inherit;cursor:pointer}
 .ver-seg .vs-opt:hover{background:var(--grey-200);color:var(--grey-900)}
 .ver-seg .vs-opt.is-on{background:var(--teal-700);color:#fff}
 </style>
+<style>
+/* chrome parity with mwi-wi-workflow_layouta */
+.brand{gap:24px}
+.brand-logo-img{height:50px}
+.brand-name{border-left:0;padding-left:0;margin-left:0;font-size:.875rem}
+.ni-chev{width:16px;height:16px;flex:none;margin-left:auto;color:rgba(255,255,255,.6);transform:rotate(180deg)}
+@media(min-width:1021px){body.nav-collapsed .ni-chev{display:none}}
+</style>
 </head>
 <body>
 
@@ -593,8 +625,8 @@ button{font-family:inherit;cursor:pointer}
       <div class="rolesw-sep"></div>
       <div class="rolesw-head">Prototype version</div>
       <div class="ver-seg" role="group" aria-label="Prototype version">
-        <a class="vs-opt is-on" href="mwi-list-redesign.html">Original</a>
-        <a class="vs-opt" href="mwi-list-redesign-a.html">Green</a>
+        <a class="vs-opt" href="mwi-list-redesign.html">Original</a>
+        <a class="vs-opt is-on" href="mwi-list-redesign-a.html">Green</a>
         <a class="vs-opt" href="mwi-list-redesign-navy.html">Navy</a>
       </div>
     </div>
@@ -604,10 +636,14 @@ button{font-family:inherit;cursor:pointer}
 <!-- ============ Sidebar (desktop) ============ -->
 <nav class="sidebar" aria-label="Main navigation">
   <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/><path d="M9 22V12h6v10"/></svg>Overview</a>
-  <a class="nav-item active" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>Work instruction</a>
-  <a class="nav-item sub current" href="mwi-list-redesign.html">Maintenance WI</a>
+  <div class="nav-group">
+  <a class="nav-item active" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>Work instruction<svg class="ni-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <div class="nav-sub-list">
+  <a class="nav-item sub current" href="mwi-list-redesign-a.html">Maintenance WI</a>
   <a class="nav-item sub" href="#">Inspection WI</a>
   <a class="nav-item sub" href="#">WI template</a>
+  </div>
+  </div>
   <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15.9A10 10 0 1 1 8 2.8"/><path d="M22 12A10 10 0 0 0 12 2v10Z"/></svg>Dashboard</a>
   <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Reports</a>
   <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>User</a>
@@ -617,6 +653,7 @@ button{font-family:inherit;cursor:pointer}
   <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>Configuration</a>
 </nav>
 <div class="backdrop" id="backdrop"></div>
+<button class="nav-toggle" id="navToggle" type="button" aria-label="Collapse menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9.5 3v18"/></svg></button>
 
 <main class="main">
 
@@ -664,7 +701,7 @@ button{font-family:inherit;cursor:pointer}
         </tr>
       </thead>
       <tbody>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow_layouta.html">
         <td class="wi-num">RMWP-TR388-RRFM-M-17</td>
         <td><span class="cell-main">Adis Road</span><span class="cell-sub">Sector NW3 · CS4</span></td>
         <td><span class="cell-main">Bollard</span><span class="cell-sub">Bollard</span></td>
@@ -673,7 +710,7 @@ button{font-family:inherit;cursor:pointer}
         <td><span class="chip chip-sm chip-draft">Draft</span></td>
         <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow_layouta.html">
         <td class="wi-num">RMWP-TR388-RRFM-M-7</td>
         <td><span class="cell-main">Admiralty Drive</span><span class="cell-sub">Sector NW2 · NW1</span></td>
         <td><span class="cell-main">Bollard</span><span class="cell-sub">Bollard</span></td>
@@ -682,7 +719,7 @@ button{font-family:inherit;cursor:pointer}
         <td><span class="chip chip-sm chip-draft">Draft</span></td>
         <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow_layouta.html">
         <td class="wi-num">RMWP-TR388-RRFM-M-13</td>
         <td><span class="cell-main">Admiralty Lane</span><span class="cell-sub">Sector NW2 · NW1</span></td>
         <td><span class="cell-main">Traffic sign</span><span class="cell-sub">Signage</span></td>
@@ -691,7 +728,7 @@ button{font-family:inherit;cursor:pointer}
         <td><span class="chip chip-sm chip-draft">Draft</span></td>
         <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow_layouta.html">
         <td class="wi-num">RMWP-TR388-RRFM-M-12</td>
         <td><span class="cell-main">Admiralty Lane</span><span class="cell-sub">Sector NW2 · NW1</span></td>
         <td><span class="cell-main">Railing</span><span class="cell-sub">Railing</span></td>
@@ -700,7 +737,7 @@ button{font-family:inherit;cursor:pointer}
         <td><span class="chip chip-sm chip-draft">Draft</span></td>
         <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow_layouta.html">
         <td class="wi-num">RMWP-TR388-RRFM-M-24</td>
         <td><span class="cell-main">Admiralty Drive</span><span class="cell-sub">Sector NW2 · NW1</span></td>
         <td><span class="cell-muted">Not selected yet</span></td>
@@ -709,7 +746,7 @@ button{font-family:inherit;cursor:pointer}
         <td><span class="chip chip-sm chip-draft">Draft</span></td>
         <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow_layouta.html">
         <td class="wi-num">RMWP-TR388-RRFM-M-27</td>
         <td><span class="cell-main">Admiralty Drive</span><span class="cell-sub">Sector NW2 · NW1</span></td>
         <td><span class="cell-main">Carriageway</span><span class="cell-sub">Flexible pavement</span></td>
@@ -718,7 +755,7 @@ button{font-family:inherit;cursor:pointer}
         <td><span class="chip chip-sm chip-draft">Draft</span></td>
         <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow_layouta.html">
         <td class="wi-num">RMWP-TR388-RRFM-M-8</td>
         <td><span class="cell-main">Adis Road</span><span class="cell-sub">Sector NW3 · CS4</span></td>
         <td><span class="cell-main">Bollard</span><span class="cell-sub">Bollard</span></td>
@@ -727,7 +764,7 @@ button{font-family:inherit;cursor:pointer}
         <td><span class="chip chip-sm chip-wip">In progress</span></td>
         <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow_layouta.html">
         <td class="wi-num">RMWP-TR388-RRFM-M-14</td>
         <td><span class="cell-main">Adis Road</span><span class="cell-sub">Sector NW3 · CS4</span></td>
         <td><span class="cell-main">Bollard</span><span class="cell-sub">Bollard</span></td>
@@ -736,7 +773,7 @@ button{font-family:inherit;cursor:pointer}
         <td><span class="chip chip-sm chip-wip">In progress</span></td>
         <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow_layouta.html">
         <td class="wi-num">RMWP-TR388-PATH-M-4</td>
         <td><span class="cell-main">Palm Drive</span><span class="cell-sub">Sector NW2 · NW2</span></td>
         <td><span class="cell-main">Footpath</span><span class="cell-sub">Pavement surface</span></td>
@@ -745,7 +782,7 @@ button{font-family:inherit;cursor:pointer}
         <td><span class="chip chip-sm chip-wip">In progress</span></td>
         <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow_layouta.html">
         <td class="wi-num">RMWP-TR388-PATH-M-1</td>
         <td><span class="cell-main">Palm Drive</span><span class="cell-sub">Sector NW2 · NW2</span></td>
         <td><span class="cell-main">Footpath</span><span class="cell-sub">Pavement surface</span></td>
@@ -759,61 +796,61 @@ button{font-family:inherit;cursor:pointer}
   </div>
 
   <ul class="wi-cards">
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
+    <li><a class="wi-card" href="mwi-wi-workflow_layouta.html">
       <div class="top"><span class="num">RMWP-TR388-RRFM-M-17</span><span class="chip chip-sm chip-draft">Draft</span></div>
       <div class="road">Adis Road <small>· Sector NW3 · CS4</small></div>
       <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Simplified item</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b style="color:var(--grey-400);font-weight:480">Not set</b></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
+    <li><a class="wi-card" href="mwi-wi-workflow_layouta.html">
       <div class="top"><span class="num">RMWP-TR388-RRFM-M-7</span><span class="chip chip-sm chip-draft">Draft</span></div>
       <div class="road">Admiralty Drive <small>· Sector NW2 · NW1</small></div>
       <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Simplified item</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>29 Jun 2026</b></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
+    <li><a class="wi-card" href="mwi-wi-workflow_layouta.html">
       <div class="top"><span class="num">RMWP-TR388-RRFM-M-13</span><span class="chip chip-sm chip-draft">Draft</span></div>
       <div class="road">Admiralty Lane <small>· Sector NW2 · NW1</small></div>
       <div class="meta"><span><strong>Traffic sign</strong> · Signage</span><span>Works order — accident</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>30 Jun 2026</b></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
+    <li><a class="wi-card" href="mwi-wi-workflow_layouta.html">
       <div class="top"><span class="num">RMWP-TR388-RRFM-M-12</span><span class="chip chip-sm chip-draft">Draft</span></div>
       <div class="road">Admiralty Lane <small>· Sector NW2 · NW1</small></div>
       <div class="meta"><span><strong>Railing</strong> · Railing</span><span>Works order — accident</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>30 Jun 2026</b></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
+    <li><a class="wi-card" href="mwi-wi-workflow_layouta.html">
       <div class="top"><span class="num">RMWP-TR388-RRFM-M-24</span><span class="chip chip-sm chip-draft">Draft</span></div>
       <div class="road">Admiralty Drive <small>· Sector NW2 · NW1</small></div>
       <div class="meta"><span><span style="color:var(--grey-400)">No asset selected yet</span></span><span>Simplified item</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>8 Jul 2026</b></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
+    <li><a class="wi-card" href="mwi-wi-workflow_layouta.html">
       <div class="top"><span class="num">RMWP-TR388-RRFM-M-27</span><span class="chip chip-sm chip-draft">Draft</span></div>
       <div class="road">Admiralty Drive <small>· Sector NW2 · NW1</small></div>
       <div class="meta"><span><strong>Carriageway</strong> · Flexible pavement</span><span>Simplified item</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>30 Jul 2026</b></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
+    <li><a class="wi-card" href="mwi-wi-workflow_layouta.html">
       <div class="top"><span class="num">RMWP-TR388-RRFM-M-8</span><span class="chip chip-sm chip-wip">In progress</span></div>
       <div class="road">Adis Road <small>· Sector NW3 · CS4</small></div>
       <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Works order — accident</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>2 Jun 2026</b></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
+    <li><a class="wi-card" href="mwi-wi-workflow_layouta.html">
       <div class="top"><span class="num">RMWP-TR388-RRFM-M-14</span><span class="chip chip-sm chip-wip">In progress</span></div>
       <div class="road">Adis Road <small>· Sector NW3 · CS4</small></div>
       <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Outcome-based defect</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>7 Jun 2026</b></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
+    <li><a class="wi-card" href="mwi-wi-workflow_layouta.html">
       <div class="top"><span class="num">RMWP-TR388-PATH-M-4</span><span class="chip chip-sm chip-wip">In progress</span></div>
       <div class="road">Palm Drive <small>· Sector NW2 · NW2</small></div>
       <div class="meta"><span><strong>Footpath</strong> · Pavement surface</span><span>Works order — accident</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>15 Jun 2026</b></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
+    <li><a class="wi-card" href="mwi-wi-workflow_layouta.html">
       <div class="top"><span class="num">RMWP-TR388-PATH-M-1</span><span class="chip chip-sm chip-wip">In progress</span></div>
       <div class="road">Palm Drive <small>· Sector NW2 · NW2</small></div>
       <div class="meta"><span><strong>Footpath</strong> · Pavement surface</span><span>Simplified item</span></div>
@@ -1042,6 +1079,9 @@ button{font-family:inherit;cursor:pointer}
   document.querySelectorAll('.rolesw-opt').forEach(function(o){o.addEventListener('click',function(){reloadForRole();});});
   syncNewWI();render();
 })();
+</script>
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.body.classList.toggle('nav-collapsed');});
 </script>
 </body>
 </html>

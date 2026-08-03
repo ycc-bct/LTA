@@ -123,7 +123,7 @@ button{font-family:inherit;cursor:pointer}
 .nav-item.sub.current{color:var(--teal-700);font-weight:620;background:linear-gradient(to right,var(--teal-50),transparent)}
 .nav-ico{width:18px;height:18px;flex:none;color:var(--grey-400)}
 
-.main{margin-left:var(--sidebar-w);padding:var(--topbar-h) 32px 96px;max-width:1220px}
+.main{margin-left:var(--sidebar-w);padding:var(--topbar-h) 32px 96px;max-width:none}
 
 /* ---------- Page header ---------- */
 .breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:var(--fs-sm);color:var(--grey-500);margin-bottom:14px}
@@ -1083,6 +1083,14 @@ body.view-mode .boq-actions{display:none}
   .tt-count-r{margin-left:0}
 }
 </style>
+<style>
+/* Demo: prototype-version switcher inside the role menu */
+.rolesw-sep{height:1px;background:var(--grey-200);margin:6px 8px}
+.ver-seg{display:flex;gap:4px;padding:2px 8px 10px}
+.ver-seg .vs-opt{flex:1;text-align:center;padding:7px 6px;border-radius:var(--r-sm,8px);font-size:var(--fs-xs,.75rem);font-weight:650;color:var(--grey-600);background:var(--grey-100);text-decoration:none;white-space:nowrap}
+.ver-seg .vs-opt:hover{background:var(--grey-200);color:var(--grey-900)}
+.ver-seg .vs-opt.is-on{background:var(--teal-700);color:#fff}
+</style>
 </head>
 <body>
 
@@ -1110,6 +1118,13 @@ body.view-mode .boq-actions{display:none}
       <button class="rolesw-opt" data-role="co"><span class="rs-av rs-co">DC</span><span class="m"><strong>DEV CO01</strong><span>Contract Officer</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
       <button class="rolesw-opt" data-role="ss"><span class="rs-av rs-ss">DT</span><span class="m"><strong>DEV TR388SS01</strong><span>Site Supervisor</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
       <button class="rolesw-opt" data-role="eng"><span class="rs-av rs-eng">DT</span><span class="m"><strong>DEV TR388ENG01</strong><span>Engineer</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
+      <div class="rolesw-sep"></div>
+      <div class="rolesw-head">Prototype version</div>
+      <div class="ver-seg" role="group" aria-label="Prototype version">
+        <a class="vs-opt is-on" href="mwi-wi-workflow.html">Original</a>
+        <a class="vs-opt" href="mwi-wi-workflow_layouta.html">Green</a>
+        <a class="vs-opt" href="mwi-wi-workflow_photoswipe-navy.html">Navy</a>
+      </div>
     </div>
   </div>
 </header>
