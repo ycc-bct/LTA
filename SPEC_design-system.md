@@ -39,7 +39,84 @@ info     --info-50:#EBF1FB     --info-600:#175CD3      --info-700:#1247A4
 ```
 **maroon `#8F2D2B` 保留給警示/危險**，不當一般裝飾色。
 
-### 5 狀態語意色（狀態 chip；解決現況「全用同一顆黃 pill」的問題）
+## 1b. ⭐ Slate 變體（原「Green」版）2026-08-04
+
+> 主管意見：**綠色少一點,多帶一些官網上的顏色**。原本的 teal 滿版側邊欄改成中性 chrome,
+> 主色換成官網自己的連結色,狀態色改用 LTA 官方 accent。**綠色只剩 closed 狀態的萊姆(約 4%)**,
+> 故版本代號由 **Green 改為 Slate**(三頁切換器、`<title>` 已同步)。
+> 套用檔案:`mwi-list-redesign-a.html`、`mwi-wi-workflow_layouta.html`。
+> **原版與 `mwi-wi-workflow_layout3b.html` 不動**,仍用上面的 teal 色階。
+
+### 取樣來源(2026-08-04,實際量測非目測)
+| 來源 | 方法 | 值 |
+|---|---|---|
+| LTA 官網連結/導覽色 | computed styles,出現 **143 次** | `#5C6BBC` |
+| 官網 CTA 按鈕 | computed styles | `#6A758A` |
+| 官網頁面底 / 內文墨 | computed styles | `#F4F5F8` / `#343A40` |
+| 官網 accent `.bg-color1..5` | Featured Projects 卡片漸層 | 見下 |
+| logo 三色 | `logo.png` 530×155 逐像素量化 | `#243888` 靛藍 2483px / `#108C98` 湖水藍 2083px / `#882428` 楓紅 1056px |
+
+> ⚠️ **官網介面本身完全沒有用到 teal/green** —— 導覽、按鈕、底色全是藍紫與灰藍。
+> 這是「綠色少一點」在資料上的依據,不是主觀偏好。
+
+### Primary — periwinkle(token 名沿用 `--teal-*`,避免改動 ~40 處用法)
+```
+--teal-50:#F1F1F6  --teal-100:#E1E2ED  --teal-200:#C5C9DD
+--teal-300:#9AA3D5 --teal-400:#7B87C9  --teal-500:#6E7CC4
+--teal-600:#5C6BBC ← 官網原色,primary 按鈕(白字 4.9:1)
+--teal-700:#4453A4 ← hover / active 文字(6.96:1)
+--teal-800:#384488  --teal-900:#2B3569
+```
+
+### Chrome — 中性,不帶語意
+```
+--chrome-600:#5E6A78 --chrome-700:#46505A
+--chrome-800:#343A40 ← 側邊欄底(＝官網內文墨色,白字 11.3:1)
+--chrome-900:#272C32 ← 側邊欄右框線
+```
+`nav-sub.active` 用**白底＋`--teal-700` 字**(8.93:1)。
+實心 periwinkle 貼在 `#343A40` 上只有 **2.35:1**,不夠,且無解 —— 要達 3:1 就得亮到讓白字掉到 3.84:1。
+
+### 5 狀態 — LTA 官方 accent,語意未被犧牲
+| 狀態 | LTA 來源 | 底 / 字 | 對比 |
+|---|---|---|---|
+| Draft | color5 灰藍 | `--st-draft-bg #EFF1F2` / `--st-draft-ink #3F4852` | 8.20:1 |
+| Work in progress | color2 珊瑚 | `--st-wip-bg #FBE9E6` / `--st-wip-ink #8E1704` | 7.87:1 |
+| Verification in progress | color1 黃 | `--st-ver-bg #FBF6E6` / `--st-ver-ink #8E6B04` | 4.57:1 |
+| Approval in progress | color4 藍紫 | `--st-appr-bg #E8E8FA` / `--st-appr-ink #100D84` | 12.28:1 |
+| Approved & closed | color3 萊姆 | `--st-done-bg #F4F8EA` / `--st-done-ink #5B761B` | 4.80:1 |
+
+⭐ **先前擔心的「品牌一致 vs 語意優先」兩難,在這組色上不用二選一** ——
+LTA 的 color1–5 天然湊齊了中性/完成/審查中/待處理,綠＝完成、黃＝審查中的直覺還在。
+WIP 刻意用珊瑚而非藍紫,是為了避開與 primary periwinkle(230°)色相太近(241°)。
+
+### danger
+`--danger-600` 由 `#A93A32` 校準到 **logo 楓紅 `#882428`**(白底 9.01:1),`--danger-700:#6E1D20`。
+
+### 角色識別色(頭像 `.rs-av` ／ timeline 角色徽章 `.rb`)
+| 角色 | token | 值 | 色相 | 白字 | 由來 |
+|---|---|---|---|---|---|
+| Contract Officer | `--role-co` | `#10757E` | 185° | 5.43:1 | logo 湖水藍 —— 主導角色用品牌錨點色 |
+| Site Supervisor | `--role-ss` | `--` `#AD210B` | 8° | 7.00:1 | color2 珊瑚 ＝ 它負責的 Work-in-progress |
+| Engineer | `--role-eng` | `#866709` | 45° | 5.31:1 | color1 黃 ＝ 它負責的 Verification |
+
+- **SS / Eng 的頭像色 ＝ 它們負責階段的狀態色**,不是隨機分配;CO 同時負責 Draft 與 Approval 兩階,
+  無法對到單一狀態,故用 logo 湖水藍當錨點(也保留一點 logo 的綠,但只佔一個 34px 圓)。
+- 三者色相 185°／8°／45° 都**遠離 primary periwinkle(231°)**,頭像不會被誤讀成可按的按鈕。
+- 未指定角色時 `.rs-av` 預設 `--chrome-700`(中性),原本是 `--navy-600`。
+
+### 三個版本的區隔
+| 版本 | 側邊欄 | primary |
+|---|---|---|
+| 原版 | 白 `#fff` | teal `#00747A` |
+| **Slate** | **中性墨 `#343A40`** | **periwinkle `#5C6BBC`** |
+| Navy | 靛藍 `#273B8A` | 靛藍 |
+
+比較用的對照頁保留在 `sidebar-compare.html`(A–F 六案,含取樣色票與對比值)。
+
+---
+
+### 5 狀態語意色（原版／layout3b 用；Slate 變體見 §1b）
 | 狀態 | class | 底 / 字 |
 |---|---|---|
 | Draft | `.chip-draft` / `.st-draft` | warning-50 / warning-700 |

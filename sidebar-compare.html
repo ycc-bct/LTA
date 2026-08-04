@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en-SG">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sidebar colour comparison · Green version · RMWP</title>
+<style>
+:root{
+  /* --- current Green tokens --- */
+  --teal-50:#E9F5F5;--teal-100:#CDE9E9;--teal-600:#00747A;--teal-700:#005F64;--teal-800:#074A4E;
+
+  /* --- LTA wordmark, sampled pixel-by-pixel from logo.png (530x155) --- */
+  --lta-teal:#108C98;   /* 2083 px */
+  --lta-navy:#243888;   /* 2483 px */
+  --lta-maroon:#882428; /* 1056 px */
+
+  /* --- LTA site accents: the .bg-color1..5 gradients on Featured Projects --- */
+  --c1a:#FFEB0B;--c1b:#F6C226;   /* yellow  */
+  --c2a:#F6734A;--c2b:#FF6F58;   /* coral   */
+  --c3a:#D7E557;--c3b:#ABD24E;   /* lime    */
+  --c4a:#C4BEF6;--c4b:#9896F2;   /* violet  */
+  --c5a:#B8C2CD;--c5b:#8995A3;   /* slate   */
+  /* --- LTA site chrome --- */
+  --lta-link:#5C6BBC;--lta-cta:#6A758A;--lta-hero:#8894A2;
+  --lta-tint:#F4F5F8;--lta-tint2:#F7F7F7;
+  --lta-ink:#343A40;--lta-ink2:#495057;--lta-ink3:#6C757D;
+
+  --grey-50:#F7F9FA;--grey-100:#EFF2F4;--grey-200:#E2E7EA;--grey-300:#CBD4D9;
+  --grey-400:#9DAAB2;--grey-500:#6E7E88;--grey-600:#51616B;--grey-800:#27333B;--grey-900:#161F26;
+  /* --- proposal F: periwinkle primary (the site's own link colour) --- */
+  --p-50:#F1F1F6;--p-100:#E1E2ED;--p-200:#C5C9DD;--p-300:#9AA3D5;
+  --p-500:#5C6BBC;--p-600:#4453A4;--p-700:#384488;--p-800:#2B3569;
+  /* status: LTA color1-5 mapped onto the five workflow stages */
+  --st-draft-bg:#EFF1F2;--st-draft-ink:#3F4852;
+  --st-wip-bg:#FBE9E6;  --st-wip-ink:#8E1704;
+  --st-ver-bg:#FBF6E6;  --st-ver-ink:#8E6B04;
+  --st-appr-bg:#E8E8FA; --st-appr-ink:#100D84;
+  --st-done-bg:#F4F8EA; --st-done-ink:#5B761B;
+  --r-sm:6px;--r-md:10px;--r-lg:14px;--r-pill:999px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--grey-50);color:var(--grey-800);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1360px;margin:0 auto;padding:44px 28px 90px}
+.kicker{font-size:.8125rem;font-weight:650;color:var(--teal-700);text-transform:uppercase;letter-spacing:.06em}
+h1{font-size:1.75rem;font-weight:680;color:var(--grey-900);margin:6px 0 10px;letter-spacing:-.01em}
+.lede{color:var(--grey-600);max-width:74ch;font-size:.9375rem}
+h2{font-size:.75rem;font-weight:650;color:var(--grey-500);text-transform:uppercase;letter-spacing:.06em;
+   margin:40px 0 14px;padding-top:18px;border-top:1px solid var(--grey-200)}
+
+/* ---------- palette reference ---------- */
+.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.sw{border-radius:var(--r-md);overflow:hidden;border:1px solid var(--grey-200);background:#fff}
+.sw .chip{height:62px;display:flex;align-items:flex-end;padding:7px 9px;font-size:.6875rem;font-weight:700}
+.sw .meta{padding:8px 10px}
+.sw .nm{font-size:.75rem;font-weight:650;color:var(--grey-800)}
+.sw .hx{font-size:.6875rem;color:var(--grey-500);font-family:ui-monospace,Menlo,monospace}
+
+/* ---------- sidebar specimens ---------- */
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:20px;align-items:start}
+.opt{background:#fff;border:1px solid var(--grey-200);border-radius:var(--r-lg);overflow:hidden;
+     box-shadow:0 1px 2px rgba(22,31,38,.06)}
+.opt.pick{border-color:var(--lta-teal);box-shadow:0 0 0 3px rgba(16,140,152,.16)}
+.opt-h{padding:13px 15px;border-bottom:1px solid var(--grey-100);display:flex;align-items:flex-start;gap:9px}
+.opt-h .tag{font-size:.625rem;font-weight:800;letter-spacing:.06em;background:var(--grey-100);color:var(--grey-600);
+            border-radius:var(--r-pill);padding:3px 8px;flex:none;margin-top:1px}
+.opt.pick .opt-h .tag{background:var(--lta-teal);color:#fff}
+.opt-h b{display:block;font-size:.875rem;font-weight:660;color:var(--grey-900)}
+.opt-h span{display:block;font-size:.75rem;color:var(--grey-500);margin-top:1px}
+.stage{padding:16px;background:var(--grey-50);display:flex;justify-content:center}
+
+/* the specimen itself — same structure as the real Green sidebar */
+.sb{width:236px;border-radius:12px;padding:14px 11px;display:flex;flex-direction:column;gap:2px;
+    font-size:.8125rem;min-height:326px}
+.sb .brand{display:flex;align-items:center;gap:8px;padding:2px 6px 12px;margin-bottom:8px;
+           border-bottom:1px solid rgba(255,255,255,.16)}
+.sb .brand i{width:26px;height:26px;border-radius:6px;display:grid;place-items:center;font-style:normal;
+             font-size:.625rem;font-weight:800;flex:none}
+.sb .brand em{font-style:normal;font-size:.75rem;font-weight:650;letter-spacing:.02em}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:9px;font-weight:520}
+.ni .d{width:15px;height:15px;border-radius:4px;flex:none;opacity:.9}
+.ni.on{font-weight:700}
+.subs{margin:2px 0 4px 26px;padding-left:11px;position:relative;display:flex;flex-direction:column;gap:2px}
+.subs::before{content:"";position:absolute;left:0;top:-2px;bottom:2px;width:1.5px}
+.ns{padding:7px 12px;border-radius:9px;font-size:.75rem}
+.ns.on{font-weight:700}
+.sb .foot{margin-top:auto;padding-top:10px;display:flex;align-items:center;gap:8px;
+          border-top:1px solid rgba(255,255,255,.16)}
+.sb .foot i{width:26px;height:26px;border-radius:var(--r-pill);display:grid;place-items:center;font-style:normal;
+            font-size:.625rem;font-weight:800;flex:none}
+.sb .foot .who{font-size:.6875rem;line-height:1.3}
+.sb .badge{margin-left:auto;min-width:19px;height:19px;padding:0 6px;border-radius:10px;color:#fff;
+           font-size:.625rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* --- A: current --- */
+.sb-a{background:var(--teal-700);color:rgba(255,255,255,.82)}
+.sb-a .brand i{background:#fff;color:var(--teal-700)} .sb-a .brand em{color:#fff}
+.sb-a .ni.on{background:rgba(255,255,255,.12);color:#fff}
+.sb-a .subs::before{background:rgba(255,255,255,.25)}
+.sb-a .ns.on{background:#fff;color:var(--teal-700)}
+.sb-a .foot i{background:rgba(255,255,255,.18);color:#fff}
+.sb-a .badge{background:#A93A32}
+
+/* --- B: logo teal --- */
+.sb-b{background:#0D717A;color:rgba(255,255,255,.82)}
+.sb-b .brand i{background:#fff;color:#0D717A} .sb-b .brand em{color:#fff}
+.sb-b .ni.on{background:rgba(255,255,255,.14);color:#fff}
+.sb-b .subs::before{background:rgba(255,255,255,.28)}
+.sb-b .ns.on{background:#fff;color:#0D717A}
+.sb-b .foot i{background:rgba(255,255,255,.18);color:#fff}
+.sb-b .badge{background:#E03131}
+
+/* --- C: slate chrome, teal only as the accent --- */
+.sb-c{background:#313C49;color:rgba(255,255,255,.74)}
+.sb-c .brand i{background:var(--lta-teal);color:#fff} .sb-c .brand em{color:#fff}
+.sb-c .ni.on{background:rgba(255,255,255,.10);color:#fff}
+.sb-c .ni.on .d{background:var(--lta-teal);opacity:1}
+.sb-c .subs::before{background:rgba(255,255,255,.20)}
+.sb-c .ns.on{background:var(--lta-teal);color:#fff}
+.sb-c .foot i{background:var(--lta-teal);color:#fff}
+.sb-c .badge{background:#FF6F58}
+
+/* --- D: light chrome, teal only on the active item --- */
+.sb-d{background:var(--lta-tint);color:var(--lta-ink2);border:1px solid var(--grey-200)}
+.sb-d .brand{border-bottom-color:var(--grey-200)}
+.sb-d .brand i{background:var(--lta-teal);color:#fff} .sb-d .brand em{color:var(--lta-ink)}
+.sb-d .ni.on{background:#fff;color:var(--lta-ink);box-shadow:0 1px 2px rgba(22,31,38,.08)}
+.sb-d .ni.on .d{background:var(--lta-teal);opacity:1}
+.sb-d .subs::before{background:var(--grey-300)}
+.sb-d .ns.on{background:var(--teal-50);color:#0D717A}
+.sb-d .foot{border-top-color:var(--grey-200)}
+.sb-d .foot i{background:var(--lta-teal);color:#fff}
+.sb-d .badge{background:#D7342B}
+
+/* --- E: logo navy (= the Navy variant, shown for range) --- */
+.sb-e{background:var(--lta-navy);color:rgba(255,255,255,.80)}
+.sb-e .brand i{background:#fff;color:var(--lta-navy)} .sb-e .brand em{color:#fff}
+.sb-e .ni.on{background:rgba(255,255,255,.14);color:#fff}
+.sb-e .subs::before{background:rgba(255,255,255,.26)}
+.sb-e .ns.on{background:#fff;color:var(--lta-navy)}
+.sb-e .foot i{background:rgba(255,255,255,.18);color:#fff}
+.sb-e .badge{background:#E03131}
+
+/* --- F: neutral chrome + periwinkle primary + LTA accents on status --- */
+.sb-f{background:var(--lta-ink);color:rgba(255,255,255,.74)}
+.sb-f .brand i{background:var(--p-500);color:#fff} .sb-f .brand em{color:#fff}
+.sb-f .ni.on{background:rgba(255,255,255,.10);color:#fff}
+.sb-f .ni.on .d{background:var(--p-300);opacity:1}
+.sb-f .subs::before{background:rgba(255,255,255,.20)}
+.sb-f .ns.on{background:#fff;color:var(--p-700)}
+.sb-f .foot i{background:var(--p-500);color:#fff}
+.sb-f .badge{background:#FF6F58;color:#4A1103}
+
+/* small in-context strip: buttons + the five status chips */
+.extras{padding:13px 15px;border-top:1px solid var(--grey-100)}
+.extras .lbl{font-size:.625rem;font-weight:800;letter-spacing:.06em;color:var(--grey-400);
+             text-transform:uppercase;margin-bottom:7px}
+.btnrow{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap}
+.b{font-size:.75rem;font-weight:640;border-radius:var(--r-sm);padding:7px 13px;border:1px solid transparent}
+.b-pri{background:var(--p-500);color:#fff}
+.b-sec{background:#fff;color:var(--p-600);border-color:var(--p-200)}
+.b-dgr{background:#fff;color:var(--lta-maroon);border-color:#E0BFBD}
+.chiprow{display:flex;gap:6px;flex-wrap:wrap}
+.st{display:inline-flex;align-items:center;gap:5px;font-size:.6875rem;font-weight:650;
+    border-radius:var(--r-pill);padding:3px 9px}
+.st i{width:6px;height:6px;border-radius:var(--r-pill);background:currentColor;flex:none;font-style:normal}
+
+/* ---------- notes ---------- */
+.note{padding:13px 15px;border-top:1px solid var(--grey-100);font-size:.75rem;color:var(--grey-600)}
+.note b{color:var(--grey-800);font-weight:640}
+.note ul{margin:6px 0 0 15px}
+.note li{margin-bottom:3px}
+.cr{display:inline-flex;align-items:center;gap:5px;font-family:ui-monospace,Menlo,monospace;font-size:.6875rem;
+    background:var(--grey-100);border-radius:5px;padding:1px 6px;color:var(--grey-700)}
+.cr.ok{background:#E6F4EA;color:#12633C}
+.cr.no{background:#FBEAE8;color:#8F2D2B}
+
+.green-meter{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.6875rem;color:var(--grey-500)}
+.gm-bar{flex:1;height:5px;border-radius:3px;background:var(--grey-200);overflow:hidden}
+.gm-fill{height:100%;background:var(--lta-teal)}
+
+.tip{display:flex;gap:9px;align-items:flex-start;background:#FFF8E6;border:1px solid #F6E3B0;color:#6B4E12;
+     border-radius:var(--r-md);padding:12px 14px;margin:18px 0 0;font-size:.8125rem}
+.tip svg{width:15px;height:15px;flex:none;margin-top:2px}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--grey-200);font-size:.75rem;color:var(--grey-500)}
+code{font-family:ui-monospace,Menlo,monospace;background:var(--grey-100);padding:1px 5px;border-radius:4px;font-size:.9em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">RMWP · Green version</div>
+    <h1>Sidebar colour — old vs new</h1>
+    <p class="lede">主管的方向：<b>綠色少一點，多帶一些官網上的顏色</b>。下面五個側邊欄是同一組導覽結構、只換配色，
+      挑一個再套進 <code>mwi-list-redesign-a.html</code> 與 <code>mwi-wi-workflow_layouta.html</code>。
+      所有色值都是從 lta.gov.sg 實際取樣的，不是憑印象調的。</p>
+  </header>
+
+  <h2>取樣來源 — LTA 官網 / logo</h2>
+  <div class="sw-grid">
+    <div class="sw"><div class="chip" style="background:#108C98;color:#fff">logo</div>
+      <div class="meta"><div class="nm">Wordmark teal</div><div class="hx">#108C98</div></div></div>
+    <div class="sw"><div class="chip" style="background:#243888;color:#fff">logo</div>
+      <div class="meta"><div class="nm">Wordmark navy</div><div class="hx">#243888</div></div></div>
+    <div class="sw"><div class="chip" style="background:#882428;color:#fff">logo</div>
+      <div class="meta"><div class="nm">Wordmark maroon</div><div class="hx">#882428</div></div></div>
+    <div class="sw"><div class="chip" style="background:linear-gradient(110deg,#FFEB0B,#F6C226);color:#111">color1</div>
+      <div class="meta"><div class="nm">Yellow</div><div class="hx">#FFEB0B → #F6C226</div></div></div>
+    <div class="sw"><div class="chip" style="background:linear-gradient(110deg,#F6734A,#FF6F58);color:#fff">color2</div>
+      <div class="meta"><div class="nm">Coral</div><div class="hx">#F6734A → #FF6F58</div></div></div>
+    <div class="sw"><div class="chip" style="background:linear-gradient(110deg,#D7E557,#ABD24E);color:#111">color3</div>
+      <div class="meta"><div class="nm">Lime</div><div class="hx">#D7E557 → #ABD24E</div></div></div>
+    <div class="sw"><div class="chip" style="background:linear-gradient(110deg,#C4BEF6,#9896F2);color:#111">color4</div>
+      <div class="meta"><div class="nm">Violet</div><div class="hx">#C4BEF6 → #9896F2</div></div></div>
+    <div class="sw"><div class="chip" style="background:linear-gradient(110deg,#B8C2CD,#8995A3);color:#111">color5</div>
+      <div class="meta"><div class="nm">Slate</div><div class="hx">#B8C2CD → #8995A3</div></div></div>
+    <div class="sw"><div class="chip" style="background:#5C6BBC;color:#fff">chrome</div>
+      <div class="meta"><div class="nm">Link / nav</div><div class="hx">#5C6BBC</div></div></div>
+    <div class="sw"><div class="chip" style="background:#6A758A;color:#fff">chrome</div>
+      <div class="meta"><div class="nm">CTA button</div><div class="hx">#6A758A</div></div></div>
+    <div class="sw"><div class="chip" style="background:#F4F5F8;color:#343A40;border-bottom:1px solid #E2E7EA">chrome</div>
+      <div class="meta"><div class="nm">Page tint</div><div class="hx">#F4F5F8</div></div></div>
+    <div class="sw"><div class="chip" style="background:#343A40;color:#fff">chrome</div>
+      <div class="meta"><div class="nm">Body ink</div><div class="hx">#343A40</div></div></div>
+  </div>
+  <div class="tip">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+    <span><b>官網介面本身完全沒有用到 teal／green。</b>導覽、按鈕、底色全是藍紫與灰藍（<code>#5C6BBC</code>、<code>#6A758A</code>、<code>#8894A2</code>）。
+      綠色只出現在 logo 的湖水藍與 Featured Projects 的萊姆綠。這正是「綠色少一點」在資料上的依據。</span>
+  </div>
+
+  <h2>側邊欄五案</h2>
+  <div class="opts">
+
+    <!-- A -->
+    <div class="opt">
+      <div class="opt-h"><span class="tag">A</span><div><b>現況</b><span>teal #005F64 滿版</span></div></div>
+      <div class="stage">
+        <div class="sb sb-a">
+          <div class="brand"><i>LTA</i><em>RMWP</em></div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Overview</div>
+          <div class="ni on"><span class="d" style="background:currentColor"></span>Work instruction</div>
+          <div class="subs"><span class="ns on">Maintenance WI</span><span class="ns">Inspection WI</span><span class="ns">WI template</span></div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Dashboard</div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Reports</div>
+          <div class="foot"><i>DC</i><div class="who">DEV CO01<br>Contract Officer</div><span class="badge">13</span></div>
+        </div>
+      </div>
+      <div class="note">
+        <div class="green-meter">綠色佔比<div class="gm-bar"><div class="gm-fill" style="width:100%"></div></div>100%</div>
+        <ul>
+          <li>白字 <span class="cr ok">7.44:1</span>，可讀性最好</li>
+          <li>但這個綠<b>不是 logo 的綠</b>（logo 是 #108C98，偏 cyan），並排會像兩種綠</li>
+          <li>notification badge 對側邊欄只有 <span class="cr no">1.18:1</span> — 幾乎看不見</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="opt">
+      <div class="opt-h"><span class="tag">B</span><div><b>校準到 logo</b><span>teal #0D717A</span></div></div>
+      <div class="stage">
+        <div class="sb sb-b">
+          <div class="brand"><i>LTA</i><em>RMWP</em></div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Overview</div>
+          <div class="ni on"><span class="d" style="background:currentColor"></span>Work instruction</div>
+          <div class="subs"><span class="ns on">Maintenance WI</span><span class="ns">Inspection WI</span><span class="ns">WI template</span></div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Dashboard</div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Reports</div>
+          <div class="foot"><i>DC</i><div class="who">DEV CO01<br>Contract Officer</div><span class="badge">13</span></div>
+        </div>
+      </div>
+      <div class="note">
+        <div class="green-meter">綠色佔比<div class="gm-bar"><div class="gm-fill" style="width:100%"></div></div>100%</div>
+        <ul>
+          <li>跟 logo 同一個色相，白 logo 放上去是同一家族</li>
+          <li>白字 <span class="cr ok">5.74:1</span></li>
+          <li><b>但綠色沒有變少</b> — 只是換了一種綠，不符合主管的方向</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div class="opt">
+      <div class="opt-h"><span class="tag">C</span><div><b>深板岩 ＋ 綠當重點</b><span>slate #313C49，綠只留在 active</span></div></div>
+      <div class="stage">
+        <div class="sb sb-c">
+          <div class="brand"><i>LTA</i><em>RMWP</em></div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Overview</div>
+          <div class="ni on"><span class="d"></span>Work instruction</div>
+          <div class="subs"><span class="ns on">Maintenance WI</span><span class="ns">Inspection WI</span><span class="ns">WI template</span></div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Dashboard</div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Reports</div>
+          <div class="foot"><i>DC</i><div class="who">DEV CO01<br>Contract Officer</div><span class="badge">13</span></div>
+        </div>
+      </div>
+      <div class="note">
+        <div class="green-meter">綠色佔比<div class="gm-bar"><div class="gm-fill" style="width:14%"></div></div>約 14%</div>
+        <ul>
+          <li>底色由官網的 <code>#8995A3</code>（color5）壓深而來，屬同一色相家族</li>
+          <li>綠色<b>只留在 active 項與頭像</b>，變成指路的重點色而不是背景</li>
+          <li>白字 <span class="cr ok">11.21:1</span>；badge 改用官網珊瑚 <code>#FF6F58</code>，對底 <span class="cr ok">3.6:1</span></li>
+          <li>中性底色最能襯托表格裡的 5 種狀態語意色</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- D -->
+    <div class="opt">
+      <div class="opt-h"><span class="tag">D</span><div><b>淺色側欄</b><span>官網 tint #F4F5F8</span></div></div>
+      <div class="stage">
+        <div class="sb sb-d">
+          <div class="brand"><i>LTA</i><em>RMWP</em></div>
+          <div class="ni"><span class="d" style="background:var(--grey-400)"></span>Overview</div>
+          <div class="ni on"><span class="d"></span>Work instruction</div>
+          <div class="subs"><span class="ns on">Maintenance WI</span><span class="ns">Inspection WI</span><span class="ns">WI template</span></div>
+          <div class="ni"><span class="d" style="background:var(--grey-400)"></span>Dashboard</div>
+          <div class="ni"><span class="d" style="background:var(--grey-400)"></span>Reports</div>
+          <div class="foot"><i>DC</i><div class="who">DEV CO01<br>Contract Officer</div><span class="badge">13</span></div>
+        </div>
+      </div>
+      <div class="note">
+        <div class="green-meter">綠色佔比<div class="gm-bar"><div class="gm-fill" style="width:8%"></div></div>約 8%</div>
+        <ul>
+          <li>最接近官網氣質（<code>#F4F5F8</code> 就是官網的頁面底色）</li>
+          <li>文字 <code>#343A40</code> 對底 <span class="cr ok">10.55:1</span></li>
+          <li>綠色降到最低，但<b>側邊欄與內容區的分界會變弱</b>，導覽的存在感下降</li>
+          <li>三個版本會變得比較難一眼分辨（原版也是淺色 chrome）</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- E -->
+    <div class="opt">
+      <div class="opt-h"><span class="tag">E</span><div><b>logo 靛藍</b><span>#243888 — 參考用</span></div></div>
+      <div class="stage">
+        <div class="sb sb-e">
+          <div class="brand"><i>LTA</i><em>RMWP</em></div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Overview</div>
+          <div class="ni on"><span class="d" style="background:currentColor"></span>Work instruction</div>
+          <div class="subs"><span class="ns on">Maintenance WI</span><span class="ns">Inspection WI</span><span class="ns">WI template</span></div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Dashboard</div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Reports</div>
+          <div class="foot"><i>DC</i><div class="who">DEV CO01<br>Contract Officer</div><span class="badge">13</span></div>
+        </div>
+      </div>
+      <div class="note">
+        <div class="green-meter">綠色佔比<div class="gm-bar"><div class="gm-fill" style="width:0%"></div></div>0%</div>
+        <ul>
+          <li>完全沒有綠 —— 但這樣<b>就等於 Navy 版</b>（#273B8A ≈ logo 的 #243888）</li>
+          <li>放在這裡是給你看色域兩端，<b>不建議選</b>：兩個版本會撞在一起，失去對照的意義</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- F -->
+    <div class="opt pick" style="grid-column:span 2">
+      <div class="opt-h"><span class="tag">F</span><div><b>中性 chrome ＋ 官網連結色</b><span>側欄 #343A40 · primary periwinkle #5C6BBC · 狀態用 color1–5</span></div></div>
+      <div class="stage" style="gap:18px;flex-wrap:wrap;align-items:flex-start">
+        <div class="sb sb-f">
+          <div class="brand"><i>LTA</i><em>RMWP</em></div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Overview</div>
+          <div class="ni on"><span class="d"></span>Work instruction</div>
+          <div class="subs"><span class="ns on">Maintenance WI</span><span class="ns">Inspection WI</span><span class="ns">WI template</span></div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Dashboard</div>
+          <div class="ni"><span class="d" style="background:currentColor"></span>Reports</div>
+          <div class="foot"><i>DC</i><div class="who">DEV CO01<br>Contract Officer</div><span class="badge">13</span></div>
+        </div>
+        <div style="flex:1;min-width:210px;background:#fff;border:1px solid var(--grey-200);border-radius:12px;padding:14px 15px">
+          <div class="lbl" style="font-size:.625rem;font-weight:800;letter-spacing:.06em;color:var(--grey-400);text-transform:uppercase;margin-bottom:7px">動作</div>
+          <div class="btnrow">
+            <span class="b b-pri">Approve</span>
+            <span class="b b-sec">Reassign</span>
+            <span class="b b-dgr">Return</span>
+          </div>
+          <div class="lbl" style="font-size:.625rem;font-weight:800;letter-spacing:.06em;color:var(--grey-400);text-transform:uppercase;margin-bottom:7px">5 種狀態 — LTA color1–5</div>
+          <div class="chiprow">
+            <span class="st" style="background:var(--st-draft-bg);color:var(--st-draft-ink)"><i></i>Draft</span>
+            <span class="st" style="background:var(--st-wip-bg);color:var(--st-wip-ink)"><i></i>Work in progress</span>
+            <span class="st" style="background:var(--st-ver-bg);color:var(--st-ver-ink)"><i></i>Verification in progress</span>
+            <span class="st" style="background:var(--st-appr-bg);color:var(--st-appr-ink)"><i></i>Approval in progress</span>
+            <span class="st" style="background:var(--st-done-bg);color:var(--st-done-ink)"><i></i>Approved &amp; closed</span>
+          </div>
+          <div style="margin-top:12px;padding-top:11px;border-top:1px solid var(--grey-100);font-size:.6875rem;color:var(--grey-500);line-height:1.6">
+            狀態底色分別來自 color5 灰藍 / color2 珊瑚 / color1 黃 / color4 藍紫 / color3 萊姆，
+            文字全部 ≥4.5:1。語意沒有被犧牲 —— 綠＝完成、黃＝審查中、珊瑚＝現場施作中。
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <div class="green-meter">綠色佔比<div class="gm-bar"><div class="gm-fill" style="width:4%"></div></div>約 4%（只剩 closed 狀態的萊姆）</div>
+        <ul>
+          <li><b>Primary 用 <code>#5C6BBC</code></b> —— 官網 chrome 裡出現最多次的品牌色（143 次，所有連結與導覽）。不是 teal、也不是 logo 靛藍，不會撞 Navy 版</li>
+          <li>側欄 <code>#343A40</code> 就是<b>官網的內文墨色</b>，白字 <span class="cr ok">11.3:1</span>；主按鈕白字 <span class="cr ok">4.9:1</span></li>
+          <li>sub-active 用白底 periwinkle 字（<span class="cr ok">8.93:1</span>）—— 實心 periwinkle 貼在深墨上只有 2.35:1，不夠</li>
+          <li>badge 用官網珊瑚 <code>#FF6F58</code> 配深字：對側欄 <span class="cr ok">4.2:1</span>、字 <span class="cr ok">6.9:1</span>，兩邊都過</li>
+          <li><b>取捨：</b>這已經不是「Green 版」了，綠只剩 closed 狀態。要不要改名（例如 Slate）要決定</li>
+          <li><b>風險：</b>primary periwinkle（230°）與 Approval 紫（241°）色相偏近。上面示意已把 WIP 改成珊瑚、Approval 才是紫，若仍覺得混淆可把 Approval 換成灰藍、Draft 用更淡的中性</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <h2>我的建議</h2>
+  <p class="lede"><b>選 F。</b>A–E 都還把 teal 當成前提在調整；F 是唯一「不侷限 teal、重新定義」的一版 ——
+    chrome 中性、primary 換成官網自己的連結色、accent 交給 color1–5，而且三層各司其職：
+    <b>chrome 不帶語意、primary 只有一個、顏色只用在有意義的地方</b>。<br>
+    退而求其次選 <b>C</b>（保留 teal 當重點色，改動最小）。B 只是換一種綠，沒有回應主管的意見；
+    D 綠色最少但會跟原版（全白 chrome）難以區分；E 等於 Navy 版。</p>
+
+  <div class="tip">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+    <span><b>先前擔心的「品牌一致 vs 語意優先」兩難，在這組色上其實不用二選一。</b>
+      LTA 的 color1–5 天然就湊齊了一組語意色：有中性（灰藍）、有完成（萊姆）、有審查中（黃）、有待處理（珊瑚）。
+      F 的狀態列已經照這個對應排好，五個都 ≥4.5:1 —— 品牌來源正確，直覺也還在。</span>
+  </div>
+
+  <footer>
+    色值取樣自 <code>lta.gov.sg</code> 首頁（computed styles ＋ logo.png 逐像素量化），2026-08-04。
+    對比值為 WCAG 2.1 相對亮度計算，AA 標準：一般文字 4.5:1、UI 元件 3:1。
+  </footer>
+
+</div>
+</body>
+</html>

@@ -42,6 +42,10 @@
   --sgds-warning-color-emphasis:var(--sgds-yellow-700);
   --sgds-warning-border-color-default:var(--sgds-yellow-600);
   --danger-50:#F9ECEB;  --danger-600:#A93A32;  --danger-700:#8F2D2B; /* LTA maroon */
+  /* The maroon only reaches 1.6:1 against the navy sidebar, so it reads almost black there.
+     This brighter red is for badges sitting ON the dark sidebar only — keep the maroon
+     everywhere on white, where it has plenty of contrast. */
+  --danger-on-dark:#E03131;
   --info-50:#EBF1FB;    --info-600:#175CD3;    --info-700:#1247A4;
   /* Typography */
   --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
@@ -115,7 +119,7 @@ button{font-family:inherit;cursor:pointer}
 .sb-brand img{height:30px;display:block;max-width:100%}
 .sb-foot{margin-top:auto;padding-top:10px;border-top:1px solid rgba(255,255,255,.14);display:flex;flex-direction:column;gap:2px}
 .sb-notif{width:100%;border:none;background:none;cursor:pointer;font-family:inherit;text-align:left}
-.sb-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--danger-600);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sb-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--danger-on-dark);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .sb-foot .rolesw{width:100%;min-width:0;margin-top:6px}
 .sb-foot .rolesw-trg{width:100%}
 .sb-foot .rolesw-trg .rs-meta{min-width:0}
@@ -1231,7 +1235,7 @@ select.control{background-position:right 16px center}
       <div class="rolesw-head">Prototype version</div>
       <div class="ver-seg" role="group" aria-label="Prototype version">
         <a class="vs-opt" href="mwi-wi-workflow.html">Original</a>
-        <a class="vs-opt" href="mwi-wi-workflow_layouta.html">Green</a>
+        <a class="vs-opt" href="mwi-wi-workflow_layouta.html">Slate</a>
         <a class="vs-opt is-on" href="mwi-wi-workflow_photoswipe-navy.html">Navy</a>
       </div>
     </div>

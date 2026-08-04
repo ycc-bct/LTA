@@ -12,6 +12,18 @@
 4. **各角色可看到 / 可填的 wizard 步驟權限**（誰在哪一步能編輯什麼）。
 5. **測試帳號**：CO / Site Supervisor / Engineer，用來實機校準角色化 demo（我們現在只有 view-only sysadmin）。
 6. **縮寫與代碼的正式友善名清單**：RRFM / CFM / BDG / PATH（部門）、REX-… tag、以及超長 Funding Source 代碼 `EXT.ETRO...` 的友善顯示規則。
+7. ⭐ **列表頁縮欄的可接受度**（2026-08-04 新增）。原系統 `MaintenanceWorkInstructions` 清單有 **17 欄**，原型原本只做 6 欄且沒留紀錄；現已補上 `Defect type` / `Assign to` / `Last updated`，完整對照見 `SPEC_field-matrix.md` §1d。要問的是：
+   - 這 5 欄是真的需要出現在清單上，還是放進 filter／詳情頁就好？
+     `CCS WO NO.`、`Instruction Date`、`Defect Reference No.`、`Last Updated By`、`WI Remarks`
+   - `Sector NW2 · NW1` 這種寫法可以嗎？（第二個其實是 Sub-Sector，前綴只有一個「Sector」會有歧義）
+   - ~~表頭的排序箭頭目前是死的~~ → **已接上**（2026-08-04）：桌機 9 欄皆可點、可反向；手機無表頭，排序留在 Filter 抽屜。
+   - 使用者實際掃列表時，最常靠哪幾欄辨識？（決定哪些欄位值得佔桌機寬度）
+8. ⭐ **filter 的正式值域字典檔**（2026-08-04 新增）。抽屜已補齊到線上的 11 種 filter type（對照見 `SPEC_field-matrix.md` §1e），但**所有選項值目前都是 placeholder**：
+   - 需要 Sector / Sub-Sector / Department / Asset Type / Element Type / Defect Type / **Road Name** 的正式清單。
+   - **Sub-Sector 從屬於哪個 Sector**、**Element Type 從屬於哪個 Asset Type** 的對應表（原型的連動目前是從 24 筆假資料推的）。
+   - Road Name 實際有幾筆？（決定要不要做非同步搜尋而不是一次載入全部）
+   - filter 是否該提供 `Assign to`？線上沒有，但原型的 To Do／In Progress 分頁就是靠它。
+   - `Department` 與 `Instruction Date` 這兩種 filter type，**表格上沒有對應欄位**（篩完看不到依據）。原型目前先隱藏 —— 要補成表格欄位、還是只留 filter、還是兩者都不要？
 
 ## 2. 要向 Richa 對齊
 

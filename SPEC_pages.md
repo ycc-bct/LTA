@@ -9,15 +9,34 @@
 - **狀態分頁**：To Do｜In Progress｜Submitted，各帶計數（`.wi-tab data-bucket`）。
 - **Action 欄**：In Progress 列有 **Assign to self**（`.act-col`）→ 跳藍色 toast，該列即時移入 To Do。
 - **5 狀態語意色** chip：`.chip.st-draft/st-wip/st-ver/st-appr/st-closed`。
-- **桌機 6 欄表格 ↔ 手機卡片流**（≤860px 切換）。
+- **桌機 9 欄表格 ↔ 手機卡片流**（≤860px 切換）。欄位為
+  `WI number｜Status｜Road（+Sector·Sub-sector）｜Asset（+Element type）｜Defect type｜Work type｜Est. completion｜Assign to｜Last updated`
+  ＋ In Progress 分頁才出現的 `Action` 欄（sticky 釘右緣）。
+  **完整的「原系統 17 欄 vs 原型」對照與取捨理由見 `SPEC_field-matrix.md` §1d** —— 改列表欄位一律先改那節。
 - **Filter & sort 抽屜**（右側 drawer，取代原本雜亂的 3-pane Advanced Filter）：
-  - 頂部 **Sort by** pill 列（Newest / Est. completion / Road A–Z / Status）。
-  - **filter 手風琴**：Status / Sector / Work type / Asset type / Road，toggle chip + 每區計數 badge。
+  - **排序不在抽屜裡** —— 桌機點表頭排序（見下）；手機沒有表頭，抽屜頂端才出現 **Sort by** pill 列。
+  - **filter 手風琴 ＝ 表格欄位，同名同序**：
+    `Status／Road（縮排 Sector、Sub-sector）／Asset（縮排 Element type）／Defect type／Work type／
+    Est. completion／Assign to`。縮排的三項是 Road／Asset 兩格的副標內容，非獨立欄位。
+  - 🚫 `Department`／`Instruction date` **已實作但隱藏**（表格沒有對應欄位）；程式碼保留，
+    把 `'__other','fdept','finst'` 加回 `ORDER` 即還原。**完整對照見 `SPEC_field-matrix.md` §1e**。
+  - 值多的 facet（>8）長出**搜尋框**，預設顯示 6 個 ＋「Show all (N)」，已選置頂。
+  - **父子連動**：Sub-sector 跟著 Sector、Element type 跟著 Asset type。
+  - 兩組**日期區間**：快捷 pill（Last 7/30/90 days；Overdue / Next 7 / Next 30 days）＋自訂起訖。
   - Clear all / Apply；套用後工具列「Filter」鈕顯示「· N」計數，並出現「Clear filters」。
-  - 手機的「Sort by」已**併入此 Filter**（Candace 選 option B），不再單獨出現。
+- **表頭即排序控制**（桌機）：9 欄皆可點，點一次套用、再點反向，作用中欄位標主色＋單向箭頭＋`aria-sort`；預設 `Last updated ↓`。空值一律沉底。
+- **工具列 Search** 打通：比對 WI 號／road／sector／asset／element／defect／work type，與 filter 疊加。
+- **demo 資料 24 筆**（14 sector、24 條路、4 department、5 種狀態），**分頁每頁 10 筆且真的會換頁**。
 - **列導覽**：`tr.row-link data-href` / 卡片 `href` → `mwi-wi-workflow.html`，帶當前角色。
 - **New WI** 僅 Contract Officer 顯示。
 - META map 以 WI 號為 key：`{b:bucket, s:status}`。
+
+## `mwi-list-redesign-a.html` / `mwi-wi-workflow_layouta.html` — ⭐ Slate 變體（原「Green」）
+與原版同結構、只換配色。2026-08-04 依主管意見（綠色少一點、多用官網的顏色）重做：
+- 側邊欄由 teal 滿版改成**中性墨 `#343A40`**（＝官網內文墨色）；主色改成**官網連結色 `#5C6BBC`**。
+- 5 狀態 chip 改用 **LTA 官方 accent `.bg-color1..5`**，語意維持（綠＝完成、黃＝審查中）。
+- 版本代號 **Green → Slate**（六頁切換器與 `<title>` 已同步）。
+- **完整 token、取樣來源與對比值見 `SPEC_design-system.md` §1b**；六案對照頁見 `sidebar-compare.html`。
 
 ## `mwi-view-redesign.html` — WI 檢視（唯讀）
 View/Edit 分離的示範頁（最能展示「唯讀該長怎樣」）。

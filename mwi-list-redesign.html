@@ -336,13 +336,28 @@ button{font-family:inherit;cursor:pointer}
   .card-head,.card-body{padding-left:16px;padding-right:16px}
   .lv-grid{grid-template-columns:1fr 1fr;gap:16px}
   .task-body{padding-left:16px}
-  .head-actions{width:100%}
-  .head-actions .btn{flex:1;justify-content:center}
+  /* keep the actions beside the title and let the heading wrap instead */
+  .page-head{flex-wrap:nowrap;gap:12px;align-items:center}
+  .page-head>div:first-child{min-width:0}
+  .page-head h1{overflow-wrap:anywhere}
+  .head-actions{width:auto;flex:none}
+  .head-actions .btn{flex:none;width:40px;height:40px;padding:0;justify-content:center;border-radius:10px}
+  .head-actions .btn svg{width:20px;height:20px}
+  .head-actions .btn .bl{display:none}
   .map-frame{min-height:170px}
 }
 
 /* ============ WI list page ============ */
 .list-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+/* icon-only filter trigger; the applied-filter count rides as a badge */
+/* label removed, but the button keeps its original 93x39 footprint so the toolbar
+   still balances against the search box (same 39px height) */
+/* square icon button — 39px matches the search box height set by the toolbar row */
+.filter-btn{position:relative;flex:none;width:39px;padding:0;justify-content:center;align-self:stretch}
+.fcount{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;
+  background:var(--teal-600);color:#fff;font-size:.6875rem;font-weight:700;line-height:1;
+  display:none;align-items:center;justify-content:center}
+.filter-btn.has-filters .fcount{display:flex}
 .list-toolbar .btn-ghost{margin-left:auto}   /* Filter sits at the right edge */
 .search-box{
   flex:0 1 50%;min-width:200px;display:flex;align-items:center;gap:10px;
@@ -362,28 +377,38 @@ button{font-family:inherit;cursor:pointer}
 .result-count{font-size:var(--fs-sm);color:var(--grey-500);margin-left:auto}
 
 /* Desktop table */
-.wi-table{width:100%;border-collapse:collapse;background:#fff}
+.wi-table{width:auto;min-width:100%;border-collapse:collapse;background:#fff}
 .wi-table th{
   text-align:left;font-size:var(--fs-xs);font-weight:650;color:var(--grey-500);
-  text-transform:uppercase;letter-spacing:.045em;padding:12px 16px;
+  text-transform:uppercase;letter-spacing:.045em;padding:12px 14px;
   border-bottom:1px solid var(--grey-200);background:var(--grey-50);white-space:nowrap;
 }
 .wi-table th button{
   border:none;background:none;font:inherit;color:inherit;display:inline-flex;
-  align-items:center;gap:5px;text-transform:inherit;letter-spacing:inherit;
+  align-items:center;gap:5px;text-transform:inherit;letter-spacing:inherit;text-align:left;padding:0;
 }
-.wi-table th button svg{width:12px;height:12px;color:var(--grey-400)}
-.wi-table td{padding:14px 16px;border-bottom:1px solid var(--grey-100);font-size:var(--fs-base);color:var(--grey-800);vertical-align:middle}
+.wi-table th button{cursor:pointer}
+.wi-table th button:hover{color:var(--grey-700)}
+.wi-table th button .s-ico{width:12px;height:12px;flex:none;color:var(--grey-400)}
+.wi-table th button .s-ico path{opacity:.5}
+.wi-table th button.sorted,.wi-table th button.sorted .s-ico{color:var(--teal-700)}
+.wi-table th button.sorted.asc .up,.wi-table th button.sorted.desc .dn{opacity:1;stroke-width:3.2}
+.wi-table th button.sorted.asc .dn,.wi-table th button.sorted.desc .up{opacity:.15}
+.wi-table td{padding:13px 14px;border-bottom:1px solid var(--grey-100);font-size:var(--fs-base);color:var(--grey-800);vertical-align:middle;white-space:nowrap}
 .wi-table tbody tr{cursor:pointer;transition:background .12s ease;scroll-margin-top:calc(var(--topbar-h) + 60px)}
 .wi-table tbody tr:hover{background:var(--teal-50)}
 .wi-table tbody tr:focus-within{background:var(--teal-50)}
 .wi-num{font-weight:640;color:var(--navy-700);white-space:nowrap}
 .wi-num small{display:block;font-weight:450;color:var(--grey-400);font-size:var(--fs-xs)}
-.cell-main{font-weight:560;color:var(--grey-900)}
-.cell-sub{display:block;font-size:var(--fs-xs);color:var(--grey-500);font-weight:440;margin-top:1px}
+.cell-main{font-weight:560;color:var(--grey-900);white-space:nowrap}
+.cell-sub{display:block;font-size:var(--fs-xs);color:var(--grey-500);font-weight:440;margin-top:1px;white-space:nowrap}
 .cell-muted{color:var(--grey-400)}
-.row-chevron{color:var(--grey-300);width:16px;height:16px}
-.table-wrap{background:#fff;border:1px solid var(--grey-200);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);overflow:hidden}
+.cell-nowrap{white-space:nowrap}
+.asg{display:inline-flex;align-items:center;font-size:var(--fs-sm)}
+.asg .who{font-weight:560;color:var(--grey-800);white-space:nowrap}
+.asg .queue{display:inline-flex;align-items:center;padding:2px 9px;border-radius:var(--r-pill);background:var(--grey-100);color:var(--grey-600);font-size:var(--fs-xs);font-weight:600;white-space:nowrap}
+.asg .who.me{color:var(--teal-700)}
+.table-wrap{background:#fff;border:1px solid var(--grey-200);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);overflow-x:auto}
 
 /* Mobile cards */
 .wi-cards{list-style:none;display:none;flex-direction:column;gap:10px}
@@ -399,9 +424,13 @@ button{font-family:inherit;cursor:pointer}
 .wi-card .road small{font-weight:480;color:var(--grey-500);font-size:var(--fs-sm)}
 .wi-card .meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:var(--fs-sm);color:var(--grey-600)}
 .wi-card .meta strong{font-weight:600;color:var(--grey-700)}
+.wi-card .meta .m-def i{font-style:normal;color:var(--grey-400)}
 .wi-card .due{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--grey-100);font-size:var(--fs-sm);color:var(--grey-500)}
 .wi-card .due svg{width:14px;height:14px;color:var(--grey-400)}
 .wi-card .due b{color:var(--grey-800);font-weight:620}
+.wi-card .due b.ns{color:var(--grey-400);font-weight:480}
+.wi-card .cardfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;font-size:var(--fs-xs);color:var(--grey-500)}
+.wi-card .cardfoot .cf-upd b{color:var(--grey-600);font-weight:600}
 .sort-row{display:none;align-items:center;gap:8px;margin-bottom:14px;font-size:var(--fs-sm);color:var(--grey-600)}
 .sort-row select{font-family:inherit;font-size:var(--fs-base);padding:8px 12px;border-radius:var(--r-md);border:1px solid var(--grey-300);background:#fff;color:var(--grey-800);flex:1}
 
@@ -508,8 +537,11 @@ button{font-family:inherit;cursor:pointer}
 .chip.st-closed{background:var(--success-50);color:var(--success-700)}
 .wi-table th.act-col,.wi-table td.act-col{display:none}
 .wi-table.show-act th.act-col,.wi-table.show-act td.act-col{display:table-cell}
-.wi-table.show-act thead th:last-child{display:none}
-.wi-table.show-act tbody tr>td:last-child{display:none}
+/* 9 data columns can outrun a narrow window — pin the primary action so it stays reachable */
+.wi-table.show-act th.act-col,.wi-table.show-act td.act-col{position:sticky;right:0;z-index:2}
+.wi-table.show-act th.act-col{background:var(--grey-50)}
+.wi-table.show-act td.act-col{background:#fff;box-shadow:-9px 0 9px -9px rgba(22,31,38,.22)}
+.wi-table.show-act tbody tr:hover td.act-col,.wi-table.show-act tbody tr:focus-within td.act-col{background:var(--teal-50)}
 .btn-assign{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--teal-600);background:var(--teal-600);color:#fff;border-radius:var(--r-md);font-family:inherit;font-size:var(--fs-sm);font-weight:600;padding:6px 12px;cursor:pointer;white-space:nowrap}
 .btn-assign:hover{background:var(--teal-700)}
 .card-assign{margin-top:10px;padding-top:10px;border-top:1px dashed var(--grey-100)}
@@ -518,7 +550,7 @@ button{font-family:inherit;cursor:pointer}
 .skel-row{display:flex;align-items:center;gap:18px;padding:17px 18px;border-bottom:1px solid var(--grey-100)}
 .skel-row:last-child{border-bottom:none}
 .skel-bar{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--grey-100) 25%,var(--grey-200) 37%,var(--grey-100) 63%);background-size:400% 100%;animation:skel 1.3s ease infinite}
-.skel-bar.sk-pill{width:84px;height:22px;border-radius:var(--r-pill);margin-left:auto}
+.skel-bar.sk-pill{width:84px;height:22px;border-radius:var(--r-pill)}
 @keyframes skel{0%{background-position:100% 0}100%{background-position:-100% 0}}
 .toast{position:fixed;top:76px;left:50%;transform:translateX(-50%) translateY(-12px);background:var(--navy-700);color:#fff;padding:11px 18px;border-radius:var(--r-md);box-shadow:var(--shadow-lg);font-size:var(--fs-sm);font-weight:560;z-index:300;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;display:flex;align-items:center;gap:8px}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -534,25 +566,42 @@ button{font-family:inherit;cursor:pointer}
 .fd-close:hover{background:var(--grey-200)}
 .fd-body{flex:1;overflow-y:auto;padding:8px 20px 16px}
 .fd-sort{padding:14px 0 4px}
+@media(min-width:861px){.fd-sort{display:none}}   /* desktop sorts from the table header instead */
+.sortpills button .dir{margin-left:6px;font-weight:800}
+.fd-grouplbl{font-size:var(--fs-xs);font-weight:650;color:var(--grey-400);text-transform:uppercase;letter-spacing:.05em;padding:18px 0 2px;border-top:1px solid var(--grey-100);margin-top:6px}
+.fd-grouplbl .hint{display:block;text-transform:none;letter-spacing:0;font-weight:450;color:var(--grey-400);font-size:var(--fs-xs);margin-top:3px}
+/* Sector / Sub-sector / Element type live inside another column's cell, so they nest under it */
+.fd-sec.child{position:relative;padding-left:20px}
+.fd-sec.child::before{content:"";position:absolute;left:7px;top:0;bottom:0;width:1.5px;background:var(--grey-200)}
+.fd-sec.child .fd-acc{padding:11px 0}
+.fd-sec.child .fd-acc .l{font-size:var(--fs-sm);font-weight:560;color:var(--grey-600)}
 .fd-label{font-size:var(--fs-sm);font-weight:660;color:var(--grey-800);margin:0 0 10px;display:block}
 .sortpills{display:flex;flex-wrap:wrap;gap:8px}
 .sortpills button{border:1px solid var(--grey-300);background:#fff;color:var(--grey-700);border-radius:var(--r-pill);font-family:inherit;font-size:var(--fs-sm);font-weight:520;padding:7px 14px;cursor:pointer}
 .sortpills button:hover{border-color:var(--grey-400)}
 .sortpills button.on{background:var(--navy-600);border-color:var(--navy-600);color:#fff;font-weight:600}
-.fd-sec{border-top:1px solid var(--grey-100)}
 .fd-acc{border:none;background:none;width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 0;cursor:pointer;font-family:inherit}
 .fd-acc .l{font-size:var(--fs-base);font-weight:600;color:var(--grey-800);display:flex;align-items:center;gap:9px}
 .fd-acc .cnt{font-size:var(--fs-xs);font-weight:700;background:var(--teal-100);color:var(--teal-800);border-radius:var(--r-pill);padding:1px 8px}
 .fd-acc .chev{width:16px;height:16px;color:var(--grey-400);transition:transform .18s}
 .fd-acc.open .chev{transform:rotate(180deg)}
-.fd-opts{display:none;flex-wrap:wrap;gap:8px;padding:0 0 16px}
-.fd-acc.open + .fd-opts{display:flex}
+.fd-opts{display:none;padding:0 0 16px}
+.fd-acc.open + .fd-opts{display:block}
+.fd-chips{display:flex;flex-wrap:wrap;gap:8px}
+.fd-search{width:100%;margin:0 0 10px;padding:8px 12px;border:1px solid var(--grey-300);border-radius:var(--r-md);font-family:inherit;font-size:var(--fs-sm);color:var(--grey-800);outline:none}
+.fd-search:focus{border-color:var(--teal-600)}
+.fd-none{font-size:var(--fs-sm);color:var(--grey-400);padding:4px 2px}
+.fd-more{border:none;background:none;color:var(--teal-700);font-family:inherit;font-size:var(--fs-sm);font-weight:600;cursor:pointer;padding:8px 2px 0}
+.fd-range{display:flex;align-items:center;gap:8px;margin-top:10px}
+.fd-range input{flex:1;min-width:0;padding:8px 10px;border:1px solid var(--grey-300);border-radius:var(--r-md);font-family:inherit;font-size:var(--fs-sm);color:var(--grey-800);outline:none}
+.fd-range input:focus{border-color:var(--teal-600)}
+.fd-range .sep{color:var(--grey-400);font-size:var(--fs-sm)}
 .fd-chip{border:1px solid var(--grey-300);background:#fff;color:var(--grey-700);border-radius:var(--r-pill);font-family:inherit;font-size:var(--fs-sm);font-weight:520;padding:7px 14px;cursor:pointer}
 .fd-chip:hover{border-color:var(--grey-400)}
 .fd-chip.on{background:var(--teal-600);border-color:var(--teal-600);color:#fff;font-weight:600}
 .fd-foot{display:flex;gap:10px;align-items:center;padding:14px 20px;border-top:1px solid var(--grey-200)}
-.fd-foot .clear{border:none;background:none;color:var(--teal-700);font-family:inherit;font-size:var(--fs-base);font-weight:600;cursor:pointer;padding:8px}
-.fd-foot .apply{flex:1;justify-content:center;min-height:46px}
+.fd-foot .clear{border:none;background:none;color:var(--teal-700);font-family:inherit;font-size:var(--fs-base);font-weight:600;cursor:pointer;padding:8px;margin-right:auto}
+.fd-foot .apply{flex:0 0 50%;justify-content:center;min-height:46px}
 .clear-filters{border:none;background:none;color:var(--teal-700);font-family:inherit;font-size:var(--fs-sm);font-weight:600;cursor:pointer;margin-left:12px;display:none}
 </style>
 <style>
@@ -594,7 +643,7 @@ button{font-family:inherit;cursor:pointer}
       <div class="rolesw-head">Prototype version</div>
       <div class="ver-seg" role="group" aria-label="Prototype version">
         <a class="vs-opt is-on" href="mwi-list-redesign.html">Original</a>
-        <a class="vs-opt" href="mwi-list-redesign-a.html">Green</a>
+        <a class="vs-opt" href="mwi-list-redesign-a.html">Slate</a>
         <a class="vs-opt" href="mwi-list-redesign-navy.html">Navy</a>
       </div>
     </div>
@@ -625,9 +674,9 @@ button{font-family:inherit;cursor:pointer}
       <h1>Maintenance work instructions</h1>
     </div>
     <div class="head-actions">
-      <a class="btn btn-primary" href="mwi-wi-create.html" style="text-decoration:none">
+      <a class="btn btn-primary" href="mwi-wi-create.html" title="New WI" style="text-decoration:none">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-        New WI
+        <span class="bl">New WI</span>
       </a>
     </div>
   </div>
@@ -643,9 +692,8 @@ button{font-family:inherit;cursor:pointer}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       <input type="search" placeholder="Search WI number, road or asset…" aria-label="Search work instructions">
     </label>
-    <button class="btn btn-ghost">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5Z"/></svg>
-      Filter
+    <button class="btn btn-ghost filter-btn" id="btnFilter" type="button" title="Filter" aria-label="Filter">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M7 12h10M10 17h4"/></svg>
     </button>
   </div>
 
@@ -653,171 +701,455 @@ button{font-family:inherit;cursor:pointer}
     <table class="wi-table">
       <thead>
         <tr>
-          <th><button>WI number <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg></button></th>
-          <th><button>Road <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg></button></th>
-          <th><button>Asset <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg></button></th>
-          <th><button>Work type <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg></button></th>
-          <th><button>Est. completion <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg></button></th>
-          <th><button>Status <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg></button></th>
+          <th><button type="button" data-sk="wi">WI number <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="up" d="M7 9l5-5 5 5"/><path class="dn" d="m7 15 5 5 5-5"/></svg></button></th>
+          <th><button type="button" data-sk="fstatus">Status <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="up" d="M7 9l5-5 5 5"/><path class="dn" d="m7 15 5 5 5-5"/></svg></button></th>
+          <th><button type="button" data-sk="froad">Road <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="up" d="M7 9l5-5 5 5"/><path class="dn" d="m7 15 5 5 5-5"/></svg></button></th>
+          <th><button type="button" data-sk="fasset">Asset <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="up" d="M7 9l5-5 5 5"/><path class="dn" d="m7 15 5 5 5-5"/></svg></button></th>
+          <th><button type="button" data-sk="fdefect">Defect type <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="up" d="M7 9l5-5 5 5"/><path class="dn" d="m7 15 5 5 5-5"/></svg></button></th>
+          <th><button type="button" data-sk="fworktype">Work type <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="up" d="M7 9l5-5 5 5"/><path class="dn" d="m7 15 5 5 5-5"/></svg></button></th>
+          <th><button type="button" data-sk="fest">Est. completion <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="up" d="M7 9l5-5 5 5"/><path class="dn" d="m7 15 5 5 5-5"/></svg></button></th>
+          <th><button type="button" data-sk="fassign">Assign to <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="up" d="M7 9l5-5 5 5"/><path class="dn" d="m7 15 5 5 5-5"/></svg></button></th>
+          <th><button type="button" data-sk="fupd">Last updated <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="up" d="M7 9l5-5 5 5"/><path class="dn" d="m7 15 5 5 5-5"/></svg></button></th>
           <th class="act-col">Action</th>
-          <th><span class="visually-hidden"></span></th>
         </tr>
       </thead>
       <tbody>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="5 Jun 2026">
         <td class="wi-num">RMWP-TR388-RRFM-M-17</td>
+        <td><span class="chip chip-sm">Draft</span></td>
         <td><span class="cell-main">Adis Road</span><span class="cell-sub">Sector NW3 · CS4</span></td>
         <td><span class="cell-main">Bollard</span><span class="cell-sub">Bollard</span></td>
+        <td>Hole</td>
         <td>Simplified item</td>
         <td><span class="cell-muted">Not set</span></td>
-        <td><span class="chip chip-sm chip-draft">Draft</span></td>
-        <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">5 Jun 2026</td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jun 2026">
         <td class="wi-num">RMWP-TR388-RRFM-M-7</td>
+        <td><span class="chip chip-sm">Draft</span></td>
         <td><span class="cell-main">Admiralty Drive</span><span class="cell-sub">Sector NW2 · NW1</span></td>
         <td><span class="cell-main">Bollard</span><span class="cell-sub">Bollard</span></td>
+        <td>Hole</td>
         <td>Simplified item</td>
         <td>29 Jun 2026</td>
-        <td><span class="chip chip-sm chip-draft">Draft</span></td>
-        <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">15 Jul 2026</td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jun 2026">
         <td class="wi-num">RMWP-TR388-RRFM-M-13</td>
+        <td><span class="chip chip-sm">Draft</span></td>
         <td><span class="cell-main">Admiralty Lane</span><span class="cell-sub">Sector NW2 · NW1</span></td>
         <td><span class="cell-main">Traffic sign</span><span class="cell-sub">Signage</span></td>
+        <td>No stopping sign</td>
         <td>Works order — accident</td>
         <td>30 Jun 2026</td>
-        <td><span class="chip chip-sm chip-draft">Draft</span></td>
-        <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">16 Jul 2026</td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jun 2026">
         <td class="wi-num">RMWP-TR388-RRFM-M-12</td>
+        <td><span class="chip chip-sm">Draft</span></td>
         <td><span class="cell-main">Admiralty Lane</span><span class="cell-sub">Sector NW2 · NW1</span></td>
         <td><span class="cell-main">Railing</span><span class="cell-sub">Railing</span></td>
+        <td>Damaged</td>
         <td>Works order — accident</td>
         <td>30 Jun 2026</td>
-        <td><span class="chip chip-sm chip-draft">Draft</span></td>
-        <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">16 Jul 2026</td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jul 2026">
         <td class="wi-num">RMWP-TR388-RRFM-M-24</td>
+        <td><span class="chip chip-sm">Work in progress</span></td>
         <td><span class="cell-main">Admiralty Drive</span><span class="cell-sub">Sector NW2 · NW1</span></td>
         <td><span class="cell-muted">Not selected yet</span></td>
+        <td><span class="cell-muted">Not set</span></td>
         <td>Simplified item</td>
         <td>8 Jul 2026</td>
-        <td><span class="chip chip-sm chip-draft">Draft</span></td>
-        <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">2 Jul 2026</td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="10 Jul 2026">
         <td class="wi-num">RMWP-TR388-RRFM-M-27</td>
+        <td><span class="chip chip-sm">Work in progress</span></td>
         <td><span class="cell-main">Admiralty Drive</span><span class="cell-sub">Sector NW2 · NW1</span></td>
         <td><span class="cell-main">Carriageway</span><span class="cell-sub">Flexible pavement</span></td>
+        <td>Depression</td>
         <td>Simplified item</td>
         <td>30 Jul 2026</td>
-        <td><span class="chip chip-sm chip-draft">Draft</span></td>
-        <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">10 Jul 2026</td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jun 2026">
         <td class="wi-num">RMWP-TR388-RRFM-M-8</td>
+        <td><span class="chip chip-sm">Verification in progress</span></td>
         <td><span class="cell-main">Adis Road</span><span class="cell-sub">Sector NW3 · CS4</span></td>
         <td><span class="cell-main">Bollard</span><span class="cell-sub">Bollard</span></td>
+        <td>Hole</td>
         <td>Works order — accident</td>
         <td>2 Jun 2026</td>
-        <td><span class="chip chip-sm chip-wip">In progress</span></td>
-        <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">15 Jul 2026</td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="5 Jun 2026">
         <td class="wi-num">RMWP-TR388-RRFM-M-14</td>
+        <td><span class="chip chip-sm">Approval in progress</span></td>
         <td><span class="cell-main">Adis Road</span><span class="cell-sub">Sector NW3 · CS4</span></td>
         <td><span class="cell-main">Bollard</span><span class="cell-sub">Bollard</span></td>
+        <td>Hole</td>
         <td>Outcome-based defect</td>
         <td>7 Jun 2026</td>
-        <td><span class="chip chip-sm chip-wip">In progress</span></td>
-        <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">15 Jul 2026</td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="PATH" data-inst="3 Jun 2026">
         <td class="wi-num">RMWP-TR388-PATH-M-4</td>
+        <td><span class="chip chip-sm">Approved & closed</span></td>
         <td><span class="cell-main">Palm Drive</span><span class="cell-sub">Sector NW2 · NW2</span></td>
         <td><span class="cell-main">Footpath</span><span class="cell-sub">Pavement surface</span></td>
+        <td>Cracked surface</td>
         <td>Works order — accident</td>
         <td>15 Jun 2026</td>
-        <td><span class="chip chip-sm chip-wip">In progress</span></td>
-        <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">3 Jun 2026</td>
       </tr>
-      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html">
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="PATH" data-inst="3 Jun 2026">
         <td class="wi-num">RMWP-TR388-PATH-M-1</td>
+        <td><span class="chip chip-sm">Verification in progress</span></td>
         <td><span class="cell-main">Palm Drive</span><span class="cell-sub">Sector NW2 · NW2</span></td>
         <td><span class="cell-main">Footpath</span><span class="cell-sub">Pavement surface</span></td>
+        <td>Cracked surface</td>
         <td>Simplified item</td>
         <td>16 Jun 2026</td>
-        <td><span class="chip chip-sm chip-wip">In progress</span></td>
-        <td><svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">3 Jun 2026</td>
+      </tr>
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="20 Jul 2026">
+        <td class="wi-num">RMWP-TR388-RRFM-M-31</td>
+        <td><span class="chip chip-sm">Draft</span></td>
+        <td><span class="cell-main">Alexandra Road</span><span class="cell-sub">Sector SW1 · SW1</span></td>
+        <td><span class="cell-main">Kerb</span><span class="cell-sub">Kerb line</span></td>
+        <td>Damaged</td>
+        <td>Simplified item</td>
+        <td>12 Aug 2026</td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">20 Jul 2026</td>
+      </tr>
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="CFM" data-inst="18 Jul 2026">
+        <td class="wi-num">RMWP-TR388-CFM-M-2</td>
+        <td><span class="chip chip-sm">Draft</span></td>
+        <td><span class="cell-main">Balestier Road</span><span class="cell-sub">Sector NE1 · NE1</span></td>
+        <td><span class="cell-main">Road marking</span><span class="cell-sub">Line marking</span></td>
+        <td>Faded</td>
+        <td>Works order — accident</td>
+        <td>5 Aug 2026</td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">22 Jul 2026</td>
+      </tr>
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="BDG" data-inst="12 Jul 2026">
+        <td class="wi-num">RMWP-TR388-BDG-M-9</td>
+        <td><span class="chip chip-sm">Work in progress</span></td>
+        <td><span class="cell-main">Bukit Timah Road</span><span class="cell-sub">Sector NW1 · NW1</span></td>
+        <td><span class="cell-main">Railing</span><span class="cell-sub">Railing</span></td>
+        <td>Damaged</td>
+        <td>Outcome-based defect</td>
+        <td>28 Jul 2026</td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">23 Jul 2026</td>
+      </tr>
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="15 Jul 2026">
+        <td class="wi-num">RMWP-TR388-RRFM-M-33</td>
+        <td><span class="chip chip-sm">Work in progress</span></td>
+        <td><span class="cell-main">Changi Road</span><span class="cell-sub">Sector SE2 · SE2</span></td>
+        <td><span class="cell-main">Carriageway</span><span class="cell-sub">Flexible pavement</span></td>
+        <td>Depression</td>
+        <td>Simplified item</td>
+        <td>3 Aug 2026</td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">21 Jul 2026</td>
+      </tr>
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="PATH" data-inst="14 Jul 2026">
+        <td class="wi-num">RMWP-TR388-PATH-M-11</td>
+        <td><span class="chip chip-sm">Work in progress</span></td>
+        <td><span class="cell-main">Clementi Road</span><span class="cell-sub">Sector SW2 · SW2</span></td>
+        <td><span class="cell-main">Footpath</span><span class="cell-sub">Pavement surface</span></td>
+        <td>Uneven surface</td>
+        <td>Works order — accident</td>
+        <td>30 Jul 2026</td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">24 Jul 2026</td>
+      </tr>
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="1 Jul 2026">
+        <td class="wi-num">RMWP-TR388-RRFM-M-35</td>
+        <td><span class="chip chip-sm">Verification in progress</span></td>
+        <td><span class="cell-main">Dunearn Road</span><span class="cell-sub">Sector NW1 · NW2</span></td>
+        <td><span class="cell-main">Drain</span><span class="cell-sub">Drain grating</span></td>
+        <td>Choked</td>
+        <td>Simplified item</td>
+        <td>22 Jul 2026</td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">19 Jul 2026</td>
+      </tr>
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="CFM" data-inst="5 Jul 2026">
+        <td class="wi-num">RMWP-TR388-CFM-M-5</td>
+        <td><span class="chip chip-sm">Verification in progress</span></td>
+        <td><span class="cell-main">Eu Tong Sen Street</span><span class="cell-sub">Sector SE · SE1</span></td>
+        <td><span class="cell-main">Traffic sign</span><span class="cell-sub">Signage</span></td>
+        <td>Missing</td>
+        <td>Works order — accident</td>
+        <td>25 Jul 2026</td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">18 Jul 2026</td>
+      </tr>
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="28 Jun 2026">
+        <td class="wi-num">RMWP-TR388-RRFM-M-38</td>
+        <td><span class="chip chip-sm">Approval in progress</span></td>
+        <td><span class="cell-main">Farrer Road</span><span class="cell-sub">Sector SW · SW2</span></td>
+        <td><span class="cell-main">Bollard</span><span class="cell-sub">Bollard</span></td>
+        <td>Damaged</td>
+        <td>Simplified item</td>
+        <td>18 Jul 2026</td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">17 Jul 2026</td>
+      </tr>
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="BDG" data-inst="30 Jun 2026">
+        <td class="wi-num">RMWP-TR388-BDG-M-12</td>
+        <td><span class="chip chip-sm">Approval in progress</span></td>
+        <td><span class="cell-main">Havelock Road</span><span class="cell-sub">Sector SE1 · SE1</span></td>
+        <td><span class="cell-main">Railing</span><span class="cell-sub">Railing</span></td>
+        <td>Cracked surface</td>
+        <td>Outcome-based defect</td>
+        <td>20 Jul 2026</td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">16 Jul 2026</td>
+      </tr>
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="20 Jun 2026">
+        <td class="wi-num">RMWP-TR388-RRFM-M-40</td>
+        <td><span class="chip chip-sm">Approved & closed</span></td>
+        <td><span class="cell-main">Keppel Road</span><span class="cell-sub">Sector SE2 · SE2</span></td>
+        <td><span class="cell-main">Carriageway</span><span class="cell-sub">Flexible pavement</span></td>
+        <td>Hole</td>
+        <td>Works order — accident</td>
+        <td>10 Jul 2026</td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">12 Jul 2026</td>
+      </tr>
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="PATH" data-inst="22 Jul 2026">
+        <td class="wi-num">RMWP-TR388-PATH-M-14</td>
+        <td><span class="chip chip-sm">Draft</span></td>
+        <td><span class="cell-main">Lornie Road</span><span class="cell-sub">Sector NA1 · NA1</span></td>
+        <td><span class="cell-main">Footpath</span><span class="cell-sub">Pavement surface</span></td>
+        <td>Cracked surface</td>
+        <td>Simplified item</td>
+        <td>15 Aug 2026</td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">22 Jul 2026</td>
+      </tr>
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="16 Jul 2026">
+        <td class="wi-num">RMWP-TR388-RRFM-M-42</td>
+        <td><span class="chip chip-sm">Work in progress</span></td>
+        <td><span class="cell-main">Marina Boulevard</span><span class="cell-sub">Sector EXP · EXP</span></td>
+        <td><span class="cell-main">Streetlight</span><span class="cell-sub">Lamp post</span></td>
+        <td>Damaged</td>
+        <td>Works order — accident</td>
+        <td>8 Aug 2026</td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">25 Jul 2026</td>
+      </tr>
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="CFM" data-inst="8 Jul 2026">
+        <td class="wi-num">RMWP-TR388-CFM-M-8</td>
+        <td><span class="chip chip-sm">Verification in progress</span></td>
+        <td><span class="cell-main">Newton Road</span><span class="cell-sub">Sector NE2 · NE2</span></td>
+        <td><span class="cell-main">Road marking</span><span class="cell-sub">Line marking</span></td>
+        <td>Faded</td>
+        <td>Simplified item</td>
+        <td>26 Jul 2026</td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">20 Jul 2026</td>
+      </tr>
+      <tr tabindex="0" class="row-link" data-href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="12 Jun 2026">
+        <td class="wi-num">RMWP-TR388-RRFM-M-45</td>
+        <td><span class="chip chip-sm">Approved & closed</span></td>
+        <td><span class="cell-main">Orchard Road</span><span class="cell-sub">Sector NE4 · NE4</span></td>
+        <td><span class="cell-main">Kerb</span><span class="cell-sub">Kerb line</span></td>
+        <td>Damaged</td>
+        <td>Outcome-based defect</td>
+        <td>5 Jul 2026</td>
+        <td class="asg-cell"></td>
+        <td class="cell-nowrap">8 Jul 2026</td>
       </tr>
       </tbody>
     </table>
   </div>
 
   <ul class="wi-cards">
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-17</span><span class="chip chip-sm chip-draft">Draft</span></div>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="5 Jun 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-17</span><span class="chip chip-sm">Draft</span></div>
       <div class="road">Adis Road <small>· Sector NW3 · CS4</small></div>
-      <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Simplified item</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b style="color:var(--grey-400);font-weight:480">Not set</b></div>
+      <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Simplified item</span><span class="m-def" data-def="Hole"><i>Defect</i> Hole</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b class="ns">Not set</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>5 Jun 2026</b></span></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-7</span><span class="chip chip-sm chip-draft">Draft</span></div>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jun 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-7</span><span class="chip chip-sm">Draft</span></div>
       <div class="road">Admiralty Drive <small>· Sector NW2 · NW1</small></div>
-      <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Simplified item</span></div>
+      <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Simplified item</span><span class="m-def" data-def="Hole"><i>Defect</i> Hole</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>29 Jun 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>15 Jul 2026</b></span></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-13</span><span class="chip chip-sm chip-draft">Draft</span></div>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jun 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-13</span><span class="chip chip-sm">Draft</span></div>
       <div class="road">Admiralty Lane <small>· Sector NW2 · NW1</small></div>
-      <div class="meta"><span><strong>Traffic sign</strong> · Signage</span><span>Works order — accident</span></div>
+      <div class="meta"><span><strong>Traffic sign</strong> · Signage</span><span>Works order — accident</span><span class="m-def" data-def="No stopping sign"><i>Defect</i> No stopping sign</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>30 Jun 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>16 Jul 2026</b></span></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-12</span><span class="chip chip-sm chip-draft">Draft</span></div>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jun 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-12</span><span class="chip chip-sm">Draft</span></div>
       <div class="road">Admiralty Lane <small>· Sector NW2 · NW1</small></div>
-      <div class="meta"><span><strong>Railing</strong> · Railing</span><span>Works order — accident</span></div>
+      <div class="meta"><span><strong>Railing</strong> · Railing</span><span>Works order — accident</span><span class="m-def" data-def="Damaged"><i>Defect</i> Damaged</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>30 Jun 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>16 Jul 2026</b></span></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-24</span><span class="chip chip-sm chip-draft">Draft</span></div>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jul 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-24</span><span class="chip chip-sm">Work in progress</span></div>
       <div class="road">Admiralty Drive <small>· Sector NW2 · NW1</small></div>
-      <div class="meta"><span><span style="color:var(--grey-400)">No asset selected yet</span></span><span>Simplified item</span></div>
+      <div class="meta"><span class="cell-muted">Not selected yet</span><span>Simplified item</span><span class="m-def" data-def=""><i>Defect</i> Not set</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>8 Jul 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>2 Jul 2026</b></span></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-27</span><span class="chip chip-sm chip-draft">Draft</span></div>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="10 Jul 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-27</span><span class="chip chip-sm">Work in progress</span></div>
       <div class="road">Admiralty Drive <small>· Sector NW2 · NW1</small></div>
-      <div class="meta"><span><strong>Carriageway</strong> · Flexible pavement</span><span>Simplified item</span></div>
+      <div class="meta"><span><strong>Carriageway</strong> · Flexible pavement</span><span>Simplified item</span><span class="m-def" data-def="Depression"><i>Defect</i> Depression</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>30 Jul 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>10 Jul 2026</b></span></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-8</span><span class="chip chip-sm chip-wip">In progress</span></div>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jun 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-8</span><span class="chip chip-sm">Verification in progress</span></div>
       <div class="road">Adis Road <small>· Sector NW3 · CS4</small></div>
-      <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Works order — accident</span></div>
+      <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Works order — accident</span><span class="m-def" data-def="Hole"><i>Defect</i> Hole</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>2 Jun 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>15 Jul 2026</b></span></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-14</span><span class="chip chip-sm chip-wip">In progress</span></div>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="5 Jun 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-14</span><span class="chip chip-sm">Approval in progress</span></div>
       <div class="road">Adis Road <small>· Sector NW3 · CS4</small></div>
-      <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Outcome-based defect</span></div>
+      <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Outcome-based defect</span><span class="m-def" data-def="Hole"><i>Defect</i> Hole</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>7 Jun 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>15 Jul 2026</b></span></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
-      <div class="top"><span class="num">RMWP-TR388-PATH-M-4</span><span class="chip chip-sm chip-wip">In progress</span></div>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="PATH" data-inst="3 Jun 2026">
+      <div class="top"><span class="num">RMWP-TR388-PATH-M-4</span><span class="chip chip-sm">Approved & closed</span></div>
       <div class="road">Palm Drive <small>· Sector NW2 · NW2</small></div>
-      <div class="meta"><span><strong>Footpath</strong> · Pavement surface</span><span>Works order — accident</span></div>
+      <div class="meta"><span><strong>Footpath</strong> · Pavement surface</span><span>Works order — accident</span><span class="m-def" data-def="Cracked surface"><i>Defect</i> Cracked surface</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>15 Jun 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>3 Jun 2026</b></span></div>
     </a></li>
-    <li><a class="wi-card" href="mwi-wi-workflow.html">
-      <div class="top"><span class="num">RMWP-TR388-PATH-M-1</span><span class="chip chip-sm chip-wip">In progress</span></div>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="PATH" data-inst="3 Jun 2026">
+      <div class="top"><span class="num">RMWP-TR388-PATH-M-1</span><span class="chip chip-sm">Verification in progress</span></div>
       <div class="road">Palm Drive <small>· Sector NW2 · NW2</small></div>
-      <div class="meta"><span><strong>Footpath</strong> · Pavement surface</span><span>Simplified item</span></div>
+      <div class="meta"><span><strong>Footpath</strong> · Pavement surface</span><span>Simplified item</span><span class="m-def" data-def="Cracked surface"><i>Defect</i> Cracked surface</span></div>
       <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>16 Jun 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>3 Jun 2026</b></span></div>
+    </a></li>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="20 Jul 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-31</span><span class="chip chip-sm">Draft</span></div>
+      <div class="road">Alexandra Road <small>· Sector SW1 · SW1</small></div>
+      <div class="meta"><span><strong>Kerb</strong> · Kerb line</span><span>Simplified item</span><span class="m-def" data-def="Damaged"><i>Defect</i> Damaged</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>12 Aug 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>20 Jul 2026</b></span></div>
+    </a></li>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="CFM" data-inst="18 Jul 2026">
+      <div class="top"><span class="num">RMWP-TR388-CFM-M-2</span><span class="chip chip-sm">Draft</span></div>
+      <div class="road">Balestier Road <small>· Sector NE1 · NE1</small></div>
+      <div class="meta"><span><strong>Road marking</strong> · Line marking</span><span>Works order — accident</span><span class="m-def" data-def="Faded"><i>Defect</i> Faded</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>5 Aug 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>22 Jul 2026</b></span></div>
+    </a></li>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="BDG" data-inst="12 Jul 2026">
+      <div class="top"><span class="num">RMWP-TR388-BDG-M-9</span><span class="chip chip-sm">Work in progress</span></div>
+      <div class="road">Bukit Timah Road <small>· Sector NW1 · NW1</small></div>
+      <div class="meta"><span><strong>Railing</strong> · Railing</span><span>Outcome-based defect</span><span class="m-def" data-def="Damaged"><i>Defect</i> Damaged</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>28 Jul 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>23 Jul 2026</b></span></div>
+    </a></li>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="15 Jul 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-33</span><span class="chip chip-sm">Work in progress</span></div>
+      <div class="road">Changi Road <small>· Sector SE2 · SE2</small></div>
+      <div class="meta"><span><strong>Carriageway</strong> · Flexible pavement</span><span>Simplified item</span><span class="m-def" data-def="Depression"><i>Defect</i> Depression</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>3 Aug 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>21 Jul 2026</b></span></div>
+    </a></li>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="PATH" data-inst="14 Jul 2026">
+      <div class="top"><span class="num">RMWP-TR388-PATH-M-11</span><span class="chip chip-sm">Work in progress</span></div>
+      <div class="road">Clementi Road <small>· Sector SW2 · SW2</small></div>
+      <div class="meta"><span><strong>Footpath</strong> · Pavement surface</span><span>Works order — accident</span><span class="m-def" data-def="Uneven surface"><i>Defect</i> Uneven surface</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>30 Jul 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>24 Jul 2026</b></span></div>
+    </a></li>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="1 Jul 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-35</span><span class="chip chip-sm">Verification in progress</span></div>
+      <div class="road">Dunearn Road <small>· Sector NW1 · NW2</small></div>
+      <div class="meta"><span><strong>Drain</strong> · Drain grating</span><span>Simplified item</span><span class="m-def" data-def="Choked"><i>Defect</i> Choked</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>22 Jul 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>19 Jul 2026</b></span></div>
+    </a></li>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="CFM" data-inst="5 Jul 2026">
+      <div class="top"><span class="num">RMWP-TR388-CFM-M-5</span><span class="chip chip-sm">Verification in progress</span></div>
+      <div class="road">Eu Tong Sen Street <small>· Sector SE · SE1</small></div>
+      <div class="meta"><span><strong>Traffic sign</strong> · Signage</span><span>Works order — accident</span><span class="m-def" data-def="Missing"><i>Defect</i> Missing</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>25 Jul 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>18 Jul 2026</b></span></div>
+    </a></li>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="28 Jun 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-38</span><span class="chip chip-sm">Approval in progress</span></div>
+      <div class="road">Farrer Road <small>· Sector SW · SW2</small></div>
+      <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Simplified item</span><span class="m-def" data-def="Damaged"><i>Defect</i> Damaged</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>18 Jul 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>17 Jul 2026</b></span></div>
+    </a></li>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="BDG" data-inst="30 Jun 2026">
+      <div class="top"><span class="num">RMWP-TR388-BDG-M-12</span><span class="chip chip-sm">Approval in progress</span></div>
+      <div class="road">Havelock Road <small>· Sector SE1 · SE1</small></div>
+      <div class="meta"><span><strong>Railing</strong> · Railing</span><span>Outcome-based defect</span><span class="m-def" data-def="Cracked surface"><i>Defect</i> Cracked surface</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>20 Jul 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>16 Jul 2026</b></span></div>
+    </a></li>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="20 Jun 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-40</span><span class="chip chip-sm">Approved & closed</span></div>
+      <div class="road">Keppel Road <small>· Sector SE2 · SE2</small></div>
+      <div class="meta"><span><strong>Carriageway</strong> · Flexible pavement</span><span>Works order — accident</span><span class="m-def" data-def="Hole"><i>Defect</i> Hole</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>10 Jul 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>12 Jul 2026</b></span></div>
+    </a></li>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="PATH" data-inst="22 Jul 2026">
+      <div class="top"><span class="num">RMWP-TR388-PATH-M-14</span><span class="chip chip-sm">Draft</span></div>
+      <div class="road">Lornie Road <small>· Sector NA1 · NA1</small></div>
+      <div class="meta"><span><strong>Footpath</strong> · Pavement surface</span><span>Simplified item</span><span class="m-def" data-def="Cracked surface"><i>Defect</i> Cracked surface</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>15 Aug 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>22 Jul 2026</b></span></div>
+    </a></li>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="16 Jul 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-42</span><span class="chip chip-sm">Work in progress</span></div>
+      <div class="road">Marina Boulevard <small>· Sector EXP · EXP</small></div>
+      <div class="meta"><span><strong>Streetlight</strong> · Lamp post</span><span>Works order — accident</span><span class="m-def" data-def="Damaged"><i>Defect</i> Damaged</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>8 Aug 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>25 Jul 2026</b></span></div>
+    </a></li>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="CFM" data-inst="8 Jul 2026">
+      <div class="top"><span class="num">RMWP-TR388-CFM-M-8</span><span class="chip chip-sm">Verification in progress</span></div>
+      <div class="road">Newton Road <small>· Sector NE2 · NE2</small></div>
+      <div class="meta"><span><strong>Road marking</strong> · Line marking</span><span>Simplified item</span><span class="m-def" data-def="Faded"><i>Defect</i> Faded</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>26 Jul 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>20 Jul 2026</b></span></div>
+    </a></li>
+    <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="12 Jun 2026">
+      <div class="top"><span class="num">RMWP-TR388-RRFM-M-45</span><span class="chip chip-sm">Approved & closed</span></div>
+      <div class="road">Orchard Road <small>· Sector NE4 · NE4</small></div>
+      <div class="meta"><span><strong>Kerb</strong> · Kerb line</span><span>Outcome-based defect</span><span class="m-def" data-def="Damaged"><i>Defect</i> Damaged</span></div>
+      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>5 Jul 2026</b></div>
+      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>8 Jul 2026</b></span></div>
     </a></li>
   </ul>
 
@@ -948,11 +1280,31 @@ button{font-family:inherit;cursor:pointer}
 </script><div class="toast" id="toast"></div>
 <script>
 (function(){
-  // Per-WI stage + whether it's assigned to a person (vs common queue).
-  // Bucket (To do / In progress / Submitted) is derived PER ROLE from stage — see bucketFor().
-  var META={'RMWP-TR388-RRFM-M-17':{st:'draft',a:false},'RMWP-TR388-RRFM-M-7':{st:'draft',a:false},'RMWP-TR388-RRFM-M-13':{st:'draft',a:true},'RMWP-TR388-RRFM-M-12':{st:'draft',a:false},'RMWP-TR388-RRFM-M-24':{st:'wip',a:false},'RMWP-TR388-RRFM-M-27':{st:'wip',a:true},'RMWP-TR388-RRFM-M-8':{st:'ver',a:true},'RMWP-TR388-RRFM-M-14':{st:'appr',a:true},'RMWP-TR388-PATH-M-4':{st:'closed',a:false},'RMWP-TR388-PATH-M-1':{st:'ver',a:false}};
+  // Per-WI stage + assignee. Bucket (To do / In progress / Submitted) is derived
+  // PER ROLE from the stage — see bucketFor().
+  var META={'RMWP-TR388-RRFM-M-17':{st:'draft',a:false},'RMWP-TR388-RRFM-M-7':{st:'draft',a:false},'RMWP-TR388-RRFM-M-13':{st:'draft',a:true,who:'DEV CO01'},'RMWP-TR388-RRFM-M-12':{st:'draft',a:false},'RMWP-TR388-RRFM-M-24':{st:'wip',a:false},'RMWP-TR388-RRFM-M-27':{st:'wip',a:true,who:'DEV TR388SS01'},'RMWP-TR388-RRFM-M-8':{st:'ver',a:true,who:'DEV TR388ENG01'},'RMWP-TR388-RRFM-M-14':{st:'appr',a:true,who:'DEV CO01'},'RMWP-TR388-PATH-M-4':{st:'closed',a:false,who:'DEV PATHTR388SS01'},'RMWP-TR388-PATH-M-1':{st:'ver',a:false},'RMWP-TR388-RRFM-M-31':{st:'draft',a:false},'RMWP-TR388-CFM-M-2':{st:'draft',a:true,who:'DEV CO01'},'RMWP-TR388-BDG-M-9':{st:'wip',a:true,who:'DEV TR388SS01'},'RMWP-TR388-RRFM-M-33':{st:'wip',a:false},'RMWP-TR388-PATH-M-11':{st:'wip',a:true,who:'DEV PATHTR388SS01'},'RMWP-TR388-RRFM-M-35':{st:'ver',a:true,who:'DEV TR388ENG01'},'RMWP-TR388-CFM-M-5':{st:'ver',a:false},'RMWP-TR388-RRFM-M-38':{st:'appr',a:true,who:'DEV CO01'},'RMWP-TR388-BDG-M-12':{st:'appr',a:false},'RMWP-TR388-RRFM-M-40':{st:'closed',a:false,who:'DEV TR388ENG01'},'RMWP-TR388-PATH-M-14':{st:'draft',a:false},'RMWP-TR388-RRFM-M-42':{st:'wip',a:false},'RMWP-TR388-CFM-M-8':{st:'ver',a:true,who:'DEV TR388ENG01'},'RMWP-TR388-RRFM-M-45':{st:'closed',a:false,who:'DEV CO01'}};
+  // Who each role is, for "Assign to self".
+  var ME={co:'DEV CO01',ss:'DEV TR388SS01',eng:'DEV TR388ENG01'};
   var LABEL={draft:'Draft',wip:'Work in progress',ver:'Verification in progress',appr:'Approval in progress',closed:'Approved & closed'};
   var SORD=['draft','wip','ver','appr','closed'];
+
+  // ---- Filter vocabularies -------------------------------------------------
+  // The live Advanced Filter offers the full value set for the contract, NOT just
+  // the values present on screen — so these lists are deliberately larger than the
+  // 24 demo rows use. That is what makes the per-facet search worth having.
+  // ⚠️ Placeholder values pending Arjun's real domains — see SPEC_field-matrix.md §1e.
+  var VOCAB={
+    fsector:['EXP','NA1','NE','NE1','NE2','NE4','NW1','NW2','NW3','SE','SE1','SE2','SW','SW1','SW2'],
+    fsub:['CS1','CS2','CS3','CS4','EXP','NA1','NE1','NE2','NE4','NW1','NW2','NW3','SE1','SE2','SW1','SW2'],
+    fdept:['BDG','CFM','PATH','RRFM'],
+    fworktype:['Outcome-based defect','Simplified item','Works order — accident'],
+    fasset:['Bollard','Carriageway','Drain','Footpath','Kerb','Railing','Road marking','Streetlight','Traffic sign'],
+    felement:['Bollard','Drain grating','Flexible pavement','Kerb line','Lamp post','Line marking','Pavement surface','Railing','Rigid pavement','Signage'],
+    fdefect:['Choked','Cracked surface','Damaged','Depression','Faded','Hole','Missing','No stopping sign','Uneven surface'],
+    fassign:['Common Queue','DEV CO01','DEV CO02','DEV PATHTR388SS01','DEV TR388DRC01','DEV TR388ENG01','DEV TR388SS01'],
+    froad:['Adis Road','Admiralty Drive','Admiralty Lane','Alexandra Road','Anson Road','Balestier Road','Bencoolen Street','Bukit Merah Central','Bukit Timah Road','Changi Road','Clementi Road','Commonwealth Avenue','Dunearn Road','Eu Tong Sen Street','Farrer Road','Geylang Road','Havelock Road','Holland Road','Jalan Bukit Merah','Jalan Eunos','Keppel Road','Lornie Road','Marina Boulevard','Newton Road','Nicoll Highway','Orchard Road','Palm Drive','Paya Lebar Road','Queensway','River Valley Road','Serangoon Road','Sims Avenue','Tampines Avenue 1','Thomson Road','Tiong Bahru Road','Upper Bukit Timah Road','Victoria Street','West Coast Road','Yio Chu Kang Road','Yishun Avenue 2']
+  };
+
   // Resolve a sibling page for whatever host we're on. Under htmlpreview the real
   // source URL lives in the query string, so a bare relative path would 404.
   function siblingUrl(file){
@@ -969,61 +1321,355 @@ button{font-family:inherit;cursor:pointer}
   }
   function txt(el){return el?el.textContent.trim():'';}
   function pDate(s){if(!s||/not set/i.test(s))return Infinity;var m=s.match(/(\d+)\s+([A-Za-z]+)\s+(\d+)/);if(!m)return Infinity;var mo={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11}[m[2].slice(0,3)];return new Date(+m[3],mo,+m[1]).getTime();}
+  var DAY=864e5;
+  function today(){var d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();}
+
   var rows=[].slice.call(document.querySelectorAll('.wi-table tbody tr.row-link'));
   var cards=[].slice.call(document.querySelectorAll('.wi-cards .wi-card'));
   var tbody=document.querySelector('.wi-table tbody'),ul=document.querySelector('.wi-cards'),table=document.querySelector('.wi-table');
-  rows.forEach(function(tr,i){var wi=txt(tr.querySelector('.wi-num'));var m=META[wi]||{st:'draft',a:false};tr.dataset.wi=wi;tr._i=i;var t=tr.children;var road=txt(t[1].querySelector('.cell-main'));var sub=txt(t[1].querySelector('.cell-sub'));var sec=(sub.match(/Sector\s+([A-Za-z0-9]+)/)||[])[1]||'';var asset=txt(t[2].querySelector('.cell-main'))||'—';var wt=txt(t[3]);tr.dataset.fstatus=m.st;tr.dataset.fsector=sec;tr.dataset.fworktype=wt;tr.dataset.fasset=asset;tr.dataset.froad=road;tr.dataset.fest=pDate(txt(t[4]));var c=tr.querySelector('.chip');if(c){c.className='chip chip-sm st-'+m.st;c.textContent=LABEL[m.st];}var td=document.createElement('td');td.className='act-col act-cell';var chev=tr.querySelector('.row-chevron');tr.insertBefore(td,chev?chev.closest('td'):tr.lastElementChild);});
-  cards.forEach(function(c,i){var wi=txt(c.querySelector('.num'));if((META[wi]||{}).st==='draft')c.setAttribute('href',siblingUrl('mwi-wi-draft.html'));var m=META[wi]||{st:'draft',a:false};c.dataset.wi=wi;c._i=i;var re=c.querySelector('.road');var road=re?txt(re.childNodes[0]):'';var sub=txt(c.querySelector('.road small'));var sec=(sub.match(/Sector\s+([A-Za-z0-9]+)/)||[])[1]||'';var ms=c.querySelectorAll('.meta span');var asset=ms[0]?txt(ms[0].querySelector('strong')||ms[0]):'—';var wt=ms[1]?txt(ms[1]):'';c.dataset.fstatus=m.st;c.dataset.fsector=sec;c.dataset.fworktype=wt;c.dataset.fasset=asset;c.dataset.froad=road;c.dataset.fest=pDate(txt(c.querySelector('.due b')));var ch=c.querySelector('.chip');if(ch){ch.className='chip chip-sm st-'+m.st;ch.textContent=LABEL[m.st];}});
-  var CATS=[{k:'fstatus',label:'Status',opts:SORD.slice(),disp:function(v){return LABEL[v];}},{k:'fsector',label:'Sector'},{k:'fworktype',label:'Work type'},{k:'fasset',label:'Asset type'},{k:'froad',label:'Road'}];
-  CATS.forEach(function(cat){if(!cat.opts){var s=[];rows.forEach(function(tr){var v=tr.dataset[cat.k];if(v&&v!=='—'&&s.indexOf(v)<0)s.push(v);});cat.opts=s.sort();}if(!cat.disp)cat.disp=function(v){return v;};});
-  var PAGE_SIZE=10;
-  var FILT={},SORT='newest',cur='todo';CATS.forEach(function(c){FILT[c.k]=[];});
-  // drawer
-  var bd=document.createElement('div');bd.className='filter-bd';bd.innerHTML='<div class="filter-drawer"><div class="fd-head"><h2>Filter &amp; sort</h2><button class="fd-close" aria-label="Close">✕</button></div><div class="fd-body"></div><div class="fd-foot"><button class="clear">Clear all</button><button class="btn btn-primary apply">Apply</button></div></div>';document.body.appendChild(bd);
+  var cardBy={};
+
+  function readRow(el,get){
+    var wi=get.wi(el);var m=META[wi]||{st:'draft',a:false};
+    el.dataset.wi=wi;
+    var road=get.road(el),sub=get.sub(el);
+    var mm=sub.match(/Sector\s+([A-Za-z0-9]+)\s*·\s*([A-Za-z0-9]+)/)||[];
+    var asset=get.asset(el);if(/not selected/i.test(asset)||!asset)asset='—';
+    var elem=get.elem(el);if(!elem||asset==='—')elem='—';
+    var def=get.def(el);if(!def||/not set/i.test(def))def='—';
+    el.dataset.fstatus=m.st;
+    el.dataset.fsector=mm[1]||'';
+    el.dataset.fsub=mm[2]||'';
+    el.dataset.fdept=el.dataset.dept||'';
+    el.dataset.fworktype=get.wt(el);
+    el.dataset.fasset=asset;
+    el.dataset.felement=elem;
+    el.dataset.fdefect=def;
+    el.dataset.froad=road;
+    el.dataset.fest=pDate(get.est(el));
+    el.dataset.fupd=pDate(get.upd(el));
+    el.dataset.finst=pDate(el.dataset.inst||'');
+    el.dataset.q=(wi+' '+road+' '+sub+' '+asset+' '+elem+' '+def+' '+el.dataset.fworktype).toLowerCase();
+    var c=el.querySelector('.chip');if(c){c.className='chip chip-sm st-'+m.st;c.textContent=LABEL[m.st];}
+  }
+
+  rows.forEach(function(tr,i){
+    tr._i=i;var t=tr.children;
+    readRow(tr,{wi:function(e){return txt(e.querySelector('.wi-num'));},
+      road:function(){return txt(t[2].querySelector('.cell-main'));},
+      sub:function(){return txt(t[2].querySelector('.cell-sub'));},
+      asset:function(){return txt(t[3].querySelector('.cell-main'))||txt(t[3]);},
+      elem:function(){return txt(t[3].querySelector('.cell-sub'));},
+      def:function(){return txt(t[4]);},wt:function(){return txt(t[5]);},
+      est:function(){return txt(t[6]);},upd:function(){return txt(t[8]);}});
+    var td=document.createElement('td');td.className='act-col act-cell';tr.appendChild(td);
+  });
+  cards.forEach(function(c,i){
+    c._i=i;var ms=c.querySelectorAll('.meta > span');
+    readRow(c,{wi:function(e){return txt(e.querySelector('.num'));},
+      road:function(e){var r=e.querySelector('.road');return r?txt(r.childNodes[0]):'';},
+      sub:function(e){return txt(e.querySelector('.road small')).replace(/^·\s*/,'');},
+      asset:function(){return ms[0]?txt(ms[0].querySelector('strong')||ms[0]):'';},
+      elem:function(){return ms[0]?txt(ms[0]).replace(/^[^·]*·\s*/,''):'';},
+      def:function(e){var d=e.querySelector('.m-def');return d?(d.dataset.def||''):'';},
+      wt:function(){return ms[1]?txt(ms[1]):'';},
+      est:function(e){return txt(e.querySelector('.due b'));},
+      upd:function(e){return txt(e.querySelector('.cf-upd b'));}});
+    if((META[c.dataset.wi]||{}).st==='draft')c.setAttribute('href',siblingUrl('mwi-wi-draft.html'));
+    cardBy[c.dataset.wi]=c;
+  });
+
+  // ---- facets --------------------------------------------------------------
+  var CATS=[
+    {k:'fstatus',label:'Status',opts:SORD.slice(),disp:function(v){return LABEL[v];}},
+    {k:'froad',label:'Road'},
+    {k:'fsector',label:'Sector',child:true},
+    {k:'fsub',label:'Sub-sector',parent:'fsector',child:true},
+    {k:'fasset',label:'Asset'},
+    {k:'felement',label:'Element type',parent:'fasset',child:true},
+    {k:'fdefect',label:'Defect type'},
+    {k:'fworktype',label:'Work type'},
+    {k:'fassign',label:'Assign to'},
+    {k:'fdept',label:'Department'}
+  ];
+  var DATES=[
+    {k:'fest',label:'Est. completion',pills:[['overdue','Overdue'],['n7','Next 7 days'],['n30','Next 30 days']]},
+    {k:'finst',label:'Instruction date',pills:[['p7','Last 7 days'],['p30','Last 30 days'],['p90','Last 90 days']]}
+  ];
+  // One section per table column, in the same left-to-right order. Sector / Sub-sector /
+  // Element type are indented under the column whose cell they appear in.
+  // HIDDEN FOR NOW: Department and Instruction date have no column in the table, so the
+  // "Other filters" group is left out. To bring them back, append to ORDER:
+  //   '__other','fdept','finst'
+  var ORDER=['fstatus','froad','fsector','fsub','fasset','felement','fdefect','fworktype','fest','fassign'];
+  // ORDER is the source of truth — anything not listed is never built, filtered or counted.
+  CATS=CATS.filter(function(c){return ORDER.indexOf(c.k)>=0;});
+  DATES=DATES.filter(function(d){return ORDER.indexOf(d.k)>=0;});
+  CATS.forEach(function(c){if(!c.opts)c.opts=(VOCAB[c.k]||[]).slice();if(!c.disp)c.disp=function(v){return v;};});
+  // parent → children, learned from the data (a sector only offers its own sub-sectors)
+  var PMAP={};
+  CATS.filter(function(c){return c.parent;}).forEach(function(c){
+    PMAP[c.k]={};
+    rows.forEach(function(tr){var p=tr.dataset[c.parent],v=tr.dataset[c.k];
+      if(!p||!v||v==='—')return;(PMAP[c.k][p]=PMAP[c.k][p]||[]);
+      if(PMAP[c.k][p].indexOf(v)<0)PMAP[c.k][p].push(v);});
+  });
+
+  var PAGE_SIZE=10,PAGE=1;
+  var FILT={},DFILT={},cur='todo',QRY='';
+  var DEFDIR={fest:1,fupd:-1},SORT={k:'fupd',dir:-1};
+  CATS.forEach(function(c){FILT[c.k]=[];});
+  DATES.forEach(function(d){DFILT[d.k]={pill:'',from:'',to:''};});
+
+  // ---- drawer --------------------------------------------------------------
+  var bd=document.createElement('div');bd.className='filter-bd';
+  bd.innerHTML='<div class="filter-drawer"><div class="fd-head"><h2>Filter &amp; sort</h2><button class="fd-close" aria-label="Close">✕</button></div><div class="fd-body"></div><div class="fd-foot"><button class="clear">Clear all</button><button class="btn btn-primary apply">Apply</button></div></div>';
+  document.body.appendChild(bd);
   var body=bd.querySelector('.fd-body');
-  var sw=document.createElement('div');sw.className='fd-sort';sw.innerHTML='<span class="fd-label">Sort by</span><div class="sortpills">'+[['newest','Newest first'],['est','Est. completion'],['road','Road A–Z'],['status','Status']].map(function(o){return '<button data-sort="'+o[0]+'"'+(o[0]==='newest'?' class="on"':'')+'>'+o[1]+'</button>';}).join('')+'</div>';body.appendChild(sw);
-  CATS.forEach(function(cat){var sec=document.createElement('div');sec.className='fd-sec';var acc=document.createElement('button');acc.className='fd-acc';acc.type='button';acc.innerHTML='<span class="l">'+cat.label+' <span class="cnt" style="display:none">0</span></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';var opts=document.createElement('div');opts.className='fd-opts';cat.opts.forEach(function(v){var b=document.createElement('button');b.type='button';b.className='fd-chip';b.dataset.cat=cat.k;b.dataset.val=v;b.textContent=cat.disp(v);opts.appendChild(b);});acc.addEventListener('click',function(){acc.classList.toggle('open');});sec.appendChild(acc);sec.appendChild(opts);body.appendChild(sec);cat._cnt=acc.querySelector('.cnt');});
-  body.addEventListener('click',function(e){var b=e.target.closest('.fd-chip');if(!b)return;b.classList.toggle('on');CATS.forEach(function(cat){var n=body.querySelectorAll('.fd-chip[data-cat="'+cat.k+'"].on').length;cat._cnt.textContent=n;cat._cnt.style.display=n?'':'none';});});
-  sw.addEventListener('click',function(e){var b=e.target.closest('button[data-sort]');if(!b)return;sw.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');SORT=b.dataset.sort;});
+
+  function pending(k){return [].slice.call(body.querySelectorAll('.fd-chip[data-cat="'+k+'"].on')).map(function(x){return x.dataset.val;});}
+  function optsFor(cat){
+    if(cat.parent){
+      var sel=pending(cat.parent);
+      if(sel.length){var out=[];sel.forEach(function(p){(PMAP[cat.k][p]||[]).forEach(function(v){if(out.indexOf(v)<0)out.push(v);});});return out.sort();}
+    }
+    return cat.opts.slice();
+  }
+  var SHOW=6;
+  function paintOpts(cat){
+    var on=cat._on||[],list=optsFor(cat),q=(cat._q||'').toLowerCase();
+    var shown=list.filter(function(v){return !q||cat.disp(v).toLowerCase().indexOf(q)>=0;});
+    shown.sort(function(a,b){return (on.indexOf(b)>=0?1:0)-(on.indexOf(a)>=0?1:0);});
+    var hidden=0;
+    if(!cat._all&&!q&&shown.length>SHOW){hidden=shown.length-SHOW;shown=shown.slice(0,SHOW);}
+    cat._chips.innerHTML='';
+    shown.forEach(function(v){
+      var b=document.createElement('button');b.type='button';b.className='fd-chip'+(on.indexOf(v)>=0?' on':'');
+      b.dataset.cat=cat.k;b.dataset.val=v;b.textContent=cat.disp(v);cat._chips.appendChild(b);});
+    if(!shown.length){var e=document.createElement('span');e.className='fd-none';e.textContent='No match';cat._chips.appendChild(e);}
+    cat._more.textContent=hidden?('Show all ('+list.length+')'):(cat._all&&list.length>SHOW?'Show less':'');
+    cat._more.style.display=(hidden||(cat._all&&list.length>SHOW))?'':'none';
+    cat._cnt.textContent=on.length;cat._cnt.style.display=on.length?'':'none';
+  }
+  function syncChildren(parentKey){
+    CATS.forEach(function(c){if(c.parent===parentKey){
+      c._on=c._on.filter(function(v){return optsFor(c).indexOf(v)>=0;});paintOpts(c);}});
+  }
+  function buildCat(cat){
+    cat._on=[];
+    var sec=document.createElement('div');sec.className='fd-sec'+(cat.child?' child':'');
+    var acc=document.createElement('button');acc.className='fd-acc';acc.type='button';
+    acc.innerHTML='<span class="l">'+cat.label+' <span class="cnt" style="display:none">0</span></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+    var pane=document.createElement('div');pane.className='fd-opts';
+    if(cat.opts.length>8){
+      var s=document.createElement('input');s.type='search';s.className='fd-search';s.placeholder='Search '+cat.label.toLowerCase()+'…';
+      s.addEventListener('input',function(){cat._q=s.value;paintOpts(cat);});
+      pane.appendChild(s);
+    }
+    cat._chips=document.createElement('div');cat._chips.className='fd-chips';pane.appendChild(cat._chips);
+    cat._more=document.createElement('button');cat._more.type='button';cat._more.className='fd-more';
+    cat._more.addEventListener('click',function(){cat._all=!cat._all;paintOpts(cat);});
+    pane.appendChild(cat._more);
+    acc.addEventListener('click',function(){acc.classList.toggle('open');});
+    sec.appendChild(acc);sec.appendChild(pane);body.appendChild(sec);
+    cat._cnt=acc.querySelector('.cnt');
+    paintOpts(cat);
+  }
+  function buildDate(d){
+    var sec=document.createElement('div');sec.className='fd-sec';
+    var acc=document.createElement('button');acc.className='fd-acc';acc.type='button';
+    acc.innerHTML='<span class="l">'+d.label+' <span class="cnt" style="display:none">0</span></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+    var pane=document.createElement('div');pane.className='fd-opts';
+    var pills=document.createElement('div');pills.className='fd-chips';
+    d.pills.forEach(function(p){var b=document.createElement('button');b.type='button';b.className='fd-chip';b.dataset.pill=p[0];b.textContent=p[1];pills.appendChild(b);});
+    pane.appendChild(pills);
+    var rg=document.createElement('div');rg.className='fd-range';
+    rg.innerHTML='<input type="date" class="d-from" aria-label="'+d.label+' from"><span class="sep">→</span><input type="date" class="d-to" aria-label="'+d.label+' to">';
+    pane.appendChild(rg);
+    pills.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+      var was=b.classList.contains('on');
+      pills.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+      if(!was)b.classList.add('on');
+      rg.querySelector('.d-from').value='';rg.querySelector('.d-to').value='';mark();});
+    rg.addEventListener('input',function(){pills.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});mark();});
+    function mark(){var n=(pills.querySelector('button.on')||rg.querySelector('.d-from').value||rg.querySelector('.d-to').value)?1:0;
+      d._cnt.textContent=n;d._cnt.style.display=n?'':'none';}
+    acc.addEventListener('click',function(){acc.classList.toggle('open');});
+    sec.appendChild(acc);sec.appendChild(pane);body.appendChild(sec);
+    d._cnt=acc.querySelector('.cnt');d._pills=pills;d._rg=rg;d._mark=mark;
+  }
+  ORDER.forEach(function(k){
+    if(k==='__other'){var lb=document.createElement('div');lb.className='fd-grouplbl';
+      lb.innerHTML='Other filters<span class="hint">No matching column in the table</span>';
+      body.appendChild(lb);return;}
+    var c=CATS.filter(function(x){return x.k===k;})[0];if(c)return buildCat(c);
+    var d=DATES.filter(function(x){return x.k===k;})[0];if(d)return buildDate(d);
+  });
+
+  // ---- sorting: the table header is the control; the drawer keeps a mobile fallback ----
+  var sortBtns=[].slice.call(document.querySelectorAll('.wi-table thead th button[data-sk]'));
+  var sw=document.createElement('div');sw.className='fd-sort';
+  sw.innerHTML='<span class="fd-label">Sort by</span><div class="sortpills">'+sortBtns.map(function(b){
+    return '<button data-sort="'+b.dataset.sk+'">'+b.textContent.trim()+' <span class="dir"></span></button>';}).join('')+'</div>';
+  body.insertBefore(sw,body.firstChild);
+  function paintSort(){
+    sortBtns.forEach(function(b){var on=b.dataset.sk===SORT.k;
+      b.classList.toggle('sorted',on);
+      b.classList.toggle('asc',on&&SORT.dir>0);
+      b.classList.toggle('desc',on&&SORT.dir<0);
+      var th=b.closest('th');if(th)th.setAttribute('aria-sort',on?(SORT.dir>0?'ascending':'descending'):'none');});
+    sw.querySelectorAll('button[data-sort]').forEach(function(b){var on=b.dataset.sort===SORT.k;
+      b.classList.toggle('on',on);b.querySelector('.dir').textContent=on?(SORT.dir>0?'↑':'↓'):'';});
+  }
+  function setSort(k){
+    if(SORT.k===k)SORT.dir=-SORT.dir;else SORT={k:k,dir:DEFDIR[k]||1};
+    PAGE=1;paintSort();render();
+  }
+  sortBtns.forEach(function(b){b.addEventListener('click',function(){setSort(b.dataset.sk);});});
+  sw.addEventListener('click',function(e){var b=e.target.closest('button[data-sort]');if(b)setSort(b.dataset.sort);});
+
+  body.addEventListener('click',function(e){
+    var b=e.target.closest('.fd-chip[data-cat]');if(!b)return;
+    var cat=CATS.filter(function(c){return c.k===b.dataset.cat;})[0];if(!cat)return;
+    var v=b.dataset.val,i=cat._on.indexOf(v);
+    if(i<0)cat._on.push(v);else cat._on.splice(i,1);
+    b.classList.toggle('on');
+    cat._cnt.textContent=cat._on.length;cat._cnt.style.display=cat._on.length?'':'none';
+    syncChildren(cat.k);
+  });
   bd.querySelector('.fd-close').addEventListener('click',function(){bd.classList.remove('show');});
   bd.addEventListener('click',function(e){if(e.target===bd)bd.classList.remove('show');});
-  bd.querySelector('.clear').addEventListener('click',function(){body.querySelectorAll('.fd-chip.on').forEach(function(x){x.classList.remove('on');});CATS.forEach(function(cat){cat._cnt.style.display='none';});sw.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});sw.querySelector('[data-sort=newest]').classList.add('on');SORT='newest';});
-  bd.querySelector('.apply').addEventListener('click',function(){CATS.forEach(function(cat){FILT[cat.k]=[].slice.call(body.querySelectorAll('.fd-chip[data-cat="'+cat.k+'"].on')).map(function(x){return x.dataset.val;});});bd.classList.remove('show');render();});
-  // Filter button
-  var fbtn=[].slice.call(document.querySelectorAll('.list-toolbar .btn-ghost')).filter(function(b){return /Filter/.test(b.textContent);})[0];
-  var flabel;if(fbtn){[].slice.call(fbtn.childNodes).forEach(function(n){if(n.nodeType===3)fbtn.removeChild(n);});flabel=document.createElement('span');flabel.textContent='Filter';flabel.style.marginLeft='4px';fbtn.appendChild(flabel);fbtn.addEventListener('click',function(){bd.classList.add('show');});}
-  // clear-filters link near count
-  var cf=document.createElement('button');cf.className='clear-filters';cf.textContent='Clear filters';var tb=document.querySelector('.list-toolbar');if(tb)tb.appendChild(cf);cf.addEventListener('click',function(){CATS.forEach(function(c){FILT[c.k]=[];});body.querySelectorAll('.fd-chip.on').forEach(function(x){x.classList.remove('on');});CATS.forEach(function(cat){cat._cnt.style.display='none';});render();});
-  function passF(el){for(var i=0;i<CATS.length;i++){var k=CATS[i].k;if(FILT[k].length&&FILT[k].indexOf(el.dataset[k])<0)return false;}return true;}
-  function fcount(){var n=0;CATS.forEach(function(c){n+=FILT[c.k].length;});return n;}
-  function srt(arr){var a=arr.slice();a.sort(function(x,y){if(SORT==='newest')return x._i-y._i;if(SORT==='est')return (+x.dataset.fest)-(+y.dataset.fest);if(SORT==='road')return (x.dataset.froad||'').localeCompare(y.dataset.froad||'');if(SORT==='status')return SORD.indexOf(x.dataset.fstatus)-SORD.indexOf(y.dataset.fstatus);return 0;});return a;}
+  function resetDrawer(){
+    CATS.forEach(function(c){c._on=[];c._q='';c._all=false;paintOpts(c);});
+    DATES.forEach(function(d){d._pills.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+      d._rg.querySelector('.d-from').value='';d._rg.querySelector('.d-to').value='';d._mark();});
+  }
+  bd.querySelector('.clear').addEventListener('click',function(){resetDrawer();});
+  bd.querySelector('.apply').addEventListener('click',function(){
+    CATS.forEach(function(c){FILT[c.k]=c._on.slice();});
+    DATES.forEach(function(d){var p=d._pills.querySelector('button.on');
+      DFILT[d.k]={pill:p?p.dataset.pill:'',from:d._rg.querySelector('.d-from').value,to:d._rg.querySelector('.d-to').value};});
+    bd.classList.remove('show');PAGE=1;render();});
+
+  // Filter button + toolbar search
+  var fbtn=document.getElementById('btnFilter');
+  var flabel;if(fbtn){flabel=document.createElement('span');flabel.className='fcount';fbtn.appendChild(flabel);
+    fbtn.addEventListener('click',function(){bd.classList.add('show');});}
+  var sbox=document.querySelector('.list-toolbar .search-box input');
+  if(sbox)sbox.addEventListener('input',function(){QRY=sbox.value.trim().toLowerCase();PAGE=1;render();});
+  var cf=document.createElement('button');cf.className='clear-filters';cf.textContent='Clear filters';
+  var tb=document.querySelector('.list-toolbar');if(tb)tb.appendChild(cf);
+  cf.addEventListener('click',function(){CATS.forEach(function(c){FILT[c.k]=[];});
+    DATES.forEach(function(d){DFILT[d.k]={pill:'',from:'',to:''};});resetDrawer();PAGE=1;render();});
+
+  function dateOk(k,ts){
+    var f=DFILT[k];if(!f.pill&&!f.from&&!f.to)return true;
+    if(!isFinite(ts))return false;
+    var t0=today();
+    if(f.pill==='p7')return ts>=t0-7*DAY&&ts<=t0;
+    if(f.pill==='p30')return ts>=t0-30*DAY&&ts<=t0;
+    if(f.pill==='p90')return ts>=t0-90*DAY&&ts<=t0;
+    if(f.pill==='overdue')return ts<t0;
+    if(f.pill==='n7')return ts>=t0&&ts<=t0+7*DAY;
+    if(f.pill==='n30')return ts>=t0&&ts<=t0+30*DAY;
+    if(f.from&&ts<new Date(f.from+'T00:00:00').getTime())return false;
+    if(f.to&&ts>new Date(f.to+'T23:59:59').getTime())return false;
+    return true;
+  }
+  function passF(el){
+    for(var i=0;i<CATS.length;i++){var k=CATS[i].k;if(FILT[k].length&&FILT[k].indexOf(el.dataset[k])<0)return false;}
+    for(var j=0;j<DATES.length;j++){if(!dateOk(DATES[j].k,+el.dataset[DATES[j].k]))return false;}
+    return true;
+  }
+  function passQ(el){return !QRY||el.dataset.q.indexOf(QRY)>=0;}
+  function fcount(){var n=0;CATS.forEach(function(c){n+=FILT[c.k].length;});
+    DATES.forEach(function(d){var f=DFILT[d.k];if(f.pill||f.from||f.to)n++;});return n;}
+  function cmp(x,y){
+    var k=SORT.k,d=SORT.dir;
+    if(k==='wi')return d*String(x.dataset.wi).localeCompare(String(y.dataset.wi),undefined,{numeric:true})||x._i-y._i;
+    if(k==='fstatus')return d*(SORD.indexOf(x.dataset.fstatus)-SORD.indexOf(y.dataset.fstatus))||x._i-y._i;
+    if(k==='fest'||k==='fupd'||k==='finst'){
+      var a=+x.dataset[k],b=+y.dataset[k];
+      if(isFinite(a)!==isFinite(b))return isFinite(a)?-1:1;   // unset rows sink, either direction
+      if(!isFinite(a))return x._i-y._i;
+      return d*(a-b)||x._i-y._i;
+    }
+    var s=x.dataset[k]||'',t=y.dataset[k]||'';
+    if((s==='—')!==(t==='—'))return s==='—'?1:-1;             // "—" sinks, either direction
+    return d*s.localeCompare(t)||x._i-y._i;
+  }
+  function srt(arr){var a=arr.slice();a.sort(cmp);return a;}
   function toast(msg){var el=document.getElementById('toast');el.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>'+msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},2400);}
+
   // ---- role-aware buckets: bucket = f(current role, WI stage) ----
   function ownerOf(st){return st==='draft'?'co':st==='wip'?'ss':st==='ver'?'eng':st==='appr'?'co':null;}
   var ACT={co:[0,3],ss:[1],eng:[2]},SIDX={draft:0,wip:1,ver:2,appr:3,closed:4};
-  function bucketFor(r,wi){var m=META[wi]||{st:'draft',a:false};var si=SIDX[m.st];if(ownerOf(m.st)===r)return m.a?'todo':'inprogress';var acts=ACT[r]||[];for(var i=0;i<acts.length;i++){if(acts[i]<si)return 'submitted';}return null;}
+  function bucketFor(r,wi){var m=META[wi]||{st:'draft',a:false};var si=SIDX[m.st];
+    if(ownerOf(m.st)===r)return m.a?'todo':'inprogress';
+    var acts=ACT[r]||[];for(var i=0;i<acts.length;i++){if(acts[i]<si)return 'submitted';}return null;}
   function bkt(el){return bucketFor(curR,el.dataset.wi);}
-  function assign(wi){if(META[wi])META[wi].a=true;toast('Work instruction assigned to you');render();}
+  function assign(wi){if(META[wi]){META[wi].a=true;META[wi].who=ME[curR]||ME.co;}toast('Work instruction assigned to you');render();}
+  function asgOf(wi){var m=META[wi]||{};return m.who||'Common Queue';}
+  function asgHtml(wi){var m=META[wi]||{};if(!m.who)return '<span class="asg"><span class="queue">Common Queue</span></span>';
+    return '<span class="asg"><span class="who'+(m.who===ME[curR]?' me':'')+'">'+m.who+'</span></span>';}
+
+  var pager=document.querySelector('.pager');
+  function paintPager(total,pages){
+    if(!pager)return;
+    pager.hidden=total<=PAGE_SIZE;
+    var info=pager.querySelector('.info');
+    if(info)info.textContent=total?((PAGE-1)*PAGE_SIZE+1)+'–'+Math.min(PAGE*PAGE_SIZE,total)+' of '+total:'0 of 0';
+    var box=pager.querySelector('.pages');if(!box)return;box.innerHTML='';
+    function btn(label,p,dis,cls){var b=document.createElement('button');b.className='page-btn'+(cls?' '+cls:'');
+      b.textContent=label;if(dis)b.disabled=true;
+      b.addEventListener('click',function(){PAGE=p;render();window.scrollTo({top:0,behavior:'smooth'});});return b;}
+    box.appendChild(btn('‹',PAGE-1,PAGE<=1));
+    for(var i=1;i<=pages;i++)box.appendChild(btn(String(i),i,false,i===PAGE?'current':''));
+    box.appendChild(btn('›',PAGE+1,PAGE>=pages));
+  }
+
   function render(){
-    srt(rows).forEach(function(tr){tbody.appendChild(tr);});
-    srt(cards).forEach(function(c){ul.appendChild(c.parentNode);});
-    rows.forEach(function(tr){var show=bkt(tr)===cur&&passF(tr);tr.style.display=show?'':'none';var td=tr.querySelector('.act-cell');if(td){td.innerHTML='';if(cur==='inprogress'&&show){var b=document.createElement('button');b.className='btn-assign';b.type='button';b.textContent='Assign to self';b.addEventListener('click',function(e){e.stopPropagation();assign(tr.dataset.wi);});td.appendChild(b);}}});
-    cards.forEach(function(c){var show=bkt(c)===cur&&passF(c);c.parentNode.style.display=show?'':'none';var ex=c.querySelector('.card-assign');if(ex)ex.remove();if(cur==='inprogress'&&show){var d=document.createElement('div');d.className='card-assign';var b=document.createElement('button');b.className='btn-assign';b.type='button';b.textContent='Assign to self';b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();assign(c.dataset.wi);});d.appendChild(b);c.appendChild(d);}});
+    rows.forEach(function(tr){tr.dataset.fassign=asgOf(tr.dataset.wi);
+      var ac=tr.querySelector('.asg-cell');if(ac)ac.innerHTML=asgHtml(tr.dataset.wi);});
+    cards.forEach(function(c){c.dataset.fassign=asgOf(c.dataset.wi);
+      var ac=c.querySelector('.cf-asg');if(ac)ac.innerHTML=asgHtml(c.dataset.wi);});
+
+    var list=srt(rows).filter(function(tr){return bkt(tr)===cur&&passF(tr)&&passQ(tr);});
+    var pages=Math.max(1,Math.ceil(list.length/PAGE_SIZE));
+    if(PAGE>pages)PAGE=pages;
+    var page=list.slice((PAGE-1)*PAGE_SIZE,PAGE*PAGE_SIZE);
+    var wis=page.map(function(tr){return tr.dataset.wi;});
+
+    rows.forEach(function(tr){var show=wis.indexOf(tr.dataset.wi)>=0;tr.style.display=show?'':'none';
+      var td=tr.querySelector('.act-cell');if(td){td.innerHTML='';
+        if(cur==='inprogress'&&show){var b=document.createElement('button');b.className='btn-assign';b.type='button';b.textContent='Assign to self';
+          b.addEventListener('click',function(e){e.stopPropagation();assign(tr.dataset.wi);});td.appendChild(b);}}});
+    page.forEach(function(tr){tbody.appendChild(tr);});
+    cards.forEach(function(c){var show=wis.indexOf(c.dataset.wi)>=0;c.parentNode.style.display=show?'':'none';
+      var ex=c.querySelector('.card-assign');if(ex)ex.remove();
+      if(cur==='inprogress'&&show){var d=document.createElement('div');d.className='card-assign';
+        var b=document.createElement('button');b.className='btn-assign';b.type='button';b.textContent='Assign to self';
+        b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();assign(c.dataset.wi);});d.appendChild(b);c.appendChild(d);}});
+    wis.forEach(function(w){var c=cardBy[w];if(c)ul.appendChild(c.parentNode);});
+
     table.classList.toggle('show-act',cur==='inprogress');
     var cnt={todo:0,inprogress:0,submitted:0};rows.forEach(function(tr){var b=bkt(tr);if(b&&cnt[b]!=null)cnt[b]++;});
-    document.getElementById('c-todo').textContent=cnt.todo;document.getElementById('c-inprogress').textContent=cnt.inprogress;document.getElementById('c-submitted').textContent=cnt.submitted;
-    var vis=rows.filter(function(tr){return tr.style.display!=='none';}).length;
-    var pg=document.querySelector('.pager');            // only worth showing past one page
-    if(pg){ pg.hidden = vis<=PAGE_SIZE;
-      var info=pg.querySelector('.info'); if(info) info.textContent='1–'+Math.min(vis,PAGE_SIZE)+' of '+vis; }
-    var n=fcount();if(flabel)flabel.textContent=n?('Filter · '+n):'Filter';cf.style.display=n?'':'none';
+    document.getElementById('c-todo').textContent=cnt.todo;
+    document.getElementById('c-inprogress').textContent=cnt.inprogress;
+    document.getElementById('c-submitted').textContent=cnt.submitted;
+    paintPager(list.length,pages);
+    var n=fcount();
+    if(fbtn){fbtn.classList.toggle('has-filters',!!n);flabel.textContent=n||'';
+      fbtn.title=n?('Filter · '+n+' applied'):'Filter';fbtn.setAttribute('aria-label',fbtn.title);}
+    cf.style.display=(n||QRY)?'':'none';
     document.querySelectorAll('.wi-tab').forEach(function(t){t.classList.toggle('active',t.dataset.bucket===cur);});
   }
-  document.querySelectorAll('.wi-tab').forEach(function(t){t.addEventListener('click',function(){cur=t.dataset.bucket;render();});});
+  document.querySelectorAll('.wi-tab').forEach(function(t){t.addEventListener('click',function(){cur=t.dataset.bucket;PAGE=1;render();});});
+
   // skeleton loading on role switch (simulates the per-role data reload)
   var tableWrap=document.querySelector('.table-wrap'),cardsWrap=document.querySelector('.wi-cards');
   var skel=document.createElement('div');skel.className='wi-skel';
-  var srh='';for(var si=0;si<6;si++){srh+='<div class="skel-row"><span class="skel-bar" style="width:20%"></span><span class="skel-bar" style="width:15%"></span><span class="skel-bar" style="width:11%"></span><span class="skel-bar" style="width:17%"></span><span class="skel-bar" style="width:11%"></span><span class="skel-bar sk-pill"></span></div>';}
+  var srh='';for(var si=0;si<6;si++){srh+='<div class="skel-row"><span class="skel-bar" style="width:17%"></span><span class="skel-bar sk-pill"></span><span class="skel-bar" style="width:12%"></span><span class="skel-bar" style="width:9%"></span><span class="skel-bar" style="width:9%"></span><span class="skel-bar" style="width:13%"></span><span class="skel-bar" style="width:9%"></span><span class="skel-bar" style="width:11%"></span></div>';}
   skel.innerHTML=srh;
   if(tableWrap&&tableWrap.parentNode)tableWrap.parentNode.insertBefore(skel,tableWrap);
   var curR=role();
@@ -1033,14 +1679,14 @@ button{font-family:inherit;cursor:pointer}
     if(tableWrap)tableWrap.style.display='none';
     if(cardsWrap)cardsWrap.style.display='none';
     setTimeout(function(){
-      curR=role();cur='todo';render();syncNewWI();
+      curR=role();cur='todo';PAGE=1;render();syncNewWI();
       skel.classList.remove('show');
       if(tableWrap)tableWrap.style.display='';
       if(cardsWrap)cardsWrap.style.display='';
     },620);
   }
   document.querySelectorAll('.rolesw-opt').forEach(function(o){o.addEventListener('click',function(){reloadForRole();});});
-  syncNewWI();render();
+  syncNewWI();paintSort();render();
 })();
 </script>
 </body>

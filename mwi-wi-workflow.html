@@ -582,6 +582,10 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 .card-body>.btn{grid-column:1 / -1}
 .card-body>.btn{justify-self:start}
 .action-bar .inner{max-width:none;margin:0 0 0 var(--sidebar-w);padding:0 32px}
+/* desktop: action bar aligns with the step-panel content edges (16px bar padding + 16px = 32px) */
+@media(min-width:1021px){
+  .action-bar .inner{max-width:none;margin:0 16px 0 calc(var(--sidebar-w) + 16px);padding:0}
+}
 /* full-row textarea fields: on a wide screen the box itself is only half-width
    (full 100% span is too wide); it fills the row again once the grid collapses */
 @media(min-width:1021px){
@@ -1122,7 +1126,7 @@ body.view-mode .boq-actions{display:none}
       <div class="rolesw-head">Prototype version</div>
       <div class="ver-seg" role="group" aria-label="Prototype version">
         <a class="vs-opt is-on" href="mwi-wi-workflow.html">Original</a>
-        <a class="vs-opt" href="mwi-wi-workflow_layouta.html">Green</a>
+        <a class="vs-opt" href="mwi-wi-workflow_layouta.html">Slate</a>
         <a class="vs-opt" href="mwi-wi-workflow_photoswipe-navy.html">Navy</a>
       </div>
     </div>
@@ -1620,7 +1624,7 @@ body.view-mode .boq-actions{display:none}
 <div class="action-bar">
   <div class="inner">
     <div class="act-left">
-      <button class="btn" id="btnReturn" type="button">Return</button>
+      <button class="btn" id="btnReturn" type="button"><span class="lbl-full">Return Work Instruction</span><span class="lbl-short">Return</span></button>
       <button class="btn" id="btnReassign" type="button"><span class="lbl-full">Reassign to LTA Officer</span><span class="lbl-short">Reassign</span></button>
     </div>
     <div class="act-right">
@@ -2323,7 +2327,7 @@ document.addEventListener('change', function(e){
   </div>
   <div class="rt-foot">
     <button class="btn btn-ghost" id="rtCancel" type="button">Cancel</button>
-    <button class="btn btn-warn" id="rtConfirm" type="button">Return</button>
+    <button class="btn btn-primary" id="rtConfirm" type="button">Return</button>
   </div>
 </div>
 <div class="tl-scrim" id="tlScrim"></div>
