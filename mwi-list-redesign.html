@@ -41,6 +41,11 @@
   --font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
   --fs-xs:.75rem; --fs-sm:.8125rem; --fs-base:.875rem;
   --fs-md:.9375rem; --fs-lg:1.0625rem; --fs-xl:1.375rem; --fs-2xl:1.75rem;
+  /* Heading scale (2026-08-05). Hard ceilings: H1 20px, H2 16px — anything that reads
+     as a page title or a section/card title must use these, not a raw rem value. */
+  --fs-h1:1.25rem;      /* 20px  page title           */
+  --fs-h1-sm:1.125rem;  /* 18px  same title on mobile */
+  --fs-h2:1rem;         /* 16px  section / card title */
   /* Shape & elevation */
   --r-sm:6px; --r-md:10px; --r-lg:14px; --r-pill:999px;
   --shadow-sm:0 1px 2px rgba(22,31,38,.06);
@@ -123,7 +128,7 @@ button{font-family:inherit;cursor:pointer}
 .breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:var(--fs-sm);color:var(--grey-500);margin-bottom:14px}
 .breadcrumb .sep{color:var(--grey-300)}
 .page-head{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
-.page-head h1{font-size:var(--fs-2xl);line-height:1.2;color:var(--grey-900);font-weight:680;letter-spacing:-.01em}
+.page-head h1{font-size:var(--fs-h1);line-height:1.2;color:var(--grey-900);font-weight:680;letter-spacing:-.01em}
 .eyebrow{font-size:var(--fs-sm);font-weight:600;color:var(--teal-700);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
 .page-sub{color:var(--grey-600);font-size:var(--fs-md);margin-top:6px;max-width:60ch}
 .head-actions{display:flex;gap:10px;flex:none}
@@ -191,7 +196,7 @@ button{font-family:inherit;cursor:pointer}
   display:flex;flex-wrap:wrap;align-items:center;gap:10px;
   padding:18px 24px;border-bottom:1px solid var(--grey-100);
 }
-.card-head h2{font-size:var(--fs-lg);font-weight:660;color:var(--grey-900)}
+.card-head h2{font-size:var(--fs-h2);font-weight:660;color:var(--grey-900)}
 .card-head .hint{font-size:var(--fs-sm);color:var(--grey-500)}
 .card-head .spacer{flex:1}
 .card-body{padding:22px 24px}
@@ -328,7 +333,7 @@ button{font-family:inherit;cursor:pointer}
 }
 @media(max-width:640px){
   .brand-name{display:none}
-  .page-head h1{font-size:var(--fs-xl)}
+  .page-head h1{font-size:var(--fs-h1-sm)}
   .summary-strip{grid-template-columns:1fr 1fr}
   .summary-cell{border-left:none;border-top:1px solid var(--grey-100)}
   .summary-cell:nth-child(-n+2){border-top:none}
@@ -360,12 +365,15 @@ button{font-family:inherit;cursor:pointer}
 .filter-btn.has-filters .fcount{display:flex}
 .list-toolbar .btn-ghost{margin-left:auto}   /* Filter sits at the right edge */
 .search-box{
-  flex:0 1 50%;min-width:200px;display:flex;align-items:center;gap:10px;
+  flex:0 1 35%;min-width:200px;display:flex;align-items:center;gap:10px;
   background:#fff;border:1px solid var(--grey-300);border-radius:var(--r-md);
   padding:10px 14px;color:var(--grey-400);
 }
 .search-box input{border:none;outline:none;flex:1;font-family:inherit;font-size:var(--fs-base);color:var(--grey-800);background:transparent}
 .search-box svg{width:17px;height:17px;flex:none}
+/* phone: the search field takes the whole row instead of the 35% it gets on desktop —
+   the Filter button keeps its square footprint beside it */
+@media(max-width:860px){.search-box{flex:1 1 auto;min-width:0}}
 .filter-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
 .fchip{
   display:inline-flex;align-items:center;gap:6px;border-radius:var(--r-pill);
@@ -394,20 +402,20 @@ button{font-family:inherit;cursor:pointer}
 .wi-table th button.sorted,.wi-table th button.sorted .s-ico{color:var(--teal-700)}
 .wi-table th button.sorted.asc .up,.wi-table th button.sorted.desc .dn{opacity:1;stroke-width:3.2}
 .wi-table th button.sorted.asc .dn,.wi-table th button.sorted.desc .up{opacity:.15}
-.wi-table td{padding:13px 14px;border-bottom:1px solid var(--grey-100);font-size:var(--fs-base);color:var(--grey-800);vertical-align:middle;white-space:nowrap}
+.wi-table td{padding:13px 14px;border-bottom:1px solid var(--grey-100);font-size:var(--fs-base);font-weight:450;color:var(--grey-800);vertical-align:middle;white-space:nowrap}
 .wi-table tbody tr{cursor:pointer;transition:background .12s ease;scroll-margin-top:calc(var(--topbar-h) + 60px)}
 .wi-table tbody tr:hover{background:var(--teal-50)}
 .wi-table tbody tr:focus-within{background:var(--teal-50)}
-.wi-num{font-weight:640;color:var(--navy-700);white-space:nowrap}
+.wi-num{font-weight:450;color:var(--navy-700);white-space:nowrap}
 .wi-num small{display:block;font-weight:450;color:var(--grey-400);font-size:var(--fs-xs)}
-.cell-main{font-weight:560;color:var(--grey-900);white-space:nowrap}
-.cell-sub{display:block;font-size:var(--fs-xs);color:var(--grey-500);font-weight:440;margin-top:1px;white-space:nowrap}
+.cell-main{font-weight:450;color:var(--grey-900);white-space:nowrap}
+.cell-sub{display:block;font-size:var(--fs-xs);color:var(--grey-500);font-weight:450;margin-top:1px;white-space:nowrap}
 .cell-muted{color:var(--grey-400)}
 .cell-nowrap{white-space:nowrap}
 .asg{display:inline-flex;align-items:center;font-size:var(--fs-sm)}
 .asg .who{font-weight:560;color:var(--grey-800);white-space:nowrap}
 .asg .queue{display:inline-flex;align-items:center;padding:2px 9px;border-radius:var(--r-pill);background:var(--grey-100);color:var(--grey-600);font-size:var(--fs-xs);font-weight:600;white-space:nowrap}
-.asg .who.me{color:var(--teal-700)}
+.wi-table .asg .who{font-weight:450}
 .table-wrap{background:#fff;border:1px solid var(--grey-200);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);overflow-x:auto}
 
 /* Mobile cards */
@@ -417,20 +425,35 @@ button{font-family:inherit;cursor:pointer}
   box-shadow:var(--shadow-sm);padding:14px 16px;display:block;position:relative;
 }
 .wi-card:active{background:var(--teal-50)}
-.wi-card .top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.wi-card .num{font-size:var(--fs-sm);font-weight:650;color:var(--navy-700);letter-spacing:.01em}
-.wi-card .top .chip{margin-left:auto}
-.wi-card .road{font-size:var(--fs-lg);font-weight:660;color:var(--grey-900);line-height:1.3}
-.wi-card .road small{font-weight:480;color:var(--grey-500);font-size:var(--fs-sm)}
-.wi-card .meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:var(--fs-sm);color:var(--grey-600)}
-.wi-card .meta strong{font-weight:600;color:var(--grey-700)}
-.wi-card .meta .m-def i{font-style:normal;color:var(--grey-400)}
-.wi-card .due{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--grey-100);font-size:var(--fs-sm);color:var(--grey-500)}
-.wi-card .due svg{width:14px;height:14px;color:var(--grey-400)}
-.wi-card .due b{color:var(--grey-800);font-weight:620}
-.wi-card .due b.ns{color:var(--grey-400);font-weight:480}
-.wi-card .cardfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;font-size:var(--fs-xs);color:var(--grey-500)}
-.wi-card .cardfoot .cf-upd b{color:var(--grey-600);font-weight:600}
+/* Card = title block on top, then label-over-value pairs (the "thead / tbody stacked"
+   shape). The grid is auto-fit, so it lands on 2 columns at 375px and 3 from ~414px
+   without a breakpoint of its own. */
+.wi-card .wc-head{display:flex;align-items:flex-start;gap:8px;margin-bottom:4px}
+.wi-card .wc-head .num{flex:1 1 auto;min-width:0}
+/* the WI number is the only thing left in the head, so it carries the card */
+.wi-card .num{font-size:var(--fs-h2);font-weight:660;color:var(--navy-700);letter-spacing:.01em;line-height:1.3}
+.wi-card .wc-head .chip{margin-left:auto;flex:none}
+.wc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
+  gap:12px 14px;margin-top:10px;padding-top:12px;border-top:1px solid var(--grey-100)}
+.wc-f{min-width:0}
+/* sentence case, not uppercase: "EST. COMPLETION" wraps to two lines in the 3-column
+   layout and knocks the row out of alignment. grey-600, not grey-500 — at 12px the
+   label counts as small text and grey-500 on white is only 4.20:1. */
+.wc-f dt{font-size:var(--fs-xs);font-weight:650;color:var(--grey-600);line-height:1.3}
+.wc-f dd{font-size:var(--fs-sm);color:var(--grey-800);line-height:1.35;margin-top:3px;
+  overflow-wrap:anywhere}
+.wc-f dd strong{font-weight:640;color:var(--grey-900)}
+.wc-f dd b{font-weight:620;color:var(--grey-800)}
+.wc-f dd b.ns{color:var(--grey-400);font-weight:480}
+.wc-f dd:empty::before{content:"—";color:var(--grey-400)}
+/* 7 fields + the button: at 2 columns the last row is 1 field + 1 gap, at 3 columns
+   1 field + 2 gaps — either way the button lands beside the last value instead of
+   claiming a row of its own. */
+.wc-grid .card-assign{margin:0;padding:0;border:0;display:flex;align-items:flex-end}
+.wc-grid .card-assign .btn-assign{width:100%;justify-content:center;padding:6px 10px}
+/* the assignee pill has to sit inside the value slot without stretching the row */
+.wc-f[data-f="asg"] dd .asg{max-width:100%}
+.wc-f[data-f="asg"] dd .queue{max-width:100%;overflow:hidden;text-overflow:ellipsis;display:inline-block}
 .sort-row{display:none;align-items:center;gap:8px;margin-bottom:14px;font-size:var(--fs-sm);color:var(--grey-600)}
 .sort-row select{font-family:inherit;font-size:var(--fs-base);padding:8px 12px;border-radius:var(--r-md);border:1px solid var(--grey-300);background:#fff;color:var(--grey-800);flex:1}
 
@@ -561,7 +584,7 @@ button{font-family:inherit;cursor:pointer}
 .filter-drawer{position:fixed;top:0;right:0;bottom:0;width:min(430px,100%);background:#fff;z-index:201;transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column;box-shadow:var(--shadow-lg)}
 .filter-bd.show .filter-drawer{transform:none}
 .fd-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--grey-200)}
-.fd-head h2{font-size:var(--fs-lg);font-weight:680;color:var(--grey-900)}
+.fd-head h2{font-size:var(--fs-h2);font-weight:680;color:var(--grey-900)}
 .fd-close{width:36px;height:36px;border-radius:var(--r-md);border:none;background:var(--grey-100);color:var(--grey-600);cursor:pointer;font-size:15px}
 .fd-close:hover{background:var(--grey-200)}
 .fd-body{flex:1;overflow-y:auto;padding:8px 20px 16px}
@@ -599,6 +622,30 @@ button{font-family:inherit;cursor:pointer}
 .fd-chip{border:1px solid var(--grey-300);background:#fff;color:var(--grey-700);border-radius:var(--r-pill);font-family:inherit;font-size:var(--fs-sm);font-weight:520;padding:7px 14px;cursor:pointer}
 .fd-chip:hover{border-color:var(--grey-400)}
 .fd-chip.on{background:var(--teal-600);border-color:var(--teal-600);color:#fff;font-weight:600}
+/* the Status facet reuses the five stage colours the table chips already use */
+.fd-chip:not(.on).st-draft{background:var(--grey-100);border-color:transparent;color:var(--grey-600)}
+.fd-chip:not(.on).st-wip{background:var(--info-50);border-color:transparent;color:var(--info-700)}
+.fd-chip:not(.on).st-ver{background:var(--warning-50);border-color:transparent;color:var(--warning-700)}
+.fd-chip:not(.on).st-appr{background:var(--navy-50);border-color:transparent;color:var(--navy-700)}
+.fd-chip:not(.on).st-closed{background:var(--success-50);border-color:transparent;color:var(--success-700)}
+
+/* facet header row: the label button stretches, Clear sits right, chevron pinned to the
+   edge. The chevron leaves the button so Clear can be a real <button> — nesting one
+   inside another is invalid HTML. The whole row toggles, so nothing is lost. */
+.fd-hd{display:flex;align-items:center;gap:10px;cursor:pointer}
+.fd-hd .fd-acc{flex:1;padding-right:0}
+.fd-clear{border:none;background:none;padding:0;font-family:inherit;font-size:var(--fs-sm);
+  font-weight:600;color:var(--teal-700);cursor:pointer;flex:none}
+.fd-clear:disabled{color:var(--grey-300);cursor:default}
+.fd-hd .chev-slot{flex:none;display:flex;color:var(--grey-400)}
+.fd-hd .chev-slot .chev{width:16px;height:16px;transition:transform .18s}
+.fd-sec.open .chev-slot .chev{transform:rotate(180deg)}
+.fd-sec.open .fd-opts{display:block}
+/* "All" leads the chip list — one tap instead of ticking every option */
+.fd-chip.fd-all{font-weight:640;border-style:dashed}
+.fd-chip.fd-all.on{border-style:solid}
+/* "All" reads differently from a number: every option ticked excludes nothing */
+.fd-acc .cnt.all{background:var(--grey-100);color:var(--grey-600)}
 .fd-foot{display:flex;gap:10px;align-items:center;padding:14px 20px;border-top:1px solid var(--grey-200)}
 .fd-foot .clear{border:none;background:none;color:var(--teal-700);font-family:inherit;font-size:var(--fs-base);font-weight:600;cursor:pointer;padding:8px;margin-right:auto}
 .fd-foot .apply{flex:0 0 50%;justify-content:center;min-height:46px}
@@ -644,7 +691,6 @@ button{font-family:inherit;cursor:pointer}
       <div class="ver-seg" role="group" aria-label="Prototype version">
         <a class="vs-opt is-on" href="mwi-list-redesign.html">Original</a>
         <a class="vs-opt" href="mwi-list-redesign-a.html">Slate</a>
-        <a class="vs-opt" href="mwi-list-redesign-navy.html">Navy</a>
       </div>
     </div>
   </div>
@@ -984,172 +1030,292 @@ button{font-family:inherit;cursor:pointer}
 
   <ul class="wi-cards">
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="5 Jun 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-17</span><span class="chip chip-sm">Draft</span></div>
-      <div class="road">Adis Road <small>· Sector NW3 · CS4</small></div>
-      <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Simplified item</span><span class="m-def" data-def="Hole"><i>Defect</i> Hole</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b class="ns">Not set</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>5 Jun 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-17</span><span class="chip chip-sm">Draft</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Adis Road</strong> · Sector NW3 · CS4</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Bollard</strong> · Bollard</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Hole">Hole</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Simplified item</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b class="ns">Not set</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>5 Jun 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jun 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-7</span><span class="chip chip-sm">Draft</span></div>
-      <div class="road">Admiralty Drive <small>· Sector NW2 · NW1</small></div>
-      <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Simplified item</span><span class="m-def" data-def="Hole"><i>Defect</i> Hole</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>29 Jun 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>15 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-7</span><span class="chip chip-sm">Draft</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Admiralty Drive</strong> · Sector NW2 · NW1</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Bollard</strong> · Bollard</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Hole">Hole</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Simplified item</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>29 Jun 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>15 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jun 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-13</span><span class="chip chip-sm">Draft</span></div>
-      <div class="road">Admiralty Lane <small>· Sector NW2 · NW1</small></div>
-      <div class="meta"><span><strong>Traffic sign</strong> · Signage</span><span>Works order — accident</span><span class="m-def" data-def="No stopping sign"><i>Defect</i> No stopping sign</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>30 Jun 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>16 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-13</span><span class="chip chip-sm">Draft</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Admiralty Lane</strong> · Sector NW2 · NW1</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Traffic sign</strong> · Signage</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="No stopping sign">No stopping sign</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Works order — accident</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>30 Jun 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>16 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jun 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-12</span><span class="chip chip-sm">Draft</span></div>
-      <div class="road">Admiralty Lane <small>· Sector NW2 · NW1</small></div>
-      <div class="meta"><span><strong>Railing</strong> · Railing</span><span>Works order — accident</span><span class="m-def" data-def="Damaged"><i>Defect</i> Damaged</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>30 Jun 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>16 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-12</span><span class="chip chip-sm">Draft</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Admiralty Lane</strong> · Sector NW2 · NW1</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Railing</strong> · Railing</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Damaged">Damaged</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Works order — accident</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>30 Jun 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>16 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jul 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-24</span><span class="chip chip-sm">Work in progress</span></div>
-      <div class="road">Admiralty Drive <small>· Sector NW2 · NW1</small></div>
-      <div class="meta"><span class="cell-muted">Not selected yet</span><span>Simplified item</span><span class="m-def" data-def=""><i>Defect</i> Not set</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>8 Jul 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>2 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-24</span><span class="chip chip-sm">Work in progress</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Admiralty Drive</strong> · Sector NW2 · NW1</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd>Not selected yet</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="">Not set</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Simplified item</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>8 Jul 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>2 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="10 Jul 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-27</span><span class="chip chip-sm">Work in progress</span></div>
-      <div class="road">Admiralty Drive <small>· Sector NW2 · NW1</small></div>
-      <div class="meta"><span><strong>Carriageway</strong> · Flexible pavement</span><span>Simplified item</span><span class="m-def" data-def="Depression"><i>Defect</i> Depression</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>30 Jul 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>10 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-27</span><span class="chip chip-sm">Work in progress</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Admiralty Drive</strong> · Sector NW2 · NW1</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Carriageway</strong> · Flexible pavement</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Depression">Depression</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Simplified item</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>30 Jul 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>10 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="2 Jun 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-8</span><span class="chip chip-sm">Verification in progress</span></div>
-      <div class="road">Adis Road <small>· Sector NW3 · CS4</small></div>
-      <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Works order — accident</span><span class="m-def" data-def="Hole"><i>Defect</i> Hole</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>2 Jun 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>15 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-8</span><span class="chip chip-sm">Verification in progress</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Adis Road</strong> · Sector NW3 · CS4</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Bollard</strong> · Bollard</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Hole">Hole</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Works order — accident</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>2 Jun 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>15 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="5 Jun 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-14</span><span class="chip chip-sm">Approval in progress</span></div>
-      <div class="road">Adis Road <small>· Sector NW3 · CS4</small></div>
-      <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Outcome-based defect</span><span class="m-def" data-def="Hole"><i>Defect</i> Hole</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>7 Jun 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>15 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-14</span><span class="chip chip-sm">Approval in progress</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Adis Road</strong> · Sector NW3 · CS4</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Bollard</strong> · Bollard</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Hole">Hole</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Outcome-based defect</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>7 Jun 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>15 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="PATH" data-inst="3 Jun 2026">
-      <div class="top"><span class="num">RMWP-TR388-PATH-M-4</span><span class="chip chip-sm">Approved & closed</span></div>
-      <div class="road">Palm Drive <small>· Sector NW2 · NW2</small></div>
-      <div class="meta"><span><strong>Footpath</strong> · Pavement surface</span><span>Works order — accident</span><span class="m-def" data-def="Cracked surface"><i>Defect</i> Cracked surface</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>15 Jun 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>3 Jun 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-PATH-M-4</span><span class="chip chip-sm">Approved & closed</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Palm Drive</strong> · Sector NW2 · NW2</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Footpath</strong> · Pavement surface</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Cracked surface">Cracked surface</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Works order — accident</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>15 Jun 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>3 Jun 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="PATH" data-inst="3 Jun 2026">
-      <div class="top"><span class="num">RMWP-TR388-PATH-M-1</span><span class="chip chip-sm">Verification in progress</span></div>
-      <div class="road">Palm Drive <small>· Sector NW2 · NW2</small></div>
-      <div class="meta"><span><strong>Footpath</strong> · Pavement surface</span><span>Simplified item</span><span class="m-def" data-def="Cracked surface"><i>Defect</i> Cracked surface</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>16 Jun 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>3 Jun 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-PATH-M-1</span><span class="chip chip-sm">Verification in progress</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Palm Drive</strong> · Sector NW2 · NW2</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Footpath</strong> · Pavement surface</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Cracked surface">Cracked surface</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Simplified item</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>16 Jun 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>3 Jun 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="20 Jul 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-31</span><span class="chip chip-sm">Draft</span></div>
-      <div class="road">Alexandra Road <small>· Sector SW1 · SW1</small></div>
-      <div class="meta"><span><strong>Kerb</strong> · Kerb line</span><span>Simplified item</span><span class="m-def" data-def="Damaged"><i>Defect</i> Damaged</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>12 Aug 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>20 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-31</span><span class="chip chip-sm">Draft</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Alexandra Road</strong> · Sector SW1 · SW1</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Kerb</strong> · Kerb line</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Damaged">Damaged</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Simplified item</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>12 Aug 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>20 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="CFM" data-inst="18 Jul 2026">
-      <div class="top"><span class="num">RMWP-TR388-CFM-M-2</span><span class="chip chip-sm">Draft</span></div>
-      <div class="road">Balestier Road <small>· Sector NE1 · NE1</small></div>
-      <div class="meta"><span><strong>Road marking</strong> · Line marking</span><span>Works order — accident</span><span class="m-def" data-def="Faded"><i>Defect</i> Faded</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>5 Aug 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>22 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-CFM-M-2</span><span class="chip chip-sm">Draft</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Balestier Road</strong> · Sector NE1 · NE1</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Road marking</strong> · Line marking</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Faded">Faded</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Works order — accident</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>5 Aug 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>22 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="BDG" data-inst="12 Jul 2026">
-      <div class="top"><span class="num">RMWP-TR388-BDG-M-9</span><span class="chip chip-sm">Work in progress</span></div>
-      <div class="road">Bukit Timah Road <small>· Sector NW1 · NW1</small></div>
-      <div class="meta"><span><strong>Railing</strong> · Railing</span><span>Outcome-based defect</span><span class="m-def" data-def="Damaged"><i>Defect</i> Damaged</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>28 Jul 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>23 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-BDG-M-9</span><span class="chip chip-sm">Work in progress</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Bukit Timah Road</strong> · Sector NW1 · NW1</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Railing</strong> · Railing</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Damaged">Damaged</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Outcome-based defect</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>28 Jul 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>23 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="15 Jul 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-33</span><span class="chip chip-sm">Work in progress</span></div>
-      <div class="road">Changi Road <small>· Sector SE2 · SE2</small></div>
-      <div class="meta"><span><strong>Carriageway</strong> · Flexible pavement</span><span>Simplified item</span><span class="m-def" data-def="Depression"><i>Defect</i> Depression</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>3 Aug 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>21 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-33</span><span class="chip chip-sm">Work in progress</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Changi Road</strong> · Sector SE2 · SE2</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Carriageway</strong> · Flexible pavement</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Depression">Depression</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Simplified item</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>3 Aug 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>21 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="PATH" data-inst="14 Jul 2026">
-      <div class="top"><span class="num">RMWP-TR388-PATH-M-11</span><span class="chip chip-sm">Work in progress</span></div>
-      <div class="road">Clementi Road <small>· Sector SW2 · SW2</small></div>
-      <div class="meta"><span><strong>Footpath</strong> · Pavement surface</span><span>Works order — accident</span><span class="m-def" data-def="Uneven surface"><i>Defect</i> Uneven surface</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>30 Jul 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>24 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-PATH-M-11</span><span class="chip chip-sm">Work in progress</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Clementi Road</strong> · Sector SW2 · SW2</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Footpath</strong> · Pavement surface</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Uneven surface">Uneven surface</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Works order — accident</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>30 Jul 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>24 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="1 Jul 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-35</span><span class="chip chip-sm">Verification in progress</span></div>
-      <div class="road">Dunearn Road <small>· Sector NW1 · NW2</small></div>
-      <div class="meta"><span><strong>Drain</strong> · Drain grating</span><span>Simplified item</span><span class="m-def" data-def="Choked"><i>Defect</i> Choked</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>22 Jul 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>19 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-35</span><span class="chip chip-sm">Verification in progress</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Dunearn Road</strong> · Sector NW1 · NW2</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Drain</strong> · Drain grating</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Choked">Choked</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Simplified item</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>22 Jul 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>19 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="CFM" data-inst="5 Jul 2026">
-      <div class="top"><span class="num">RMWP-TR388-CFM-M-5</span><span class="chip chip-sm">Verification in progress</span></div>
-      <div class="road">Eu Tong Sen Street <small>· Sector SE · SE1</small></div>
-      <div class="meta"><span><strong>Traffic sign</strong> · Signage</span><span>Works order — accident</span><span class="m-def" data-def="Missing"><i>Defect</i> Missing</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>25 Jul 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>18 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-CFM-M-5</span><span class="chip chip-sm">Verification in progress</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Eu Tong Sen Street</strong> · Sector SE · SE1</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Traffic sign</strong> · Signage</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Missing">Missing</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Works order — accident</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>25 Jul 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>18 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="28 Jun 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-38</span><span class="chip chip-sm">Approval in progress</span></div>
-      <div class="road">Farrer Road <small>· Sector SW · SW2</small></div>
-      <div class="meta"><span><strong>Bollard</strong> · Bollard</span><span>Simplified item</span><span class="m-def" data-def="Damaged"><i>Defect</i> Damaged</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>18 Jul 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>17 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-38</span><span class="chip chip-sm">Approval in progress</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Farrer Road</strong> · Sector SW · SW2</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Bollard</strong> · Bollard</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Damaged">Damaged</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Simplified item</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>18 Jul 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>17 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="BDG" data-inst="30 Jun 2026">
-      <div class="top"><span class="num">RMWP-TR388-BDG-M-12</span><span class="chip chip-sm">Approval in progress</span></div>
-      <div class="road">Havelock Road <small>· Sector SE1 · SE1</small></div>
-      <div class="meta"><span><strong>Railing</strong> · Railing</span><span>Outcome-based defect</span><span class="m-def" data-def="Cracked surface"><i>Defect</i> Cracked surface</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>20 Jul 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>16 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-BDG-M-12</span><span class="chip chip-sm">Approval in progress</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Havelock Road</strong> · Sector SE1 · SE1</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Railing</strong> · Railing</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Cracked surface">Cracked surface</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Outcome-based defect</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>20 Jul 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>16 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="20 Jun 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-40</span><span class="chip chip-sm">Approved & closed</span></div>
-      <div class="road">Keppel Road <small>· Sector SE2 · SE2</small></div>
-      <div class="meta"><span><strong>Carriageway</strong> · Flexible pavement</span><span>Works order — accident</span><span class="m-def" data-def="Hole"><i>Defect</i> Hole</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>10 Jul 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>12 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-40</span><span class="chip chip-sm">Approved & closed</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Keppel Road</strong> · Sector SE2 · SE2</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Carriageway</strong> · Flexible pavement</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Hole">Hole</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Works order — accident</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>10 Jul 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>12 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="PATH" data-inst="22 Jul 2026">
-      <div class="top"><span class="num">RMWP-TR388-PATH-M-14</span><span class="chip chip-sm">Draft</span></div>
-      <div class="road">Lornie Road <small>· Sector NA1 · NA1</small></div>
-      <div class="meta"><span><strong>Footpath</strong> · Pavement surface</span><span>Simplified item</span><span class="m-def" data-def="Cracked surface"><i>Defect</i> Cracked surface</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>15 Aug 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>22 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-PATH-M-14</span><span class="chip chip-sm">Draft</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Lornie Road</strong> · Sector NA1 · NA1</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Footpath</strong> · Pavement surface</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Cracked surface">Cracked surface</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Simplified item</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>15 Aug 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>22 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="16 Jul 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-42</span><span class="chip chip-sm">Work in progress</span></div>
-      <div class="road">Marina Boulevard <small>· Sector EXP · EXP</small></div>
-      <div class="meta"><span><strong>Streetlight</strong> · Lamp post</span><span>Works order — accident</span><span class="m-def" data-def="Damaged"><i>Defect</i> Damaged</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>8 Aug 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>25 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-42</span><span class="chip chip-sm">Work in progress</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Marina Boulevard</strong> · Sector EXP · EXP</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Streetlight</strong> · Lamp post</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Damaged">Damaged</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Works order — accident</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>8 Aug 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>25 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="CFM" data-inst="8 Jul 2026">
-      <div class="top"><span class="num">RMWP-TR388-CFM-M-8</span><span class="chip chip-sm">Verification in progress</span></div>
-      <div class="road">Newton Road <small>· Sector NE2 · NE2</small></div>
-      <div class="meta"><span><strong>Road marking</strong> · Line marking</span><span>Simplified item</span><span class="m-def" data-def="Faded"><i>Defect</i> Faded</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>26 Jul 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>20 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-CFM-M-8</span><span class="chip chip-sm">Verification in progress</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Newton Road</strong> · Sector NE2 · NE2</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Road marking</strong> · Line marking</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Faded">Faded</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Simplified item</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>26 Jul 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>20 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
     <li><a class="wi-card" href="mwi-wi-workflow.html" data-dept="RRFM" data-inst="12 Jun 2026">
-      <div class="top"><span class="num">RMWP-TR388-RRFM-M-45</span><span class="chip chip-sm">Approved & closed</span></div>
-      <div class="road">Orchard Road <small>· Sector NE4 · NE4</small></div>
-      <div class="meta"><span><strong>Kerb</strong> · Kerb line</span><span>Outcome-based defect</span><span class="m-def" data-def="Damaged"><i>Defect</i> Damaged</span></div>
-      <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Est. completion <b>5 Jul 2026</b></div>
-      <div class="cardfoot"><span class="cf-asg"></span><span class="cf-upd">Updated <b>8 Jul 2026</b></span></div>
+      <div class="wc-head"><span class="num">RMWP-TR388-RRFM-M-45</span><span class="chip chip-sm">Approved & closed</span></div>
+      <dl class="wc-grid">
+        <div class="wc-f" data-f="road"><dt>Road</dt><dd><strong>Orchard Road</strong> · Sector NE4 · NE4</dd></div>
+        <div class="wc-f" data-f="asset"><dt>Asset</dt><dd><strong>Kerb</strong> · Kerb line</dd></div>
+        <div class="wc-f" data-f="def"><dt>Defect type</dt><dd class="m-def" data-def="Damaged">Damaged</dd></div>
+        <div class="wc-f" data-f="wt"><dt>Work type</dt><dd>Outcome-based defect</dd></div>
+        <div class="wc-f" data-f="est"><dt>Est. completion</dt><dd><b>5 Jul 2026</b></dd></div>
+        <div class="wc-f" data-f="asg"><dt>Assign to</dt><dd class="cf-asg"></dd></div>
+        <div class="wc-f" data-f="upd"><dt>Last updated</dt><dd><b>8 Jul 2026</b></dd></div>
+      </dl>
     </a></li>
   </ul>
 
@@ -1365,16 +1531,16 @@ button{font-family:inherit;cursor:pointer}
     var td=document.createElement('td');td.className='act-col act-cell';tr.appendChild(td);
   });
   cards.forEach(function(c,i){
-    c._i=i;var ms=c.querySelectorAll('.meta > span');
+    c._i=i;
     readRow(c,{wi:function(e){return txt(e.querySelector('.num'));},
-      road:function(e){var r=e.querySelector('.road');return r?txt(r.childNodes[0]):'';},
-      sub:function(e){return txt(e.querySelector('.road small')).replace(/^·\s*/,'');},
-      asset:function(){return ms[0]?txt(ms[0].querySelector('strong')||ms[0]):'';},
-      elem:function(){return ms[0]?txt(ms[0]).replace(/^[^·]*·\s*/,''):'';},
+      road:function(e){var a=e.querySelector('[data-f="road"] strong');return a?txt(a):'';},
+      sub:function(e){var d=e.querySelector('[data-f="road"] dd');return d?txt(d).replace(/^[^·]*·\s*/,''):'';},
+      asset:function(e){var a=e.querySelector('[data-f="asset"] strong');return a?txt(a):'';},
+      elem:function(e){var d=e.querySelector('[data-f="asset"] dd');return d?txt(d).replace(/^[^·]*·\s*/,''):'';},
       def:function(e){var d=e.querySelector('.m-def');return d?(d.dataset.def||''):'';},
-      wt:function(){return ms[1]?txt(ms[1]):'';},
-      est:function(e){return txt(e.querySelector('.due b'));},
-      upd:function(e){return txt(e.querySelector('.cf-upd b'));}});
+      wt:function(e){return txt(e.querySelector('[data-f="wt"] dd'));},
+      est:function(e){return txt(e.querySelector('[data-f="est"] b'));},
+      upd:function(e){return txt(e.querySelector('[data-f="upd"] b'));}});
     if((META[c.dataset.wi]||{}).st==='draft')c.setAttribute('href',siblingUrl('mwi-wi-draft.html'));
     cardBy[c.dataset.wi]=c;
   });
@@ -1406,12 +1572,23 @@ button{font-family:inherit;cursor:pointer}
   CATS=CATS.filter(function(c){return ORDER.indexOf(c.k)>=0;});
   DATES=DATES.filter(function(d){return ORDER.indexOf(d.k)>=0;});
   CATS.forEach(function(c){if(!c.opts)c.opts=(VOCAB[c.k]||[]).slice();if(!c.disp)c.disp=function(v){return v;};});
+  // "—" (nothing set) is in the data but not in the contract dictionary, so without this
+  // the domain is incomplete: ticking every option quietly drops those rows and "select
+  // all" ends up NARROWER than "select none". It is also worth filtering for in its own
+  // right — the form has an explicit "Asset not found" toggle.
+  var NOTSET='\u2014';
+  ['fasset','felement','fdefect'].forEach(function(k){
+    var c=CATS.filter(function(x){return x.k===k;})[0];if(!c)return;
+    var used=rows.some(function(tr){return tr.dataset[k]===NOTSET;});
+    if(used&&c.opts.indexOf(NOTSET)<0)c.opts.push(NOTSET);
+    c.disp=function(v){return v===NOTSET?'Not set':v;};
+  });
   // parent → children, learned from the data (a sector only offers its own sub-sectors)
   var PMAP={};
   CATS.filter(function(c){return c.parent;}).forEach(function(c){
     PMAP[c.k]={};
     rows.forEach(function(tr){var p=tr.dataset[c.parent],v=tr.dataset[c.k];
-      if(!p||!v||v==='—')return;(PMAP[c.k][p]=PMAP[c.k][p]||[]);
+      if(!p||!v)return;(PMAP[c.k][p]=PMAP[c.k][p]||[]);
       if(PMAP[c.k][p].indexOf(v)<0)PMAP[c.k][p].push(v);});
   });
 
@@ -1443,13 +1620,31 @@ button{font-family:inherit;cursor:pointer}
     var hidden=0;
     if(!cat._all&&!q&&shown.length>SHOW){hidden=shown.length-SHOW;shown=shown.slice(0,SHOW);}
     cat._chips.innerHTML='';
+    // no data-cat on this one: pending() and the delegated chip handler must skip it
+    cat._allChip=document.createElement('button');cat._allChip.type='button';
+    cat._allChip.className='fd-chip fd-all';cat._allChip.textContent='All';
+    cat._allChip.addEventListener('click',function(){
+      cat._on=coversAll(cat._on,optsFor(cat))?[]:optsFor(cat).slice();
+      paintOpts(cat);syncChildren(cat.k);});
+    cat._chips.appendChild(cat._allChip);
     shown.forEach(function(v){
       var b=document.createElement('button');b.type='button';b.className='fd-chip'+(on.indexOf(v)>=0?' on':'');
-      b.dataset.cat=cat.k;b.dataset.val=v;b.textContent=cat.disp(v);cat._chips.appendChild(b);});
+      b.dataset.cat=cat.k;b.dataset.val=v;b.textContent=cat.disp(v);
+      if(cat.k==='fstatus')b.classList.add('st-'+v);
+      cat._chips.appendChild(b);});
     if(!shown.length){var e=document.createElement('span');e.className='fd-none';e.textContent='No match';cat._chips.appendChild(e);}
     cat._more.textContent=hidden?('Show all ('+list.length+')'):(cat._all&&list.length>SHOW?'Show less':'');
     cat._more.style.display=(hidden||(cat._all&&list.length>SHOW))?'':'none';
-    cat._cnt.textContent=on.length;cat._cnt.style.display=on.length?'':'none';
+    refreshHead(cat);
+  }
+  // badge / Clear / All-pill state, without re-sorting the chips under the cursor
+  function refreshHead(cat){
+    var on=cat._on||[],all=coversAll(on,optsFor(cat));
+    if(cat._cnt){cat._cnt.textContent=all?'All':on.length;
+      cat._cnt.classList.toggle('all',all);
+      cat._cnt.style.display=on.length?'':'none';}
+    if(cat._clr)cat._clr.disabled=!on.length;
+    if(cat._allChip)cat._allChip.classList.toggle('on',all);
   }
   function syncChildren(parentKey){
     CATS.forEach(function(c){if(c.parent===parentKey){
@@ -1459,7 +1654,8 @@ button{font-family:inherit;cursor:pointer}
     cat._on=[];
     var sec=document.createElement('div');sec.className='fd-sec'+(cat.child?' child':'');
     var acc=document.createElement('button');acc.className='fd-acc';acc.type='button';
-    acc.innerHTML='<span class="l">'+cat.label+' <span class="cnt" style="display:none">0</span></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+    acc.setAttribute('aria-expanded','false');
+    acc.innerHTML='<span class="l">'+cat.label+' <span class="cnt" style="display:none">0</span></span>';   // chevron lives in .chev-slot now
     var pane=document.createElement('div');pane.className='fd-opts';
     if(cat.opts.length>8){
       var s=document.createElement('input');s.type='search';s.className='fd-search';s.placeholder='Search '+cat.label.toLowerCase()+'…';
@@ -1470,8 +1666,15 @@ button{font-family:inherit;cursor:pointer}
     cat._more=document.createElement('button');cat._more.type='button';cat._more.className='fd-more';
     cat._more.addEventListener('click',function(){cat._all=!cat._all;paintOpts(cat);});
     pane.appendChild(cat._more);
-    acc.addEventListener('click',function(){acc.classList.toggle('open');});
-    sec.appendChild(acc);sec.appendChild(pane);body.appendChild(sec);
+    var hd=document.createElement('div');hd.className='fd-hd';
+    cat._clr=document.createElement('button');cat._clr.type='button';cat._clr.className='fd-clear';
+    cat._clr.textContent='Clear';cat._clr.disabled=true;
+    var chv=document.createElement('span');chv.className='chev-slot';chv.setAttribute('aria-hidden','true');
+    chv.innerHTML='<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+    hd.appendChild(acc);hd.appendChild(cat._clr);hd.appendChild(chv);
+    hd.addEventListener('click',function(){var o=sec.classList.toggle('open');acc.setAttribute('aria-expanded',o?'true':'false');});
+    cat._clr.addEventListener('click',function(e){e.stopPropagation();cat._on=[];paintOpts(cat);syncChildren(cat.k);});
+    sec.appendChild(hd);sec.appendChild(pane);body.appendChild(sec);
     cat._cnt=acc.querySelector('.cnt');
     paintOpts(cat);
   }
@@ -1534,7 +1737,7 @@ button{font-family:inherit;cursor:pointer}
     var v=b.dataset.val,i=cat._on.indexOf(v);
     if(i<0)cat._on.push(v);else cat._on.splice(i,1);
     b.classList.toggle('on');
-    cat._cnt.textContent=cat._on.length;cat._cnt.style.display=cat._on.length?'':'none';
+    refreshHead(cat);
     syncChildren(cat.k);
   });
   bd.querySelector('.fd-close').addEventListener('click',function(){bd.classList.remove('show');});
@@ -1582,7 +1785,20 @@ button{font-family:inherit;cursor:pointer}
     return true;
   }
   function passQ(el){return !QRY||el.dataset.q.indexOf(QRY)>=0;}
-  function fcount(){var n=0;CATS.forEach(function(c){n+=FILT[c.k].length;});
+  // the options a facet actually offers right now — narrowed by its parent, if any
+  function domainOf(cat){
+    if(cat.parent&&FILT[cat.parent]&&FILT[cat.parent].length){
+      var out=[];FILT[cat.parent].forEach(function(p){(PMAP[cat.k][p]||[]).forEach(function(v){if(out.indexOf(v)<0)out.push(v);});});
+      return out;
+    }
+    return cat.opts;
+  }
+  function coversAll(sel,dom){
+    return dom.length>0&&sel.length>=dom.length&&dom.every(function(v){return sel.indexOf(v)>=0;});
+  }
+  // every option ticked excludes nothing, so it must not read as an applied filter
+  function fcount(){var n=0;CATS.forEach(function(c){var sel=FILT[c.k];
+    if(!sel.length||coversAll(sel,domainOf(c)))return;n+=sel.length;});
     DATES.forEach(function(d){var f=DFILT[d.k];if(f.pill||f.from||f.to)n++;});return n;}
   function cmp(x,y){
     var k=SORT.k,d=SORT.dir;
@@ -1649,7 +1865,8 @@ button{font-family:inherit;cursor:pointer}
       var ex=c.querySelector('.card-assign');if(ex)ex.remove();
       if(cur==='inprogress'&&show){var d=document.createElement('div');d.className='card-assign';
         var b=document.createElement('button');b.className='btn-assign';b.type='button';b.textContent='Assign to self';
-        b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();assign(c.dataset.wi);});d.appendChild(b);c.appendChild(d);}});
+        b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();assign(c.dataset.wi);});d.appendChild(b);
+        (c.querySelector('.wc-grid')||c).appendChild(d);}});
     wis.forEach(function(w){var c=cardBy[w];if(c)ul.appendChild(c.parentNode);});
 
     table.classList.toggle('show-act',cur==='inprogress');

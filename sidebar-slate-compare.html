@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slate 側邊欄配色比較 · RMWP</title>
+<style>
+:root{
+  --grey-25:#FCFCFD; --grey-50:#F7F8F9; --grey-100:#EDEFF1; --grey-200:#DFE3E6;
+  --grey-300:#C7CDD2; --grey-400:#9AA4AC; --grey-500:#6E7E88; --grey-600:#51616B;
+  --grey-700:#3F4B54; --grey-800:#27333B; --grey-900:#161F26;
+  /* Slate 主色 —— 官網連結色 */
+  --teal-600:#5C6BBC; --teal-700:#4453A4;
+  --danger-on-dark:#E03131;
+  --r-lg:14px;
+  --shadow-sm:0 1px 2px rgba(22,31,38,.06);
+  --shadow-md:0 2px 8px rgba(22,31,38,.07),0 1px 2px rgba(22,31,38,.05);
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--grey-50);color:var(--grey-800);
+  font-size:.875rem;line-height:1.5;-webkit-font-smoothing:antialiased;padding:32px 28px 72px}
+
+.page-head{max-width:1400px;margin:0 auto 26px}
+.page-head h1{font-size:1.25rem;font-weight:680;color:var(--grey-900);letter-spacing:-.01em}
+.page-head p{color:var(--grey-600);margin-top:8px;max-width:74ch}
+.page-head code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8125rem;
+  background:var(--grey-100);padding:1px 6px;border-radius:6px}
+
+.legend{max-width:1400px;margin:0 auto 26px;background:#fff;border:1px solid var(--grey-200);
+  border-radius:var(--r-lg);box-shadow:var(--shadow-sm);padding:16px 20px}
+.legend h2{font-size:1rem;font-weight:660;color:var(--grey-900);margin-bottom:8px}
+.legend ul{list-style:none;display:flex;flex-wrap:wrap;gap:6px 26px;color:var(--grey-600)}
+.legend li::before{content:"·";margin-right:8px;color:var(--grey-400)}
+
+.grid{max-width:1400px;margin:0 auto;display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:20px;align-items:start}
+
+.opt{background:#fff;border:1px solid var(--grey-200);border-radius:var(--r-lg);
+  box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column}
+.opt.pick{border-color:var(--teal-600);box-shadow:0 0 0 3px rgba(92,107,188,.14),var(--shadow-md)}
+.opt-head{padding:14px 16px;border-bottom:1px solid var(--grey-100);display:flex;
+  align-items:flex-start;gap:10px}
+.opt-head .k{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;
+  justify-content:center;background:var(--grey-100);color:var(--grey-600);font-weight:700;font-size:.75rem}
+.opt.pick .opt-head .k{background:var(--teal-600);color:#fff}
+.opt-head .m{min-width:0;flex:1}
+.opt-head strong{display:block;font-size:1rem;font-weight:660;color:var(--grey-900);line-height:1.3}
+.opt-head span{display:block;font-size:.75rem;color:var(--grey-500);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;margin-top:2px}
+.tag{align-self:center;font-size:.6875rem;font-weight:700;padding:3px 9px;border-radius:999px;
+  background:var(--teal-600);color:#fff;white-space:nowrap}
+
+/* ── the sidebar mock: same metrics as the real thing (248px, 18/14 padding) ── */
+.sb{width:100%;padding:16px 12px;display:flex;flex-direction:column;gap:0;min-height:420px}
+.sb-brand{padding:4px 6px 12px;border-bottom:1px solid rgba(255,255,255,.14);margin-bottom:10px;
+  color:#fff;font-weight:700;font-size:.8125rem;letter-spacing:.02em}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:999px;
+  font-size:.8125rem;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis}
+.ni .d{width:14px;height:14px;border-radius:4px;flex:none;background:currentColor;opacity:.72}
+.ni.sub{margin-left:26px;padding:7px 12px;font-size:.75rem;font-weight:500;position:relative}
+.ni.sub::before{content:"";position:absolute;left:-10px;top:-3px;bottom:0;width:1.5px;
+  background:rgba(255,255,255,.25)}
+.ni.sub.cur{background:#fff;color:var(--teal-700);font-weight:700}
+.ni.sub.cur::before{display:none}
+.sb-foot{margin-top:auto;padding-top:10px;border-top:1px solid rgba(255,255,255,.14)}
+.sb-foot .ni{margin-bottom:6px}
+.badge{margin-left:auto;min-width:19px;height:19px;padding:0 6px;border-radius:999px;
+  background:var(--danger-on-dark);color:#fff;font-size:.6875rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center}
+.role{display:flex;align-items:center;gap:9px;background:#fff;border-radius:999px;padding:4px 10px 4px 4px}
+.role .av{width:28px;height:28px;border-radius:50%;flex:none;background:#10757E;color:#fff;
+  font-size:.6875rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.role .m{min-width:0;line-height:1.2}
+.role .m b{display:block;font-size:.75rem;color:var(--grey-900);font-weight:650}
+.role .m i{display:block;font-size:.6875rem;color:var(--grey-500);font-style:normal}
+
+/* ── metrics ── */
+.metrics{border-top:1px solid var(--grey-100);padding:12px 16px 14px}
+.metrics table{width:100%;border-collapse:collapse;font-size:.75rem}
+.metrics th{text-align:left;font-weight:650;color:var(--grey-500);padding:3px 0;font-size:.6875rem;
+  text-transform:uppercase;letter-spacing:.05em}
+.metrics td{padding:3px 0;color:var(--grey-700);vertical-align:middle}
+.metrics td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:640;color:var(--grey-900)}
+.metrics td.n em{font-style:normal;font-size:.6875rem;font-weight:700;margin-left:6px;
+  padding:1px 6px;border-radius:999px}
+.pass{background:#F4F8EA;color:#5B761B}
+.thin{background:#FBF6E6;color:#8E6B04}
+.note{padding:0 16px 16px;font-size:.75rem;color:var(--grey-600);line-height:1.55}
+.note b{color:var(--grey-900);font-weight:650}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>Slate 側邊欄配色 —— 五個候選</h1>
+  <p>現行的 <code>--chrome-800 #343A40</code> 白字對比高達 8.36:1，遠超過 4.5:1 的門檻 ——
+     這就是它看起來偏重的原因：把亮度全用在「安全」上了。下面每一案都在通過 AA 的前提下把底色調亮，
+     並列出實測對比值。所有數字都是用 WCAG 2.1 相對亮度公式算的，白字的透明度會先做 sRGB 合成再比對。</p>
+</div>
+
+<div class="legend">
+  <h2>怎麼看</h2>
+  <ul>
+    <li>主項文字 = <code>rgba(255,255,255,α)</code>，需 ≥ 4.5:1</li>
+    <li>子項文字較小，同樣需 ≥ 4.5:1</li>
+    <li>白 logo 對比越高越銳利，但太高整體就顯重</li>
+    <li>通知紅點是圖形不是文字，這裡只列參考值</li>
+  </ul>
+</div>
+
+<div class="grid">
+
+  <!-- A -->
+  <div class="opt">
+    <div class="opt-head">
+      <span class="k">A</span>
+      <span class="m"><strong>現行</strong><span>#343A40 · chrome-800</span></span>
+    </div>
+    <div class="sb" style="background:#343A40">
+      <div class="sb-brand">LAND TRANSPORT AUTHORITY</div>
+      <div class="ni" style="color:rgba(255,255,255,.82)"><i class="d"></i>Overview</div>
+      <div class="ni" style="color:#fff;background:rgba(255,255,255,.12)"><i class="d"></i>Work instruction</div>
+      <div class="ni sub cur">Maintenance WI</div>
+      <div class="ni sub" style="color:rgba(255,255,255,.68)">Inspection WI</div>
+      <div class="ni" style="color:rgba(255,255,255,.82)"><i class="d"></i>Dashboard</div>
+      <div class="ni" style="color:rgba(255,255,255,.82)"><i class="d"></i>Asset inventory</div>
+      <div class="sb-foot">
+        <div class="ni" style="color:rgba(255,255,255,.82)"><i class="d"></i>Notifications<span class="badge">13</span></div>
+        <div class="role"><span class="av">DC</span><span class="m"><b>DEV CO01</b><i>Contract Officer</i></span></div>
+      </div>
+    </div>
+    <div class="metrics"><table>
+      <tr><th>對比</th><th class="n" style="text-align:right">值</th></tr>
+      <tr><td>主項 .82</td><td class="n">8.36<em class="pass">AA</em></td></tr>
+      <tr><td>子項 .68</td><td class="n">6.30<em class="pass">AA</em></td></tr>
+      <tr><td>白 logo</td><td class="n">11.51</td></tr>
+      <tr><td>紅點邊界</td><td class="n">2.55</td></tr>
+    </table></div>
+    <div class="note">基準線。對比餘裕最大，但也最重 —— 這就是要改的原因。</div>
+  </div>
+
+  <!-- B -->
+  <div class="opt pick">
+    <div class="opt-head">
+      <span class="k">B</span>
+      <span class="m"><strong>官方石板墨</strong><span>#3F4852 · LTA color5</span></span>
+      <span class="tag">推薦</span>
+    </div>
+    <div class="sb" style="background:#3F4852">
+      <div class="sb-brand">LAND TRANSPORT AUTHORITY</div>
+      <div class="ni" style="color:rgba(255,255,255,.82)"><i class="d"></i>Overview</div>
+      <div class="ni" style="color:#fff;background:rgba(255,255,255,.12)"><i class="d"></i>Work instruction</div>
+      <div class="ni sub cur">Maintenance WI</div>
+      <div class="ni sub" style="color:rgba(255,255,255,.68)">Inspection WI</div>
+      <div class="ni" style="color:rgba(255,255,255,.82)"><i class="d"></i>Dashboard</div>
+      <div class="ni" style="color:rgba(255,255,255,.82)"><i class="d"></i>Asset inventory</div>
+      <div class="sb-foot">
+        <div class="ni" style="color:rgba(255,255,255,.82)"><i class="d"></i>Notifications<span class="badge">13</span></div>
+        <div class="role"><span class="av">DC</span><span class="m"><b>DEV CO01</b><i>Contract Officer</i></span></div>
+      </div>
+    </div>
+    <div class="metrics"><table>
+      <tr><th>對比</th><th class="n" style="text-align:right">值</th></tr>
+      <tr><td>主項 .82</td><td class="n">6.89<em class="pass">AA</em></td></tr>
+      <tr><td>子項 .68</td><td class="n">5.32<em class="pass">AA</em></td></tr>
+      <tr><td>白 logo</td><td class="n">9.29</td></tr>
+      <tr><td>紅點邊界</td><td class="n">2.06</td></tr>
+    </table></div>
+    <div class="note"><b>唯一有出處的一案</b> —— 這個色 Slate 已經在用了，就是狀態 chip
+      <code>--st-draft-ink</code>，來自 LTA 官網的 <code>.bg-color5</code>。明顯變輕，
+      透明度不用動，餘裕仍充足。</div>
+  </div>
+
+  <!-- C -->
+  <div class="opt">
+    <div class="opt-head">
+      <span class="k">C</span>
+      <span class="m"><strong>再亮一階</strong><span>#46505A · chrome-700</span></span>
+    </div>
+    <div class="sb" style="background:#46505A">
+      <div class="sb-brand">LAND TRANSPORT AUTHORITY</div>
+      <div class="ni" style="color:rgba(255,255,255,.86)"><i class="d"></i>Overview</div>
+      <div class="ni" style="color:#fff;background:rgba(255,255,255,.12)"><i class="d"></i>Work instruction</div>
+      <div class="ni sub cur">Maintenance WI</div>
+      <div class="ni sub" style="color:rgba(255,255,255,.76)">Inspection WI</div>
+      <div class="ni" style="color:rgba(255,255,255,.86)"><i class="d"></i>Dashboard</div>
+      <div class="ni" style="color:rgba(255,255,255,.86)"><i class="d"></i>Asset inventory</div>
+      <div class="sb-foot">
+        <div class="ni" style="color:rgba(255,255,255,.86)"><i class="d"></i>Notifications<span class="badge">13</span></div>
+        <div class="role"><span class="av">DC</span><span class="m"><b>DEV CO01</b><i>Contract Officer</i></span></div>
+      </div>
+    </div>
+    <div class="metrics"><table>
+      <tr><th>對比</th><th class="n" style="text-align:right">值</th></tr>
+      <tr><td>主項 .86</td><td class="n">6.58<em class="pass">AA</em></td></tr>
+      <tr><td>子項 .76</td><td class="n">5.58<em class="pass">AA</em></td></tr>
+      <tr><td>白 logo</td><td class="n">8.22</td></tr>
+      <tr><td>紅點邊界</td><td class="n">1.82</td></tr>
+    </table></div>
+    <div class="note">已經在專案 token 裡（<code>--chrome-700</code>）。<b>文字透明度要一起提高</b>
+      （.82→.86、.68→.76），不然子項只剩 4.84 太薄。</div>
+  </div>
+
+  <!-- D -->
+  <div class="opt">
+    <div class="opt-head">
+      <span class="k">D</span>
+      <span class="m"><strong>冷調石板</strong><span>#4A5568</span></span>
+    </div>
+    <div class="sb" style="background:#4A5568">
+      <div class="sb-brand">LAND TRANSPORT AUTHORITY</div>
+      <div class="ni" style="color:rgba(255,255,255,.86)"><i class="d"></i>Overview</div>
+      <div class="ni" style="color:#fff;background:rgba(255,255,255,.12)"><i class="d"></i>Work instruction</div>
+      <div class="ni sub cur">Maintenance WI</div>
+      <div class="ni sub" style="color:rgba(255,255,255,.76)">Inspection WI</div>
+      <div class="ni" style="color:rgba(255,255,255,.86)"><i class="d"></i>Dashboard</div>
+      <div class="ni" style="color:rgba(255,255,255,.86)"><i class="d"></i>Asset inventory</div>
+      <div class="sb-foot">
+        <div class="ni" style="color:rgba(255,255,255,.86)"><i class="d"></i>Notifications<span class="badge">13</span></div>
+        <div class="role"><span class="av">DC</span><span class="m"><b>DEV CO01</b><i>Contract Officer</i></span></div>
+      </div>
+    </div>
+    <div class="metrics"><table>
+      <tr><th>對比</th><th class="n" style="text-align:right">值</th></tr>
+      <tr><td>主項 .86</td><td class="n">6.09<em class="pass">AA</em></td></tr>
+      <tr><td>子項 .76</td><td class="n">5.18<em class="pass">AA</em></td></tr>
+      <tr><td>白 logo</td><td class="n">7.53</td></tr>
+      <tr><td>紅點邊界</td><td class="n">1.67<em class="thin">薄</em></td></tr>
+    </table></div>
+    <div class="note">最輕的一案，藍味也最明顯。代價是紅點與底色只差 1.67:1，
+      <b>通知紅點會開始糊進背景</b>。<code>#4A5568</code> 不在現有 token 裡，要新增。</div>
+  </div>
+
+  <!-- G -->
+  <div class="opt">
+    <div class="opt-head">
+      <span class="k">E</span>
+      <span class="m"><strong>藍紫墨</strong><span>#3D477A</span></span>
+    </div>
+    <div class="sb" style="background:#3D477A">
+      <div class="sb-brand">LAND TRANSPORT AUTHORITY</div>
+      <div class="ni" style="color:rgba(255,255,255,.84)"><i class="d"></i>Overview</div>
+      <div class="ni" style="color:#fff;background:rgba(255,255,255,.12)"><i class="d"></i>Work instruction</div>
+      <div class="ni sub cur">Maintenance WI</div>
+      <div class="ni sub" style="color:rgba(255,255,255,.72)">Inspection WI</div>
+      <div class="ni" style="color:rgba(255,255,255,.84)"><i class="d"></i>Dashboard</div>
+      <div class="ni" style="color:rgba(255,255,255,.84)"><i class="d"></i>Asset inventory</div>
+      <div class="sb-foot">
+        <div class="ni" style="color:rgba(255,255,255,.84)"><i class="d"></i>Notifications<span class="badge">13</span></div>
+        <div class="role"><span class="av">DC</span><span class="m"><b>DEV CO01</b><i>Contract Officer</i></span></div>
+      </div>
+    </div>
+    <div class="metrics"><table>
+      <tr><th>對比</th><th class="n" style="text-align:right">值</th></tr>
+      <tr><td>主項 .84</td><td class="n">6.82<em class="pass">AA</em></td></tr>
+      <tr><td>子項 .72</td><td class="n">5.48<em class="pass">AA</em></td></tr>
+      <tr><td>白 logo</td><td class="n">8.82</td></tr>
+      <tr><td>紅點邊界</td><td class="n">1.95</td></tr>
+    </table></div>
+    <div class="note">唯一帶主色調的一案 —— 是 <code>--teal-900 #2B3569</code> 調亮後的版本，
+      跟主色 <code>#5C6BBC</code> 同一個色相家族。<b>但這會讓側欄重新變成「有顏色」</b>，
+      跟當初「chrome 保持中性、不帶語意」的決定相反，要改的話得先確認這個前提還算數。</div>
+  </div>
+
+</div>
+
+</body>
+</html>

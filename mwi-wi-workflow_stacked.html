@@ -48,6 +48,11 @@
   --font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
   --fs-xs:.75rem; --fs-sm:.8125rem; --fs-base:.875rem;
   --fs-md:.9375rem; --fs-lg:1.0625rem; --fs-xl:1.375rem; --fs-2xl:1.75rem;
+  /* Heading scale (2026-08-05). Hard ceilings: H1 20px, H2 16px — anything that reads
+     as a page title or a section/card title must use these, not a raw rem value. */
+  --fs-h1:1.25rem;      /* 20px  page title           */
+  --fs-h1-sm:1.125rem;  /* 18px  same title on mobile */
+  --fs-h2:1rem;         /* 16px  section / card title */
   /* Shape & elevation */
   --r-sm:6px; --r-md:10px; --r-lg:14px; --r-pill:999px;
   --shadow-sm:0 1px 2px rgba(22,31,38,.06);
@@ -107,7 +112,10 @@ button{font-family:inherit;cursor:pointer}
 .avatar-meta span{font-size:var(--fs-xs);color:var(--grey-500)}
 
 .sidebar{
-  position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);z-index:30;
+  /* above .action-bar (45) so the fixed bar stops at the sidebar edge instead of
+     running its band underneath — matches the navy build. Still below the mobile
+     backdrop (50) / drawer (60) / scrim (70) / modal (71). */
+  position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);z-index:46;
   background:#fff;border-right:1px solid var(--grey-200);
   padding:16px 12px;overflow-y:auto;
 }
@@ -123,13 +131,13 @@ button{font-family:inherit;cursor:pointer}
 .nav-item.sub.current{color:var(--teal-700);font-weight:620;background:linear-gradient(to right,var(--teal-50),transparent)}
 .nav-ico{width:18px;height:18px;flex:none;color:var(--grey-400)}
 
-.main{margin-left:var(--sidebar-w);padding:var(--topbar-h) 32px 96px;max-width:1220px}
+.main{margin-left:var(--sidebar-w);padding:var(--topbar-h) 32px 96px;max-width:none}
 
 /* ---------- Page header ---------- */
 .breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:var(--fs-sm);color:var(--grey-500);margin-bottom:14px}
 .breadcrumb .sep{color:var(--grey-300)}
 .page-head{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
-.page-head h1{font-size:var(--fs-2xl);line-height:1.2;color:var(--grey-900);font-weight:680;letter-spacing:-.01em}
+.page-head h1{font-size:var(--fs-h1);line-height:1.2;color:var(--grey-900);font-weight:680;letter-spacing:-.01em}
 .eyebrow{font-size:var(--fs-sm);font-weight:600;color:var(--teal-700);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
 .page-sub{color:var(--grey-600);font-size:var(--fs-md);margin-top:6px;max-width:60ch}
 .head-actions{display:flex;gap:10px;flex:none}
@@ -197,7 +205,7 @@ button{font-family:inherit;cursor:pointer}
   display:flex;flex-wrap:wrap;align-items:center;gap:10px;
   padding:18px 24px;border-bottom:1px solid var(--grey-100);
 }
-.card-head h2{font-size:var(--fs-lg);font-weight:660;color:var(--grey-900)}
+.card-head h2{font-size:var(--fs-h2);font-weight:660;color:var(--grey-900)}
 .card-head .hint{font-size:var(--fs-sm);color:var(--grey-500)}
 .card-head .spacer{flex:1}
 .card-body{padding:22px 24px}
@@ -342,7 +350,7 @@ button{font-family:inherit;cursor:pointer}
 }
 @media(max-width:640px){
   .brand-name{display:none}
-  .page-head h1{font-size:var(--fs-xl)}
+  .page-head h1{font-size:var(--fs-h1-sm)}
   .summary-strip{grid-template-columns:1fr 1fr}
   .summary-cell{border-left:none;border-top:1px solid var(--grey-100)}
   .summary-cell:nth-child(-n+2){border-top:none}
@@ -376,7 +384,7 @@ button{font-family:inherit;cursor:pointer}
   background:#fff;color:var(--grey-700);display:inline-flex;align-items:center;justify-content:center;
 }
 .context-bar .ctx{min-width:0}
-.context-bar .ctx strong{display:block;font-size:var(--fs-md);color:var(--grey-900);font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.context-bar .ctx strong{display:block;font-size:var(--fs-h1);color:var(--grey-900);font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .task-stepper{
   display:flex;align-items:center;gap:10px;background:var(--navy-700);color:#fff;
   border-radius:var(--r-lg);padding:12px 14px;margin-bottom:18px;box-shadow:var(--shadow-md);
@@ -583,6 +591,10 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 .card-body>.btn{grid-column:1 / -1}
 .card-body>.btn{justify-self:start}
 .action-bar .inner{max-width:none;margin:0 0 0 var(--sidebar-w);padding:0 32px}
+/* desktop: action bar aligns with the step-panel content edges (16px bar padding + 16px = 32px) */
+@media(min-width:1021px){
+  .action-bar .inner{max-width:none;margin:0 16px 0 calc(var(--sidebar-w) + 16px);padding:0}
+}
 /* full-row textarea fields: on a wide screen the box itself is only half-width
    (full 100% span is too wide); it fills the row again once the grid collapses */
 @media(min-width:1021px){
@@ -891,6 +903,8 @@ body:not(.view-mode) .step-panel .wip-ro.is-owner .capture{display:flex}
 /* one layout at every width: title, status chip beneath it, actions on the right */
 .context-bar .ctx{flex:1;min-width:0}
 .context-bar .ctx strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* this block is deliberately width-agnostic, so the mobile size needs its own query */
+@media(max-width:1020px){.context-bar .ctx strong{font-size:var(--fs-h1-sm)}}
 .ctx-meta{display:flex;align-items:center;gap:10px;margin-top:5px}
 .ctx-sub{display:none}                 /* path is in the sidebar (desktop) / the burger menu (mobile) */
 .ctx-actions{display:flex;gap:10px;flex:none}
@@ -1085,6 +1099,14 @@ body.view-mode .boq-actions{display:none}
   .tt-count-r{margin-left:0}
 }
 </style>
+<style>
+/* Demo: prototype-version switcher inside the role menu */
+.rolesw-sep{height:1px;background:var(--grey-200);margin:6px 8px}
+.ver-seg{display:flex;gap:4px;padding:2px 8px 10px}
+.ver-seg .vs-opt{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:7px 6px;border-radius:var(--r-sm,8px);font-size:var(--fs-xs,.75rem);font-weight:650;color:var(--grey-600);background:var(--grey-100);text-decoration:none;white-space:nowrap}
+.ver-seg .vs-opt:hover{background:var(--grey-200);color:var(--grey-900)}
+.ver-seg .vs-opt.is-on{background:var(--teal-700);color:#fff}
+</style>
 </head>
 <body>
 
@@ -1112,6 +1134,12 @@ body.view-mode .boq-actions{display:none}
       <button class="rolesw-opt" data-role="co"><span class="rs-av rs-co">DC</span><span class="m"><strong>DEV CO01</strong><span>Contract Officer</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
       <button class="rolesw-opt" data-role="ss"><span class="rs-av rs-ss">DT</span><span class="m"><strong>DEV TR388SS01</strong><span>Site Supervisor</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
       <button class="rolesw-opt" data-role="eng"><span class="rs-av rs-eng">DT</span><span class="m"><strong>DEV TR388ENG01</strong><span>Engineer</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
+      <div class="rolesw-sep"></div>
+      <div class="rolesw-head">Prototype version</div>
+      <div class="ver-seg" role="group" aria-label="Prototype version">
+        <a class="vs-opt is-on" href="mwi-wi-workflow.html">Original</a>
+        <a class="vs-opt" href="mwi-wi-workflow_layouta.html">Slate</a>
+      </div>
     </div>
   </div>
 </header>
@@ -1176,7 +1204,7 @@ body.view-mode .boq-actions{display:none}
   <div class="step-panel" data-panel="1">
 
   <section class="card" id="s-ref">
-    <div class="card-head"><h2>Work instruction details</h2></div>
+    <div class="card-head"><h2>Work instruction</h2></div>
     <div class="card-body">
       <div class="field locked-field">
         <label for="e-con">Contract no. <span class="req">*</span></label>
@@ -1248,7 +1276,7 @@ body.view-mode .boq-actions{display:none}
   </section>
 
   <section class="card" id="s-desc">
-    <div class="card-head"><h2>Location &amp; description</h2></div>
+    <div class="card-head"><h2>Location</h2></div>
     <div class="card-body">
       <div class="field dep-field">
         <label for="e-road">Road name <span class="req">*</span></label>
@@ -1293,6 +1321,11 @@ body.view-mode .boq-actions{display:none}
     <div class="card-head">
       <h2>Site &amp; assets</h2>
       <span class="spacer"></span>
+      <div class="ver-switch" role="navigation" aria-label="Asset &amp; task layout">
+        <a class="vs-opt" href="mwi-wi-workflow.html#s-site">Tab switch</a>
+        <a class="vs-opt is-on" href="mwi-wi-workflow_stacked.html#s-site">Stacked</a>
+      </div>
+      <span class="spacer vs-spacer"></span>
       <label class="toggle toggle-inline">
         <input type="checkbox">
         <span class="tk"></span>
@@ -1439,7 +1472,7 @@ body.view-mode .boq-actions{display:none}
 
   <div class="step-panel" data-panel="2">
   <section class="card" id="s-fund">
-    <div class="card-head"><h2>Funding</h2></div>
+    <div class="card-head"><h2>Fund Detail</h2></div>
     <div class="card-body">
       <div class="boq-wrap">
         <table class="boq">
@@ -1495,7 +1528,7 @@ body.view-mode .boq-actions{display:none}
 
   <div class="step-panel" data-panel="3">
   <section class="card" id="s-price">
-    <div class="card-head"><h2>Price schedule</h2></div>
+    <div class="card-head"><h2>Price Schedule</h2></div>
     <div class="card-body">
       <div class="field">
         <label for="p-pay">Payment type</label>
@@ -1607,7 +1640,7 @@ body.view-mode .boq-actions{display:none}
 <div class="action-bar">
   <div class="inner">
     <div class="act-left">
-      <button class="btn" id="btnReturn" type="button">Return</button>
+      <button class="btn" id="btnReturn" type="button"><span class="lbl-full">Return Work Instruction</span><span class="lbl-short">Return</span></button>
       <button class="btn" id="btnReassign" type="button"><span class="lbl-full">Reassign to LTA Officer</span><span class="lbl-short">Reassign</span></button>
     </div>
     <div class="act-right">
@@ -2032,7 +2065,7 @@ body.view-mode .boq-actions{display:none}
     if(i){i.textContent=M.ini;i.className='rs-av rs-'+r;} if(n)n.textContent=M.name; if(o)o.textContent=M.role;
     document.querySelectorAll('.rolesw-opt').forEach(function(b){b.classList.toggle('on',b.dataset.role===r);});
     document.querySelectorAll('.sidebar .nav-item').forEach(function(a){var t=(a.textContent||'').trim();if(SHOW[t])a.style.display=SHOW[t].indexOf(r)>=0?'':'none';});
-    document.querySelectorAll('a[href]').forEach(function(a){var h=a.getAttribute('href');if(/^mwi-[a-z0-9-]+\.html/i.test(h)){a.setAttribute('href',h.split('?')[0].split('#')[0]+'?role='+r);}});
+    document.querySelectorAll('a[href]').forEach(function(a){var h=a.getAttribute('href');if(/^mwi-[a-z0-9_-]+\.html/i.test(h)){var hash=(h.match(/#.*$/)||[''])[0];a.setAttribute('href',h.split('?')[0].split('#')[0]+'?role='+r+hash);}});
 
     // status chip
     var chip=document.querySelector('.ctx-meta .chip');
@@ -2317,7 +2350,7 @@ document.addEventListener('change', function(e){
   </div>
   <div class="rt-foot">
     <button class="btn btn-ghost" id="rtCancel" type="button">Cancel</button>
-    <button class="btn btn-warn" id="rtConfirm" type="button">Return</button>
+    <button class="btn btn-primary" id="rtConfirm" type="button">Return</button>
   </div>
 </div>
 <div class="tl-scrim" id="tlScrim"></div>
@@ -2482,17 +2515,38 @@ document.addEventListener('change', function(e){
 })();
 </script>
 <style>
-/* Demo-only: floating layout switcher for side-by-side comparison */
-.ver-switch{position:fixed;left:16px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:46;display:flex;align-items:center;background:#fff;border:1px solid var(--grey-200);border-radius:999px;padding:4px;box-shadow:0 4px 16px rgba(22,31,38,.16)}
+/* Demo-only: asset/task layout switcher — lives in the Site & assets card head,
+   because what it switches is how assets and tasks are laid out. */
+.card-head .ver-switch{display:inline-flex;align-items:center;gap:2px;background:var(--grey-100);
+  border:1px solid var(--grey-200);border-radius:999px;padding:3px}
+.card-head .vs-spacer{flex:1}
 .vs-label{font-size:.6875rem;font-weight:650;color:var(--grey-500);padding:0 8px;text-transform:uppercase;letter-spacing:.05em}
-.vs-opt{display:inline-flex;align-items:center;padding:6px 12px;border-radius:999px;font-size:.8125rem;font-weight:620;color:var(--grey-600);text-decoration:none;white-space:nowrap}
-.vs-opt:hover{color:var(--grey-900);background:var(--grey-100)}
-.vs-opt.is-on{background:var(--teal-700);color:#fff}
-@media(max-width:1020px){.ver-switch{left:12px;bottom:calc(156px + env(safe-area-inset-bottom))}}
+.vs-opt{display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;font-size:.75rem;font-weight:640;color:var(--grey-600);text-decoration:none;white-space:nowrap}
+.vs-opt:hover{color:var(--grey-900);background:var(--grey-200);text-decoration:none}
+.vs-opt.is-on{background:#fff;color:var(--teal-800);box-shadow:0 1px 2px rgba(22,31,38,.16)}
+/* once the head wraps there is no middle to sit in — drop the extra spacer */
+@media(max-width:820px){.card-head .vs-spacer{display:none}}
 </style>
-<div class="ver-switch" role="navigation" aria-label="Prototype layout switcher">
-  <a class="vs-opt" href="mwi-wi-workflow.html">Tab switch</a>
-  <a class="vs-opt is-on" href="mwi-wi-workflow_stacked.html">Stacked</a>
-</div>
+<script>
+/* The asset/task layout switcher hands over on #s-site: open step 1 and stay on
+   Site & assets instead of dropping the reader back on the role's default step. */
+(function(){
+  if(location.hash!=='#s-site') return;
+  var s1=document.querySelector('#wiz .wiz-step[data-step="1"]');
+  if(s1) s1.click();                         // go() switches the panel and resets scroll
+  function land(){
+    var sec=document.getElementById('s-site'); if(!sec) return;
+    var head=document.getElementById('stickyhead');
+    var off=(head?Math.max(head.getBoundingClientRect().bottom,0):0)+16;  // bottom, not height: the topbar sits above it
+    // 'instant' is required: html{scroll-behavior:smooth} would turn this into an
+    // animated scroll, and an animation started during load gets cancelled.
+    window.scrollTo({top:Math.max(0,sec.getBoundingClientRect().top+window.pageYOffset-off),left:0,behavior:'instant'});
+  }
+  // late layout (fonts, the sticky head remeasuring) can move the target, so land again
+  function landTwice(){ land(); requestAnimationFrame(land); setTimeout(land,200); }
+  if(document.readyState==='complete') landTwice();
+  else window.addEventListener('load',landTwice);
+})();
+</script>
 </body>
 </html>

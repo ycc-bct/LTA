@@ -136,6 +136,55 @@ WIP 刻意用珊瑚而非藍紫,是為了避開與 primary periwinkle(230°)色�
 ```
 內文 base 14px。程式碼/代碼（REX-…、tag）用 mono，讓 raw code 一眼可辨。
 
+### 2b. 標題階層（2026-08-05 重新定義，Original ＋ Slate 五頁）
+```
+--fs-h1:1.25rem      /* 20px  頁標題      —— 上限，不得超過 */
+--fs-h1-sm:1.125rem  /* 18px  同一標題在手機 */
+--fs-h2:1rem         /* 16px  區塊／卡片／抽屜標題 —— 上限，不得超過 */
+```
+**任何讀起來像頁標題或區塊標題的東西一律引用這三個 token，不要寫死 rem。**
+
+| | 頁標題（H1） | 區塊標題（H2） |
+|---|---|---|
+| 列表頁（兩版） | `.page-head h1` | `.card-head h2`／`.fd-head h2`；手機卡片 `.wi-card .road` 同級 |
+| workflow Original／Stacked | `.context-bar .ctx strong`（WI 號） | `.card-head h2` |
+| workflow Slate | `.b-top h1`（WI 號） | `.sec-title` |
+
+改動前的實測與問題：
+
+| 頁 | 原 H1 | 原 H2 | 問題 |
+|---|---|---|---|
+| 列表（兩版） | 28px | 17px | H1 超過上限 8px |
+| workflow Original／Stacked | **15px** | 17px | **階層反了** —— 頁標題比區塊標題小 |
+| workflow Slate | 22px | 22px | **完全沒有階層**，且兩者都超標 |
+
+例外（都在上限內，刻意保留）：
+- Slate workflow 手機的 `.b-top h1` 用 **16px** 而非 18px —— 那條 bar 是單行 `nowrap`，
+  裝的是完整 WI 號，18px 會被截掉。
+- `.context-bar .ctx strong` 的第二條規則**刻意不分斷點**（註解寫著 one layout at every width），
+  所以手機字級要另外開一條 `@media(max-width:1020px)`，直接寫進那條規則會讓桌機也變 18px。
+
+### 2c. 標題文字＝導覽文字（2026-08-05）
+wizard step、section jump chip（Original）／rail sub（Slate）與它們指到的區塊標題**必須逐字相同**。
+七個名稱是唯一來源，三頁共用：
+
+```
+Work instruction · Location · Site & assets · Attachment · Fund Detail · Price Schedule · Approval
+```
+step 1 在兩版都叫 **Work / Task / Site Detail**（它涵蓋前四個區塊，不對應單一標題）。
+
+改動前的落差 —— 導覽說一套、標題說另一套：
+
+| 導覽 | 原本的標題 |
+|---|---|
+| Work instruction | Work instruction ~~details~~ |
+| Location | Location ~~& description~~ |
+| Fund Detail | ~~Funding~~ |
+| Price Schedule | Price ~~s~~chedule |
+
+方向是**讓標題去對齊導覽**，因為導覽名稱兩版本來就一致、也貼近線上 wizard 的用字。
+這些字串沒有被任何 JS 當 key（查過），純顯示文字。
+
 ## 3. 圓角 / 陰影 / 版面
 ```
 --r-sm:6px  --r-md:10px  --r-lg:14px  --r-pill:999px

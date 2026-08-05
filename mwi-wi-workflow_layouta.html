@@ -34,9 +34,17 @@
   --grey-400:#9DAAB2;--grey-500:#6E7E88;--grey-600:#51616B;--grey-700:#3A4952;--grey-800:#27333B;--grey-900:#161F26;
   --success-50:#EAF5EE;--success-600:#177245;--success-700:#0F5C37;
   --warning-50:#FEF3E2;--warning-700:#7A4506;--danger-600:#882428;--danger-700:#6E1D20;
+  /* the maroon disappears on the dark sidebar; brightest red that still carries
+     white text at 4.5:1 (same value as the navy build) */
+  --danger-on-dark:#E03131;
   --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
   --r-sm:6px;--r-md:10px;--r-lg:14px;--r-pill:999px;
+  /* Heading scale (2026-08-05). Hard ceilings: H1 20px, H2 16px — anything that reads
+     as a page title or a section/card title must use these, not a raw rem value. */
+  --fs-h1:1.25rem;      /* 20px  page title           */
+  --fs-h1-sm:1.125rem;  /* 18px  same title on mobile */
+  --fs-h2:1rem;         /* 16px  section / card title */
   --shadow-sm:0 1px 2px rgba(22,31,38,.06);--shadow-md:0 2px 8px rgba(22,31,38,.07),0 1px 2px rgba(22,31,38,.05);
   --shadow-lg:0 8px 24px rgba(22,31,38,.10);--sidebar-w:248px;--topbar-h:72px;
 }
@@ -52,10 +60,15 @@ button{font-family:inherit;cursor:pointer}
 .spacer{flex:1}
 .icon-btn{width:38px;height:38px;border-radius:var(--r-md);border:1px solid transparent;background:none;color:var(--grey-600);display:inline-flex;align-items:center;justify-content:center;position:relative}
 .icon-btn:hover{background:var(--grey-100)}
-.dot{position:absolute;top:5px;right:5px;min-width:15px;height:15px;padding:0 3px;border-radius:var(--r-pill);background:var(--danger-600);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .menu-btn{display:none}
 .backdrop{position:fixed;inset:0;background:rgba(22,31,38,.4);z-index:50;opacity:0;pointer-events:none;transition:opacity .22s ease}
 .backdrop.show{opacity:1;pointer-events:auto}
+/* Desktop: brand lives in the sidebar, so the topbar goes away entirely */
+@media(min-width:1021px){
+  :root{--topbar-h:0px}
+  .topbar{display:none}
+  .main{padding-top:12px}
+}
 .rolesw{position:relative}
 .rolesw-trg{display:flex;align-items:center;gap:10px;padding:5px 12px 5px 5px;border-radius:var(--r-pill);border:1px solid var(--grey-200);background:#fff;cursor:pointer;font-family:inherit;transition:border-color .15s,box-shadow .15s}
 .rolesw-trg:hover{border-color:var(--grey-300)}
@@ -80,7 +93,21 @@ button{font-family:inherit;cursor:pointer}
 .rolesw-opt.on .tick{opacity:1}
 .rs-av.rs-co{background:var(--role-co)}.rs-av.rs-ss{background:var(--role-ss)}.rs-av.rs-eng{background:var(--role-eng)}
 
-.sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);background:var(--chrome-800);border-right:1px solid var(--chrome-900);padding:18px 14px;overflow-y:auto;z-index:30;transition:width .2s ease}
+/* full height: brand at the top, account block at the bottom, no desktop topbar.
+   z-index clears the action bar (35). */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--chrome-800);border-right:1px solid var(--chrome-900);padding:18px 14px;overflow-y:auto;z-index:48;display:flex;flex-direction:column;transition:width .2s ease}
+.sb-brand{padding:6px 8px 14px;border-bottom:1px solid rgba(255,255,255,.14);margin-bottom:12px}
+.sb-brand img{height:30px;display:block;max-width:100%}
+.sb-foot{margin-top:auto;padding-top:10px;border-top:1px solid rgba(255,255,255,.14);display:flex;flex-direction:column;gap:2px}
+.sb-notif{width:100%;border:none;background:none;cursor:pointer;font-family:inherit;text-align:left}
+.sb-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--danger-on-dark);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sb-foot .rolesw{width:100%;min-width:0;margin-top:6px}
+.sb-foot .rolesw-trg{width:100%}
+.sb-foot .rolesw-trg .rs-meta{min-width:0}
+.sb-foot .rolesw-trg .rs-meta strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* the menu would be clipped by the sidebar's own scroll box, so it escapes to the viewport */
+.sb-foot .rolesw-menu{position:fixed;top:auto;bottom:84px;left:14px;right:auto;transform-origin:bottom left}
+.sb-foot .rolesw-chev{margin-left:auto}
 .nav-item{display:flex;align-items:center;gap:12px;width:100%;padding:11px 14px;border-radius:12px;color:rgba(255,255,255,.82);font-weight:600;font-size:.875rem;margin-bottom:3px;text-decoration:none;border:none;background:none;cursor:pointer;font-family:inherit}
 .nav-item .ni-ico{flex:none;display:flex}
 .nav-item .ni-ico svg{width:18px;height:18px;color:rgba(255,255,255,.72)}
@@ -105,12 +132,17 @@ button{font-family:inherit;cursor:pointer}
 .ns-arrow{width:16px;height:16px;color:var(--grey-900);flex:none;opacity:0}
 .nav-sub.active .ns-arrow{opacity:1}
 /* collapse-to-rail toggle */
-.nav-toggle{position:fixed;top:calc(var(--topbar-h) + 20px);left:calc(var(--sidebar-w) - 16px);z-index:41;width:32px;height:32px;border-radius:50%;background:#fff;border:1px solid var(--grey-200);box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;color:var(--grey-600);transition:left .2s ease}
+.nav-toggle{position:fixed;top:20px;left:calc(var(--sidebar-w) - 16px);z-index:49;width:32px;height:32px;border-radius:50%;background:#fff;border:1px solid var(--grey-200);box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;color:var(--grey-600);transition:left .2s ease}
 .nav-toggle:hover{color:var(--grey-900)}
 .nav-toggle svg{width:16px;height:16px;transition:transform .2s}
 @media(min-width:1021px){
   body.nav-collapsed{--sidebar-w:76px}
   body.nav-collapsed .nav-toggle svg{transform:rotate(180deg)}
+  body.nav-collapsed .sb-brand{display:none}
+  body.nav-collapsed .sb-badge{display:none}
+  body.nav-collapsed .sb-notif .ni-label{display:none}
+  body.nav-collapsed .sb-foot .rolesw-trg{width:44px;height:44px;padding:0;justify-content:center;border-radius:50%;margin:0 auto}
+  body.nav-collapsed .sb-foot .rs-meta,body.nav-collapsed .sb-foot .rolesw-chev{display:none}
   body.nav-collapsed .nav-item{width:44px;height:44px;margin:2px auto;padding:0;justify-content:center;border-radius:12px}
   body.nav-collapsed .ni-label,body.nav-collapsed .ni-chev,body.nav-collapsed .ni-badge{display:none}
   body.nav-collapsed .nav-group.open .nav-sub-list{display:none}
@@ -134,7 +166,7 @@ button{font-family:inherit;cursor:pointer}
 .ph-back svg{width:17px;height:17px}
 .ph-id{display:flex;align-items:center;gap:12px;min-width:0}
 .ph-id h1{overflow:hidden;text-overflow:ellipsis}
-.b-top h1{font-size:1.375rem;font-weight:700;letter-spacing:-.01em;color:var(--grey-900)}
+.b-top h1{font-size:var(--fs-h1);font-weight:700;letter-spacing:-.01em;color:var(--grey-900)}
 /* this page sits at Approval-in-progress -> LTA color4 violet, see :root */
 .chip{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:var(--r-pill);font-size:.75rem;font-weight:650;background:var(--st-appr-bg);color:var(--st-appr-ink)}
 .chip .d{width:8px;height:8px;border-radius:50%;background:currentColor}
@@ -175,7 +207,7 @@ button{font-family:inherit;cursor:pointer}
 /* ---- cards & fields ---- */
 .card{background:#fff;border:1px solid var(--grey-200);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);overflow:hidden}
 .card-body{padding:22px 24px 24px}
-.sec-title{font-size:1.375rem;font-weight:680;color:var(--grey-900);margin-bottom:16px;display:flex;align-items:center;gap:9px}
+.sec-title{font-size:var(--fs-h2);font-weight:680;color:var(--grey-900);margin-bottom:16px;display:flex;align-items:center;gap:9px}
 .sec-title::before{content:"";width:4px;height:18px;border-radius:3px;background:var(--grey-300)}
 .fstack{display:flex;flex-direction:column;gap:16px}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -329,7 +361,12 @@ body:not(.view-mode) .formcol .control[data-lock]{background:var(--grey-100);col
   .actionbar .btn{width:100%;min-height:44px;white-space:nowrap;line-height:1.25}
   .lbl-full{display:none}
   .lbl-short{display:inline}
-  .rolesw-trg .rs-meta{display:none}
+  /* mobile topbar matches the sidebar it opens; the account block moved into the drawer */
+  .topbar{background:var(--chrome-800);border-bottom-color:var(--chrome-900)}
+  .topbar .menu-btn{color:#fff}
+  .topbar .menu-btn:hover{background:rgba(255,255,255,.12)}
+  .brand img{height:30px}
+  .brand-name{display:none}
 }
 @media(max-width:1020px){
   .body-grid{display:block}
@@ -354,9 +391,9 @@ body:not(.view-mode) .formcol .control[data-lock]{background:var(--grey-100);col
   .b-top{flex-wrap:nowrap;gap:10px}
   .ph-back{display:inline-flex}
   .ph-id{flex:1;flex-direction:column;align-items:flex-start;gap:5px}
-  .b-top h1{font-size:1rem;white-space:nowrap;max-width:100%}
+  .b-top h1{font-size:var(--fs-h2);white-space:nowrap;max-width:100%}
   /* type hierarchy: section titles sit below the 16px page id */
-  .sec-title{font-size:.9375rem}
+  .sec-title{font-size:var(--fs-md,.9375rem)}
   .b-actions{gap:8px}
   .b-btn{width:40px;height:40px;padding:0;justify-content:center;border-radius:10px}
   .b-btn .bl{display:none}
@@ -372,37 +409,77 @@ body:not(.view-mode) .formcol .control[data-lock]{background:var(--grey-100);col
 .ver-seg .vs-opt:hover{background:var(--grey-200);color:var(--grey-900)}
 .ver-seg .vs-opt.is-on{background:var(--teal-700);color:#fff}
 </style>
+<style>
+/* ===== Rounded design language — parity with the navy build =====
+   --r-lg deliberately stays 14px: it is what draws the cards, and .boq-wrap is
+   pinned back for the same reason — a table frame looks wrong when round. */
+:root{--r-sm:14px;--r-md:18px}
+.control{border-radius:999px;padding-left:16px;padding-right:16px}
+/* multi-line values keep a rectangle-with-soft-corners, same as navy's textareas */
+.control.area,.ro-1line,.rt-field textarea{border-radius:18px}
+.btn,.b-btn,.btn-map,.btn-remove,.boq-del{border-radius:999px}
+.boq td input{border-radius:999px;padding-left:12px;padding-right:12px}
+.step,.rsub{border-radius:999px}
+.nav-item{border-radius:999px}
+.boq-wrap{border-radius:10px}
+
+/* ===== Side menu metrics — must stay identical to mwi-list-redesign-a.html =====
+   see the matching note there. The group trigger is a <button> here and an <a> there,
+   which alone cost 3px of row height. */
+.nav-item{min-height:43px}
+.nav-sub{min-height:38px;font-size:.8125rem;border-radius:999px}
+/* an expanded group already says where you are through its highlighted child, so the
+   parent drops the whole active treatment — fill, white text and white icon.
+   :not(:hover) keeps the hover state alive. */
+.nav-group.open>.nav-item.active:not(:hover){background:none;color:rgba(255,255,255,.82);font-weight:600}
+.nav-group.open>.nav-item.active:not(:hover) .ni-ico svg{color:rgba(255,255,255,.72)}
+.nav-sub-list{margin:0}
+
+/* ===== Rail fills the window ===== */
+/* 73px = sticky page head, 84px = action bar (68) + breathing room (16).
+   Desktop only — on mobile the rail is a normal block with height:auto, and this
+   block sits after that media query so an unscoped rule would win. */
+@media(min-width:1021px){
+  .rail{height:calc(100vh - 73px - 84px)}
+}
+
+/* ===== Rail: long labels truncate instead of spilling ===== */
+/* the rail is a fixed 232px column, so "Work / Task / Site Detail" and the longer
+   section names have to be allowed to shrink — hence min-width:0 on every flex
+   ancestor, otherwise the text just overflows the rounded panel. */
+.step{min-width:0}
+.step .sl{min-width:0;flex:1}
+.step .sn,.step .ss{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rsub{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ===== Section title with a control on the same row ===== */
+.sec-head{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;margin-bottom:16px}
+.sec-head .sec-title{margin-bottom:0}
+.sec-head .toggle{margin-left:auto;flex:none}
+
+/* ===== Read-only mode: no upload dropzones =====
+   .capture is an affordance you do not have until you press Edit. Two of the three
+   Attachment fields contain nothing else, so they get a "Not set" value instead of
+   collapsing to a bare label. */
+body.view-mode .capture{display:none}
+body.view-mode .field:has(> label + .capture:last-child)::after{
+  content:"Not set";display:flex;align-items:center;min-height:38px;
+  border:1px solid var(--grey-200);background:var(--grey-50);border-radius:999px;
+  padding:9px 16px;font-size:.875rem;color:var(--grey-400)}
+</style>
 </head>
 <body>
 
 <header class="topbar">
   <button class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
-  <div class="brand"><img src="logo.png" alt="LTA"><div class="brand-name">Road Maintenance Workflow Platform</div></div>
+  <div class="brand"><img src="logo_white.png" alt="LTA"><div class="brand-name">Road Maintenance Workflow Platform</div></div>
   <div class="spacer"></div>
-  <button class="icon-btn" aria-label="Notifications"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot">14</span></button>
-  <div class="rolesw" id="rolesw">
-    <button class="rolesw-trg" id="rolesw-trg" aria-haspopup="true" aria-expanded="false">
-      <span class="rs-av rs-co" id="rs-av">DC</span>
-      <span class="rs-meta"><strong id="rs-name">DEV CO01</strong><span id="rs-role">Contract Officer</span></span>
-      <svg class="rolesw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-    </button>
-    <div class="rolesw-menu" id="rolesw-menu">
-      <div class="rolesw-head">Switch role</div>
-      <button class="rolesw-opt on" data-role="co" data-name="DEV CO01" data-title="Contract Officer" data-av="DC"><span class="rs-av rs-co">DC</span><span class="m"><strong>DEV CO01</strong><span>Contract Officer</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
-      <button class="rolesw-opt" data-role="ss" data-name="DEV TR388SS01" data-title="Site Supervisor" data-av="DT"><span class="rs-av rs-ss">DT</span><span class="m"><strong>DEV TR388SS01</strong><span>Site Supervisor</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
-      <button class="rolesw-opt" data-role="eng" data-name="DEV TR388ENG01" data-title="Engineer" data-av="DT"><span class="rs-av rs-eng">DT</span><span class="m"><strong>DEV TR388ENG01</strong><span>Engineer</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
-      <div class="rolesw-sep"></div>
-      <div class="rolesw-head">Prototype version</div>
-      <div class="ver-seg" role="group" aria-label="Prototype version">
-        <a class="vs-opt" href="mwi-wi-workflow.html">Original</a>
-        <a class="vs-opt is-on" href="mwi-wi-workflow_layouta.html">Slate</a>
-        <a class="vs-opt" href="mwi-wi-workflow_photoswipe-navy.html">Navy</a>
-      </div>
-    </div>
-  </div>
 </header>
 
 <nav class="sidebar" id="sidebar" aria-label="Main navigation">
+  <div class="sb-brand">
+    <img src="logo_white.png" alt="Land Transport Authority — Road Maintenance Workflow Platform">
+  </div>
   <a class="nav-item" href="#"><span class="ni-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/><path d="M9 22V12h6v10"/></svg></span><span class="ni-label">Overview</span></a>
   <div class="nav-group open" id="grpWI">
     <button class="nav-item active" type="button" id="grpWItrg" aria-expanded="true"><span class="ni-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg></span><span class="ni-label">Work instruction</span><svg class="ni-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
@@ -419,6 +496,31 @@ body:not(.view-mode) .formcol .control[data-lock]{background:var(--grey-100);col
   <a class="nav-item" href="#"><span class="ni-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg></span><span class="ni-label">Contract</span></a>
   <a class="nav-item" href="#"><span class="ni-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.3 9 5.2M21 8l-9-5-9 5v8l9 5 9-5Z"/></svg></span><span class="ni-label">Asset inventory</span></a>
   <a class="nav-item" href="#"><span class="ni-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg></span><span class="ni-label">Configuration</span></a>
+  <div class="sb-foot">
+  <button class="nav-item sb-notif" type="button" aria-label="Notifications — 13 unread">
+    <span class="ni-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="ni-label">Notifications</span>
+    <span class="sb-badge">13</span>
+  </button>
+  <div class="rolesw" id="rolesw">
+    <button class="rolesw-trg" id="rolesw-trg" aria-haspopup="true" aria-expanded="false">
+      <span class="rs-av rs-co" id="rs-av">DC</span>
+      <span class="rs-meta"><strong id="rs-name">DEV CO01</strong><span id="rs-role">Contract Officer</span></span>
+      <svg class="rolesw-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="rolesw-menu" id="rolesw-menu">
+      <div class="rolesw-head">Switch role</div>
+      <button class="rolesw-opt on" data-role="co" data-name="DEV CO01" data-title="Contract Officer" data-av="DC"><span class="rs-av rs-co">DC</span><span class="m"><strong>DEV CO01</strong><span>Contract Officer</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
+      <button class="rolesw-opt" data-role="ss" data-name="DEV TR388SS01" data-title="Site Supervisor" data-av="DT"><span class="rs-av rs-ss">DT</span><span class="m"><strong>DEV TR388SS01</strong><span>Site Supervisor</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
+      <button class="rolesw-opt" data-role="eng" data-name="DEV TR388ENG01" data-title="Engineer" data-av="DT"><span class="rs-av rs-eng">DT</span><span class="m"><strong>DEV TR388ENG01</strong><span>Engineer</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
+      <div class="rolesw-sep"></div>
+      <div class="rolesw-head">Prototype version</div>
+      <div class="ver-seg" role="group" aria-label="Prototype version">
+        <a class="vs-opt" href="mwi-wi-workflow.html">Original</a>
+        <a class="vs-opt is-on" href="mwi-wi-workflow_layouta.html">Slate</a>
+      </div>
+    </div>
+  </div>
+  </div>
 </nav>
 <button class="nav-toggle" id="navToggle" type="button" aria-label="Collapse menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9.5 3v18"/></svg></button>
 <div class="backdrop" id="backdrop"></div>
@@ -441,7 +543,7 @@ body:not(.view-mode) .formcol .control[data-lock]{background:var(--grey-100);col
   <div class="body-grid">
   <aside class="rail" aria-label="Workflow progress">
     <div class="steps" id="steps" role="tablist">
-      <button class="step done active" data-step="1" type="button"><span class="tn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="sl"><span class="sn">Work / Task / Site</span><span class="ss">Completed</span></span></button>
+      <button class="step done active" data-step="1" type="button"><span class="tn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="sl"><span class="sn">Work / Task / Site Detail</span><span class="ss">Completed</span></span></button>
       <div class="rsubs on" id="railSubs">
         <button class="rsub active" data-target="1-1" type="button">Work instruction</button>
         <button class="rsub" data-target="1-2" type="button">Location</button>
@@ -495,8 +597,10 @@ body:not(.view-mode) .formcol .control[data-lock]{background:var(--grey-100);col
 
     <!-- 1-3 Site & assets -->
     <div class="sec" data-sec="1-3"><div class="card"><div class="card-body">
-      <div class="sec-title">Site &amp; assets</div>
-      <label class="toggle" style="margin-bottom:14px"><input type="checkbox"><span class="tk"></span><span class="tx"><strong>Asset not found</strong></span></label>
+      <div class="sec-head">
+        <div class="sec-title">Site &amp; assets</div>
+        <label class="toggle"><input type="checkbox"><span class="tk"></span><span class="tx"><strong>Asset not found</strong></span></label>
+      </div>
       <div class="map-lite" role="img" aria-label="Map placeholder for asset selection">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
         <strong>Map &mdash; select assets within the buffer</strong>
@@ -560,7 +664,7 @@ body:not(.view-mode) .formcol .control[data-lock]{background:var(--grey-100);col
   <!-- ===== STEP 2 · Fund Detail ===== -->
   <div class="step-group" data-group="2">
     <div class="sec on"><div class="card"><div class="card-body">
-      <div class="sec-title">Funding</div>
+      <div class="sec-title">Fund Detail</div>
       <div class="boq-wrap">
         <table class="boq">
           <thead><tr><th>Funding source</th><th>Fund owner</th><th>Section</th><th class="num">Estimated amount (S$)</th><th class="act"></th></tr></thead>
@@ -587,7 +691,7 @@ body:not(.view-mode) .formcol .control[data-lock]{background:var(--grey-100);col
   <!-- ===== STEP 3 · Price Schedule ===== -->
   <div class="step-group" data-group="3">
     <div class="sec on"><div class="card"><div class="card-body">
-      <div class="sec-title">Price schedule</div>
+      <div class="sec-title">Price Schedule</div>
       <div class="fgrid">
         <div class="field"><label>Payment type</label><div class="control">Final</div></div>
         <div class="field"><label>Final amount (S$)</label><div class="control num">234.56</div></div>
@@ -1020,6 +1124,21 @@ body:not(.view-mode) .formcol .control[data-lock]{background:var(--grey-100);col
   }
   eb.addEventListener('click',function(){setMode(!document.body.classList.contains('view-mode'));});
   setMode(true);   // default: view / read-only
+})();
+</script>
+<script>
+/* Rail labels are clipped to the 232px column, so the ones that actually got cut
+   carry their full text in a tooltip. Re-checked on resize because the rail turns
+   into a horizontal strip on mobile. */
+(function(){
+  function tips(){
+    document.querySelectorAll('.step .sn,.rsub').forEach(function(e){
+      if(e.scrollWidth>e.clientWidth+1) e.title=e.textContent.trim();
+      else e.removeAttribute('title');
+    });
+  }
+  window.addEventListener('resize',tips);
+  if(document.readyState==='complete') tips(); else window.addEventListener('load',tips);
 })();
 </script>
 </body>
