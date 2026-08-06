@@ -438,10 +438,17 @@ button{font-family:inherit;cursor:pointer}
 /* Mobile cards */
 .wi-cards{list-style:none;display:none;flex-direction:column;gap:10px}
 .wi-card{
-  background:#fff;border:1px solid var(--grey-200);border-radius:var(--r-lg);
+  background-color:#fff;border:1px solid var(--grey-200);border-radius:var(--r-lg);
   box-shadow:var(--shadow-sm);padding:14px 16px;display:block;position:relative;
 }
-.wi-card:active{background:var(--teal-50)}
+/* Same stripe as the table, same mechanism: .zebra is set by render() from the
+   visible position, because cards are hidden and re-appended per bucket/filter/page.
+   A card sits on the grey page rather than against its neighbour, so the 1px
+   grey-200 border (1.29:1 against the cream) is what still reads as the card edge. */
+.wi-card.zebra{background-color:#fcfcef}
+/* pressed = the same 8% veil the table rows use on hover, so a white card and a
+   striped card both darken by the same amount instead of the stripe being replaced */
+.wi-card:active{background-image:linear-gradient(rgba(10,57,60,.08),rgba(10,57,60,.08))}
 /* Card = title block on top, then label-over-value pairs (the "thead / tbody stacked"
    shape). The grid is auto-fit, so it lands on 2 columns at 375px and 3 from ~414px
    without a breakpoint of its own. */
@@ -1884,7 +1891,7 @@ button{font-family:inherit;cursor:pointer}
         var b=document.createElement('button');b.className='btn-assign';b.type='button';b.textContent='Assign to self';
         b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();assign(c.dataset.wi);});d.appendChild(b);
         (c.querySelector('.wc-grid')||c).appendChild(d);}});
-    wis.forEach(function(w){var c=cardBy[w];if(c)ul.appendChild(c.parentNode);});
+    wis.forEach(function(w,i){var c=cardBy[w];if(c){ul.appendChild(c.parentNode);c.classList.toggle('zebra',i%2===1);}});
 
     table.classList.toggle('show-act',cur==='inprogress');
     var cnt={todo:0,inprogress:0,submitted:0};rows.forEach(function(tr){var b=bkt(tr);if(b&&cnt[b]!=null)cnt[b]++;});

@@ -180,6 +180,14 @@ logo 用 **`logo_color.png`**（淺色 chrome 上用彩色版，不需要白色�
   `#FCF8EB` 是 ver（1.02，因為 `--st-ver-bg` 就是同一支黃的 18%）、
   `#F3F3E0` 是 draft（1.01）、`#fcfcef` 是 ver（1.05）。所以描邊留著。
 - `.cell-sub` 由 `--grey-500` 改 `--grey-600`：12px 在白底本來就只有 4.20:1，加了斑馬底更低。
+- **手機卡片同樣鋪斑馬紋**（`.wi-card.zebra{background-color:#fcfcef}`，兩版共用）。
+  `.zebra` 一樣由 `render()` 依「看得到的順序」掛上 ——
+  `wis.forEach(function(w,i){…c.classList.toggle('zebra',i%2===1)})`，
+  就掛在重新 append 卡片的那一行，跟表格是同一個道理。
+  - 卡片之間隔著 10px 的頁面底色，不像表格列是貼在一起的，所以條紋比表格弱一點；
+    **卡片邊緣靠的是那條 1px `--grey-200` 外框**（對奶油底 1.29:1），不是底色差。
+  - `:active` 也換成同一支 8% veil，否則按下去 `--teal-50` 會把條紋整個蓋掉。
+    連帶 `.wi-card` 的底色要寫 `background-color`。
 - 側欄夠淺，**彩色 logo 直接用 `logo_color.png`**，不必再維護 `logo_white.png`。手機 topbar 同色。
 - 通知紅點改 `--a-coral #AD210B`（淺底 6.44:1）；`--danger-on-dark` 只剩 Navy 版在用。
 - ⚠️ **純 `#5C6BBC` 不能當側欄底**：白字只有 4.90:1，次項目一降透明度（84%）就掉到 3.98，
