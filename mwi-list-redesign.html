@@ -411,7 +411,7 @@ button{font-family:inherit;cursor:pointer}
    bucket / filter / page changes, so DOM position says nothing about what the reader
    actually sees. The sticky action cell has to take the stripe too, or it floats
    white over a tinted row. */
-.wi-table tbody tr.zebra,.wi-table.show-act tbody tr.zebra td.act-col{background-color:#fcfcef}
+.wi-table tbody tr.zebra,.wi-table.show-act tbody tr.zebra td.act-col{background-color:#FDFDF5}
 /* ── hover: a veil, not a colour ────────────────────────────────────────────
    The overlay is painted as a background-IMAGE, so it composites over whatever
    background-color the cell already has. A white row and a striped row both step
@@ -438,17 +438,10 @@ button{font-family:inherit;cursor:pointer}
 /* Mobile cards */
 .wi-cards{list-style:none;display:none;flex-direction:column;gap:10px}
 .wi-card{
-  background-color:#fff;border:1px solid var(--grey-200);border-radius:var(--r-lg);
+  background:#fff;border:1px solid var(--grey-200);border-radius:var(--r-lg);
   box-shadow:var(--shadow-sm);padding:14px 16px;display:block;position:relative;
 }
-/* Same stripe as the table, same mechanism: .zebra is set by render() from the
-   visible position, because cards are hidden and re-appended per bucket/filter/page.
-   A card sits on the grey page rather than against its neighbour, so the 1px
-   grey-200 border (1.29:1 against the cream) is what still reads as the card edge. */
-.wi-card.zebra{background-color:#fcfcef}
-/* pressed = the same 8% veil the table rows use on hover, so a white card and a
-   striped card both darken by the same amount instead of the stripe being replaced */
-.wi-card:active{background-image:linear-gradient(rgba(10,57,60,.08),rgba(10,57,60,.08))}
+.wi-card:active{background:var(--teal-50)}
 /* Card = title block on top, then label-over-value pairs (the "thead / tbody stacked"
    shape). The grid is auto-fit, so it lands on 2 columns at 375px and 3 from ~414px
    without a breakpoint of its own. */
@@ -457,8 +450,16 @@ button{font-family:inherit;cursor:pointer}
 /* the WI number is the only thing left in the head, so it carries the card */
 .wi-card .num{font-size:var(--fs-h2);font-weight:660;color:var(--navy-700);letter-spacing:.01em;line-height:1.3}
 .wi-card .wc-head .chip{margin-left:auto;flex:none}
+/* The WI number needs the width more than the status label does: "Verification in
+   progress" is wide enough to push the number onto a second line at 375px. Below the
+   card breakpoint the chip drops to its initialism; the full text stays in title. */
+.chip-abbr{display:none}
+@media(max-width:860px){
+  .wi-card .wc-head .chip .chip-full{display:none}
+  .wi-card .wc-head .chip .chip-abbr{display:inline}
+}
 .wc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
-  gap:12px 14px;margin-top:10px;padding-top:12px;border-top:1px solid var(--grey-100)}
+  gap:16px;margin-top:10px;padding-top:12px;border-top:1px solid var(--grey-100)}
 .wc-f{min-width:0}
 /* sentence case, not uppercase: "EST. COMPLETION" wraps to two lines in the 3-column
    layout and knocks the row out of alignment. grey-600, not grey-500 — at 12px the
@@ -473,8 +474,10 @@ button{font-family:inherit;cursor:pointer}
 /* 7 fields + the button: at 2 columns the last row is 1 field + 1 gap, at 3 columns
    1 field + 2 gaps — either way the button lands beside the last value instead of
    claiming a row of its own. */
-.wc-grid .card-assign{margin:0;padding:0;border:0;display:flex;align-items:flex-end}
-.wc-grid .card-assign .btn-assign{width:100%;justify-content:center;padding:6px 10px}
+/* auto-fit columns mean there is no dependable "last cell", so the button takes a
+   full row of its own at the end and sits at the right edge of it */
+.wc-grid .card-assign{grid-column:1 / -1;margin:0;padding:0;border:0;display:flex;justify-content:flex-end}
+.wc-grid .card-assign .btn-assign{width:auto;padding:8px 16px}
 /* the assignee pill has to sit inside the value slot without stretching the row */
 .wc-f[data-f="asg"] dd .asg{max-width:100%}
 .wc-f[data-f="asg"] dd .queue{max-width:100%;overflow:hidden;text-overflow:ellipsis;display:inline-block}
@@ -644,13 +647,19 @@ button{font-family:inherit;cursor:pointer}
 .fd-range .sep{color:var(--grey-400);font-size:var(--fs-sm)}
 .fd-chip{border:1px solid var(--grey-300);background:#fff;color:var(--grey-700);border-radius:var(--r-pill);font-family:inherit;font-size:var(--fs-sm);font-weight:520;padding:7px 14px;cursor:pointer}
 .fd-chip:hover{border-color:var(--grey-400)}
-.fd-chip.on{background:var(--teal-600);border-color:var(--teal-600);color:#fff;font-weight:600}
+/* selected = outline, not fill. A filled chip has to throw away whatever colour it
+   was carrying, and for the status options that colour IS the content. */
+.fd-chip.on{background:var(--teal-50);border-color:var(--teal-700);color:var(--teal-700);font-weight:600}
 /* the Status facet reuses the five stage colours the table chips already use */
-.fd-chip:not(.on).st-draft{background:var(--grey-100);border-color:transparent;color:var(--grey-600)}
-.fd-chip:not(.on).st-wip{background:var(--info-50);border-color:transparent;color:var(--info-700)}
-.fd-chip:not(.on).st-ver{background:var(--warning-50);border-color:transparent;color:var(--warning-700)}
-.fd-chip:not(.on).st-appr{background:var(--navy-50);border-color:transparent;color:var(--navy-700)}
-.fd-chip:not(.on).st-closed{background:var(--success-50);border-color:transparent;color:var(--success-700)}
+.fd-chip.st-draft{background:var(--grey-100);border-color:transparent;color:var(--grey-600)}
+.fd-chip.st-wip{background:var(--info-50);border-color:transparent;color:var(--info-700)}
+.fd-chip.st-ver{background:var(--warning-50);border-color:transparent;color:var(--warning-700)}
+.fd-chip.st-appr{background:var(--navy-50);border-color:transparent;color:var(--navy-700)}
+.fd-chip.st-closed{background:var(--success-50);border-color:transparent;color:var(--success-700)}
+/* Same selector as .fd-chip.on above, repeated on purpose: it has to come after the
+   status block to win the border back — .st-* sets border-color:transparent and the
+   two have equal weight. A plain 1px edge; doubling it read as too heavy. */
+.fd-chip.on{border-color:var(--teal-700)}
 
 /* facet header row: the label button stretches, Clear sits right, chevron pinned to the
    edge. The chevron leaves the button so Clear can be a real <button> — nesting one
@@ -1476,6 +1485,10 @@ button{font-family:inherit;cursor:pointer}
   var ME={co:'DEV CO01',ss:'DEV TR388SS01',eng:'DEV TR388ENG01'};
   var LABEL={draft:'Draft',wip:'Work in progress',ver:'Verification in progress',appr:'Approval in progress',closed:'Approved & closed'};
   var SORD=['draft','wip','ver','appr','closed'];
+  // mobile-only short forms — LTA's own timeline writes these as Work-in-Progress /
+  // Verification-in-Progress / Approval-in-Progress, and mwi-wi-workflow.html already
+  // ships "AIP", so the initialisms are the house style rather than something new
+  var ABBR={draft:'Draft',wip:'WIP',ver:'VIP',appr:'AIP',closed:'Closed'};
 
   // ---- Filter vocabularies -------------------------------------------------
   // The live Advanced Filter offers the full value set for the contract, NOT just
@@ -1539,7 +1552,11 @@ button{font-family:inherit;cursor:pointer}
     el.dataset.fupd=pDate(get.upd(el));
     el.dataset.finst=pDate(el.dataset.inst||'');
     el.dataset.q=(wi+' '+road+' '+sub+' '+asset+' '+elem+' '+def+' '+el.dataset.fworktype).toLowerCase();
-    var c=el.querySelector('.chip');if(c){c.className='chip chip-sm st-'+m.st;c.textContent=LABEL[m.st];}
+    var c=el.querySelector('.chip');
+    if(c){c.className='chip chip-sm st-'+m.st;c.title=LABEL[m.st];
+      c.innerHTML='<span class="chip-full"></span><span class="chip-abbr"></span>';
+      // textContent, not innerHTML: "Approved & closed" would need escaping
+      c.firstChild.textContent=LABEL[m.st];c.lastChild.textContent=ABBR[m.st];}
   }
 
   rows.forEach(function(tr,i){
@@ -1618,12 +1635,15 @@ button{font-family:inherit;cursor:pointer}
   var PAGE_SIZE=10,PAGE=1;
   var FILT={},DFILT={},cur='todo',QRY='';
   var DEFDIR={fest:1,fupd:-1},SORT={k:'fupd',dir:-1};
-  CATS.forEach(function(c){FILT[c.k]=[];});
+  /* "All" is the resting state, not "nothing". Every option ticked excludes nothing,
+     so this filters exactly like the old empty default — but the drawer now says so,
+     and Clear only has work to do once something has been unticked. */
+  CATS.forEach(function(c){FILT[c.k]=c.opts.slice();});
   DATES.forEach(function(d){DFILT[d.k]={pill:'',from:'',to:''};});
 
   // ---- drawer --------------------------------------------------------------
   var bd=document.createElement('div');bd.className='filter-bd';
-  bd.innerHTML='<div class="filter-drawer"><div class="fd-head"><h2>Filter &amp; sort</h2><button class="fd-close" aria-label="Close">✕</button></div><div class="fd-body"></div><div class="fd-foot"><button class="clear">Clear all</button><button class="btn btn-primary apply">Apply</button></div></div>';
+  bd.innerHTML='<div class="filter-drawer"><div class="fd-head"><h2>Filter &amp; sort</h2><button class="fd-close" aria-label="Close">✕</button></div><div class="fd-body"></div><div class="fd-foot"><button class="clear">Reset all</button><button class="btn btn-primary apply">Apply</button></div></div>';
   document.body.appendChild(bd);
   var body=bd.querySelector('.fd-body');
 
@@ -1639,7 +1659,6 @@ button{font-family:inherit;cursor:pointer}
   function paintOpts(cat){
     var on=cat._on||[],list=optsFor(cat),q=(cat._q||'').toLowerCase();
     var shown=list.filter(function(v){return !q||cat.disp(v).toLowerCase().indexOf(q)>=0;});
-    shown.sort(function(a,b){return (on.indexOf(b)>=0?1:0)-(on.indexOf(a)>=0?1:0);});
     var hidden=0;
     if(!cat._all&&!q&&shown.length>SHOW){hidden=shown.length-SHOW;shown=shown.slice(0,SHOW);}
     cat._chips.innerHTML='';
@@ -1665,8 +1684,8 @@ button{font-family:inherit;cursor:pointer}
     var on=cat._on||[],all=coversAll(on,optsFor(cat));
     if(cat._cnt){cat._cnt.textContent=all?'All':on.length;
       cat._cnt.classList.toggle('all',all);
-      cat._cnt.style.display=on.length?'':'none';}
-    if(cat._clr)cat._clr.disabled=!on.length;
+      cat._cnt.style.display='';}            // 0 ticked is a real state now, show it
+    if(cat._clr)cat._clr.disabled=all;      // nothing has been unticked yet
     if(cat._allChip)cat._allChip.classList.toggle('on',all);
   }
   function syncChildren(parentKey){
@@ -1674,7 +1693,7 @@ button{font-family:inherit;cursor:pointer}
       c._on=c._on.filter(function(v){return optsFor(c).indexOf(v)>=0;});paintOpts(c);}});
   }
   function buildCat(cat){
-    cat._on=[];
+    cat._on=cat.opts.slice();
     var sec=document.createElement('div');sec.className='fd-sec'+(cat.child?' child':'');
     var acc=document.createElement('button');acc.className='fd-acc';acc.type='button';
     acc.setAttribute('aria-expanded','false');
@@ -1691,12 +1710,12 @@ button{font-family:inherit;cursor:pointer}
     pane.appendChild(cat._more);
     var hd=document.createElement('div');hd.className='fd-hd';
     cat._clr=document.createElement('button');cat._clr.type='button';cat._clr.className='fd-clear';
-    cat._clr.textContent='Clear';cat._clr.disabled=true;
+    cat._clr.textContent='Reset';cat._clr.disabled=true;
     var chv=document.createElement('span');chv.className='chev-slot';chv.setAttribute('aria-hidden','true');
     chv.innerHTML='<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
     hd.appendChild(acc);hd.appendChild(cat._clr);hd.appendChild(chv);
     hd.addEventListener('click',function(){var o=sec.classList.toggle('open');acc.setAttribute('aria-expanded',o?'true':'false');});
-    cat._clr.addEventListener('click',function(e){e.stopPropagation();cat._on=[];paintOpts(cat);syncChildren(cat.k);});
+    cat._clr.addEventListener('click',function(e){e.stopPropagation();cat._on=optsFor(cat).slice();paintOpts(cat);syncChildren(cat.k);});
     sec.appendChild(hd);sec.appendChild(pane);body.appendChild(sec);
     cat._cnt=acc.querySelector('.cnt');
     paintOpts(cat);
@@ -1766,7 +1785,7 @@ button{font-family:inherit;cursor:pointer}
   bd.querySelector('.fd-close').addEventListener('click',function(){bd.classList.remove('show');});
   bd.addEventListener('click',function(e){if(e.target===bd)bd.classList.remove('show');});
   function resetDrawer(){
-    CATS.forEach(function(c){c._on=[];c._q='';c._all=false;paintOpts(c);});
+    CATS.forEach(function(c){c._on=c.opts.slice();c._q='';c._all=false;paintOpts(c);});
     DATES.forEach(function(d){d._pills.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
       d._rg.querySelector('.d-from').value='';d._rg.querySelector('.d-to').value='';d._mark();});
   }
@@ -1783,9 +1802,9 @@ button{font-family:inherit;cursor:pointer}
     fbtn.addEventListener('click',function(){bd.classList.add('show');});}
   var sbox=document.querySelector('.list-toolbar .search-box input');
   if(sbox)sbox.addEventListener('input',function(){QRY=sbox.value.trim().toLowerCase();PAGE=1;render();});
-  var cf=document.createElement('button');cf.className='clear-filters';cf.textContent='Clear filters';
+  var cf=document.createElement('button');cf.className='clear-filters';cf.textContent='Reset filters';
   var tb=document.querySelector('.list-toolbar');if(tb)tb.appendChild(cf);
-  cf.addEventListener('click',function(){CATS.forEach(function(c){FILT[c.k]=[];});
+  cf.addEventListener('click',function(){CATS.forEach(function(c){FILT[c.k]=c.opts.slice();});
     DATES.forEach(function(d){DFILT[d.k]={pill:'',from:'',to:''};});resetDrawer();PAGE=1;render();});
 
   function dateOk(k,ts){
@@ -1803,7 +1822,10 @@ button{font-family:inherit;cursor:pointer}
     return true;
   }
   function passF(el){
-    for(var i=0;i<CATS.length;i++){var k=CATS[i].k;if(FILT[k].length&&FILT[k].indexOf(el.dataset[k])<0)return false;}
+    for(var i=0;i<CATS.length;i++){var k=CATS[i].k;
+      // no ticks at all is not "no filter" any more — the drawer shows every box
+      // empty, so the honest result is an empty list
+      if(FILT[k].indexOf(el.dataset[k])<0)return false;}
     for(var j=0;j<DATES.length;j++){if(!dateOk(DATES[j].k,+el.dataset[DATES[j].k]))return false;}
     return true;
   }
@@ -1821,7 +1843,8 @@ button{font-family:inherit;cursor:pointer}
   }
   // every option ticked excludes nothing, so it must not read as an applied filter
   function fcount(){var n=0;CATS.forEach(function(c){var sel=FILT[c.k];
-    if(!sel.length||coversAll(sel,domainOf(c)))return;n+=sel.length;});
+    if(coversAll(sel,domainOf(c)))return;
+    n+=sel.length||1;});   // 0 ticked excludes everything, so it counts as a constraint
     DATES.forEach(function(d){var f=DFILT[d.k];if(f.pill||f.from||f.to)n++;});return n;}
   function cmp(x,y){
     var k=SORT.k,d=SORT.dir;
@@ -1891,7 +1914,7 @@ button{font-family:inherit;cursor:pointer}
         var b=document.createElement('button');b.className='btn-assign';b.type='button';b.textContent='Assign to self';
         b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();assign(c.dataset.wi);});d.appendChild(b);
         (c.querySelector('.wc-grid')||c).appendChild(d);}});
-    wis.forEach(function(w,i){var c=cardBy[w];if(c){ul.appendChild(c.parentNode);c.classList.toggle('zebra',i%2===1);}});
+    wis.forEach(function(w){var c=cardBy[w];if(c)ul.appendChild(c.parentNode);});
 
     table.classList.toggle('show-act',cur==='inprogress');
     var cnt={todo:0,inprogress:0,submitted:0};rows.forEach(function(tr){var b=bkt(tr);if(b&&cnt[b]!=null)cnt[b]++;});
@@ -1902,7 +1925,9 @@ button{font-family:inherit;cursor:pointer}
     var n=fcount();
     if(fbtn){fbtn.classList.toggle('has-filters',!!n);flabel.textContent=n||'';
       fbtn.title=n?('Filter · '+n+' applied'):'Filter';fbtn.setAttribute('aria-label',fbtn.title);}
-    cf.style.display=(n||QRY)?'':'none';
+    // '' falls back to the stylesheet, and the base rule is display:none — so the
+    // button could never appear. Set the shown value explicitly.
+    cf.style.display=(n||QRY)?'inline-block':'none';
     document.querySelectorAll('.wi-tab').forEach(function(t){t.classList.toggle('active',t.dataset.bucket===cur);});
   }
   document.querySelectorAll('.wi-tab').forEach(function(t){t.addEventListener('click',function(){cur=t.dataset.bucket;PAGE=1;render();});});

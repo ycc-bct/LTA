@@ -15,9 +15,19 @@
   不需要自己的斷點。標題區只留 **WI 號＋狀態 chip**，其餘 **七個欄位**（Road／Asset／Defect type／
   Work type／Est. completion／Assign to／Last updated）全部在格子裡，Road 與 Asset 同樣是
   `<strong>主值</strong> · 副值` 的寫法。
-  - **In Progress 的「Assign to self」按鈕是格子的第 8 個項目**，不是獨立一列 ——
-    七個欄位在兩欄時最後一列剩 1 格、三欄時剩 2 格，按鈕正好補進去。
-    JS 是 `(c.querySelector('.wc-grid')||c).appendChild(d)`，**改格子數量時要重算會不會剛好填滿**。
+  - 格子間距 **`gap:16px`**（2026-08-06 由 `12px 14px`放寬）。
+  - **In Progress 的「Assign to self」按鈕獨佔最後一列、靠右**（2026-08-06 改）：
+    `grid-column:1 / -1` ＋ `justify-content:flex-end`，按鈕本身 `width:auto`。
+    ⚠️ 不要再試著讓它「補進最後一列的空格」—— `auto-fit` 的欄數會隨寬度變（375px 兩欄、
+    414px 三欄），**沒有一個可靠的「最後一格」**，之前那版在不同寬度會落在不同位置。
+    JS 仍是 `(c.querySelector('.wc-grid')||c).appendChild(d)`。
+  - **狀態 chip 在手機上縮寫**（2026-08-06）：`Draft／WIP／VIP／AIP／Closed`。
+    「Verification in progress」在 375px 寬到會把 WI 號擠成兩行 —— 編號比狀態更需要那個寬度。
+    做法是 chip 內同時放 `.chip-full` 與 `.chip-abbr` 兩個 span，用 `@media(max-width:860px)`
+    在 `.wi-card` 範圍內切換；桌機表格的 chip 一律維持全稱。完整字串留在 `title` 裡。
+    縮寫沿用 LTA timeline 的寫法（Work-in-Progress / Verification-in-Progress /
+    Approval-in-Progress），`mwi-wi-workflow.html` 本來就有 `AIP`。
+    ⚠️ **`VIP` 要跟團隊確認** —— 它跟日常語意的 VIP 撞字，是這組裡唯一有疑慮的。
   - label 用**句首大寫不用全大寫** —— 全大寫的「EST. COMPLETION」在三欄時會斷成兩行、
     整列對不齊；顏色用 `--grey-600` 不是 `--grey-500`，12px 算小字，grey-500 在白底只有 4.20:1。
   - filter／搜尋的取值改吃 `[data-f="…"]`（原本是靠 `.meta > span` 的索引），
@@ -33,9 +43,23 @@
     Est. completion／Assign to`。縮排的三項是 Road／Asset 兩格的副標內容，非獨立欄位。
   - 🚫 `Department`／`Instruction date` **已實作但隱藏**（表格沒有對應欄位）；程式碼保留，
     把 `'__other','fdept','finst'` 加回 `ORDER` 即還原。**完整對照見 `SPEC_field-matrix.md` §1e**。
-  - 值多的 facet（>8）長出**搜尋框**，預設顯示 6 個 ＋「Show all (N)」，已選置頂。
-  - **全選＝選項列開頭的「All」pill**（虛線框，全選時實心）；再按一次等於清空。
-    **Clear 在 facet 標題列最右、chevron 左邊**，沒有選任何東西時 disabled。兩者都不佔獨立列。
+  - 值多的 facet（>8）長出**搜尋框**，預設顯示 6 個 ＋「Show all (N)」。
+    ⚠️ **選項不再「已選置頂」**（2026-08-06 拿掉）—— 全選變成預設之後，有意思的是被
+    *取消勾選* 的那幾個，而且每點一下清單就在游標底下重排，很難連續操作。順序固定。
+  - **預設就是全選**（2026-08-06 主管指定）：抽屜一打開每個 facet 都是勾滿的，
+    **「取消勾選」才是產生篩選的動作**，所以 Clear 在你勾掉東西之前是 disabled。
+    勾滿＝沒排除任何東西，篩選結果跟舊的「一個都沒選」完全一樣，只是抽屜現在誠實地
+    把這件事畫出來。四個進入點都要一起設成 `c.opts.slice()`：初始 `FILT`、`buildCat`、
+    `resetDrawer`、工具列的 Clear filters。
+    - **三個按鈕都改叫 Reset**（2026-08-06）：facet 的 `Reset`、抽屜底部的 `Reset all`、
+      工具列的 `Reset filters`。它們現在做的是「把勾勾放回去」（`optsFor(cat).slice()`），
+      不是清空 —— 叫 Clear 會跟實際行為相反。class 名稱維持 `.fd-clear`／`.clear`／
+      `.clear-filters`，那是程式掛勾不是標籤。
+    - ⚠️ 連帶 `passF` 要改：`FILT[k]` 是空陣列**不再等於「不篩選」**。抽屜上每個框都沒勾，
+      誠實的結果就是空清單，所以拿掉 `FILT[k].length &&` 這個短路。`fcount` 同理，
+      `n += sel.length || 1` —— 0 個勾選本身就是一條（而且很強的）篩選條件。
+  - **選項列開頭的「All」pill**（虛線框，全選時實心）；再按一次等於全部取消。
+    **Clear 在 facet 標題列最右、chevron 左邊**。兩者都不佔獨立列。
     為此 chevron 要從 `.fd-acc` 搬到同列的 `.chev-slot` —— `<button>` 裡不能再放 `<button>`，
     整列點擊改由 `.fd-hd` 代理，展開狀態掛在 `.fd-sec.open`（日期 facet 仍是舊的 `.fd-acc.open + .fd-opts`）。
     「All」pill 沒有 `data-cat`，`pending()` 與委派的 chip handler 才不會把它當成一個值。
@@ -47,10 +71,22 @@
     `VOCAB` 字典裡，補之前**全選反而比都不選少一列**（實測掉 `RMWP-TR388-RRFM-M-24`）。
     補上之後兩者結果才真的相同，也才篩得出「Asset 未設定」——線上本來就有 Asset not found 這個狀態。
     連帶 `PMAP` 的 `v==='—'` 排除條件要拿掉，否則 Asset 選 Not set 時 Element type 會空掉。
-  - Status 的選項**沿用五個階段色**（未選中時帶 `.st-*` 底色與文字色，選中仍是主色實心）。
+  - **選中是「淺色底 ＋ 框」不是「主色實心」**（2026-08-06）：`.fd-chip.on` ＝
+    淺底 ＋ `--teal-700` 字 ＋ `--teal-700` 框。
+    Iris `#e7ecff`（對白 1.18、字 5.91）、原版 `--teal-50 #E9F5F5`（對白 1.11、字 6.68）。
+    一度用 `--teal-100`（1.29）太重；底色只是輔助，框與字才是主要訊號。
+    **邊就是原本的 1px，不加粗** —— 一度用 `inset 0 0 0 1px` 把邊加倍，看起來太重。
+    先前試過純白底，跟未選的白底 chip 差別只剩一條邊，太弱。
+  - Status 的選項**沿用五個階段色，選中與否都保留**（`.fd-chip.st-*` 拿掉 `:not(.on)`），
+    選中只加那圈框。實心填色會逼 chip 丟掉自己的階段色 —— 而那個顏色正是這排 chip 的內容本身。
+    ⚠️ 那條 `.fd-chip.on` 的框線規則**寫在 `.st-*` 區塊之後又重複一次**，是刻意的：
+    `.st-*` 設了 `border-color:transparent`，兩者權重相同，只能靠順序把邊框搶回來。
   - **父子連動**：Sub-sector 跟著 Sector、Element type 跟著 Asset type。
   - 兩組**日期區間**：快捷 pill（Last 7/30/90 days；Overdue / Next 7 / Next 30 days）＋自訂起訖。
-  - Clear all / Apply；套用後工具列「Filter」鈕顯示「· N」計數，並出現「Clear filters」。
+  - Reset all / Apply；套用後工具列「Filter」鈕顯示「· N」計數，並出現「Reset filters」。
+    ⚠️ 這顆按鈕**一直沒真的出現過**（2026-08-06 修）：`.clear-filters` 的基礎樣式是
+    `display:none`，而 JS 寫的是 `cf.style.display=(n||QRY)?'':'none'` ——
+    `''` 是「清掉行內樣式、交還給 stylesheet」，於是又變回 none。要給明確的值。
 - **表頭即排序控制**（桌機）：9 欄皆可點，點一次套用、再點反向，作用中欄位標主色＋單向箭頭＋`aria-sort`；預設 `Last updated ↓`。空值一律沉底。
 - **工具列 Search** 打通：比對 WI 號／road／sector／asset／element／defect／work type，與 filter 疊加。
 - **demo 資料 24 筆**（14 sector、24 條路、4 department、5 種狀態），**分頁每頁 10 筆且真的會換頁**。
@@ -77,8 +113,20 @@
 
 同日**圓角語彙也對齊 Navy**：`--r-sm 6→14px`、`--r-md 10→18px`，控制項／按鈕／chip／nav item
 一律 `999px` 藥丸。**`--r-lg` 刻意留在 14px**（Navy 是 24px）—— 它畫的是 `.card`／`.summary-strip`／
-`.table-wrap`／`.wi-card`／`.rail`，這些容器太圓會怪。同理 `.boq-wrap` 釘回 10px、多行值
-（`.control.area`／`.ro-1line`／Return 的 textarea）留 18px 圓角而非藥丸。
+`.table-wrap`／`.wi-card`／`.rail`，這些容器太圓會怪。同理 `.boq-wrap` 釘回 10px。
+
+**2026-08-06 修正：表單欄位不再是藥丸，一律 `10px`。**
+`.control`（含 `.control.area`）／`textarea.control`／`.ro-1line`／`.rt-field textarea`／
+`.boq td input`／`.xselect-trigger`，以及 read-only 模式下代替上傳區塊的
+`body.view-mode .field:has(…)::after` 佔位框，全部 10px。
+- **按鈕／chip／tab／nav item 維持 `999px`** —— 這個對比才是重點：
+  藥丸＝可以按的，圓角矩形＝可以填的。全部同一個圓角就沒有這層區分。
+- `mwi-list-redesign-a.html` **沒有任何 `.control` 元素** —— 它的欄位是工具列搜尋框
+  `.search-box`、facet 內的 `.fd-search`、日期區間的 `.fd-range input`，走 `--r-md`。
+  這三個也一起拉到 10px（`.search-box,.fd-search,.fd-range input{border-radius:10px}`）。
+  ⚠️ **不能直接改 `--r-md` 這個 token** —— 它同時畫 icon 按鈕、toast、抽屜面板、
+  `.btn-assign`、`.fd-close`，動了會波及一堆非欄位的東西。要逐個選擇器寫。
+  原版 `--r-md` 本來就是 10px（沒有 Iris 那個 `:root{--r-md:18px}` 覆寫），不用改。
 
 同日再修三處：
 - **兩頁側欄尺寸鎖死一致**。兩頁的側欄是不同 markup 蓋出來的（list 用 `.nav-item.sub`，

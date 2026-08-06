@@ -39,9 +39,17 @@
   /* Role identity — SS and Eng take the accent of the stage they own (coral = work in
      progress, amber = verification); CO gets the logo teal as the anchor role. All three
      sit far from the primary periwinkle (231°) so an avatar never reads as a button. */
-  --role-co:#10757E;   /* logo teal   185°  white 5.43:1 */
-  --role-ss:#AD210B;   /* color2 coral  8°  white 7.00:1 */
-  --role-eng:#866709;  /* color1 amber 45°  white 5.31:1 */
+  /* Role avatars: one family, walked along the hue rather than the lightness.
+     CO stays on the primary; SS and Engineer step 20° and 39° towards violet at the
+     same lightness and saturation (L55% S42%), so the three read as one set instead
+     of the old teal / coral / amber, which were three unrelated hues on a
+     periwinkle chrome. All three clear 4.5:1 against the white initials — the .rb
+     timeline badges are 12px, so that is the floor, and 4.79 is the tightest.
+     ⚠️ Same lightness means hue is the ONLY cue. SS and Engineer both render "DT",
+     so they are the pair that has to stay apart — they sit at the two ends (39°). */
+  --role-co:#5C6BBC;   /* 231° — the primary   white 4.90:1 */
+  --role-ss:#6D5CBD;   /* 251°                 white 5.36:1 */
+  --role-eng:#8C5CBD;  /* 270°                 white 4.79:1 */
   --navy-50:#EEF2F8;--navy-100:#DCE4F0;--navy-200:#B9C9E0;--navy-400:#6485AD;--navy-600:#2B4E77;--navy-700:#1B365D;
   --grey-25:#FCFDFD;--grey-50:#F7F9FA;--grey-100:#EFF2F4;--grey-200:#E2E7EA;--grey-300:#CBD4D9;
   --grey-400:#9DAAB2;--grey-500:#6E7E88;--grey-600:#51616B;--grey-700:#3A4952;--grey-800:#27333B;--grey-900:#161F26;
@@ -128,7 +136,7 @@ button{font-family:inherit;cursor:pointer}
 /* on a light chrome the selected state has to lift, not darken */
 .nav-item:hover{background:#fff;color:var(--grey-900)}
 
-.nav-item.active{background:#fff;color:var(--teal-700);font-weight:700}
+.nav-item.active{background:#fff;color:var(--teal-800);font-weight:700}
 
 .ni-chev{width:16px;height:16px;color:var(--grey-400);flex:none;transition:transform .2s}
 .nav-item.active .ni-chev{color:rgba(255,255,255,.9)}
@@ -154,7 +162,7 @@ button{font-family:inherit;cursor:pointer}
 .nav-item[data-sec="config"] .ni-ico svg{color:#46505A}   /* 石板中性  7.56 */
 .nav-sub{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 3px 30px;padding:9px 14px;border-radius:12px;color:var(--chrome-ink-sub);font-size:.875rem;font-weight:500;text-decoration:none;position:relative}
 .nav-sub:hover{color:var(--grey-900);background:#fff}
-.nav-sub.active{background:#fff;color:var(--teal-700);font-weight:700;box-shadow:0 1px 2px rgba(22,31,38,.10)}
+.nav-sub.active{background:#fff;color:var(--teal-800);font-weight:700;box-shadow:0 1px 2px rgba(22,31,38,.10)}
 .ns-arrow{width:16px;height:16px;color:var(--grey-900);flex:none;opacity:0}
 .nav-sub.active .ns-arrow{opacity:1}
 /* collapse-to-rail toggle */
@@ -200,7 +208,8 @@ button{font-family:inherit;cursor:pointer}
 .b-actions{display:flex;gap:9px;flex:none;margin-left:auto}
 .b-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:var(--r-sm);font-size:.875rem;font-weight:620;border:1px solid var(--teal-600);background:#fff;color:var(--teal-700);cursor:pointer}
 .b-btn:hover{background:var(--teal-50)}.b-btn svg{width:16px;height:16px}
-.b-btn.primary{background:var(--teal-600);color:#fff;border-color:var(--teal-600)}.b-btn.primary:hover{background:var(--teal-700)}
+/* tier 1 — Edit / Save is the action this screen exists for */
+.b-btn.primary{background:var(--teal-700);color:#fff;border-color:var(--teal-700)}.b-btn.primary:hover{background:var(--teal-800)}
 /* ==== body grid: vertical stepper rail + form column ==== */
 .body-grid{display:flex;gap:20px;align-items:flex-start}
 .rail{flex:0 0 232px;position:sticky;top:calc(var(--topbar-h) + 73px);height:calc(100vh - 233px);overflow-y:auto;background:#fff;border:1px solid var(--grey-200);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);padding:14px}
@@ -224,7 +233,7 @@ button{font-family:inherit;cursor:pointer}
 .rsubs::before{content:"";position:absolute;left:19px;top:-6px;bottom:-8px;width:1.5px;background:var(--grey-200)}
 .rsub{display:block;border:none;background:none;text-align:left;font-family:inherit;cursor:pointer;padding:7px 8px 7px 44px;border-radius:var(--r-md);font-size:.875rem;font-weight:500;color:var(--grey-500)}
 .rsub:hover{color:var(--grey-800)}
-.rsub.active{color:var(--teal-700);font-weight:700}
+.rsub.active{color:var(--teal-800);font-weight:700}
 .sec{scroll-margin-top:calc(var(--topbar-h) + 73px)}
 
 .step-group{display:none}.step-group.on{display:block}
@@ -315,7 +324,7 @@ button{font-family:inherit;cursor:pointer}
 .act-right{margin-left:auto;display:flex;gap:12px}
 .lbl-short{display:none}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:var(--r-sm);font-size:.875rem;font-weight:640;border:1px solid transparent}
-.btn-primary{background:var(--teal-600);color:#fff}.btn-primary:hover{background:var(--teal-700)}
+.btn-primary{background:var(--teal-700);color:#fff}.btn-primary:hover{background:var(--teal-800)}
 .btn-out{background:#fff;color:var(--teal-700);border-color:var(--teal-600)}.btn-out:hover{background:var(--teal-50)}
 
 /* ---- Return work instruction modal (ported from mwi-wi-workflow.html) ---- */
@@ -337,7 +346,7 @@ button{font-family:inherit;cursor:pointer}
 .tl-item:last-child{border-left-color:transparent;padding-bottom:4px}
 .tl-item::before{content:"";position:absolute;left:-7px;top:2px;width:12px;height:12px;
   border-radius:var(--r-pill);background:#fff;border:2px solid var(--teal-600)}
-.tl-time{display:inline-block;background:var(--teal-600);color:#fff;font-size:.75rem;font-weight:700;
+.tl-time{display:inline-block;background:var(--teal-100);color:var(--teal-800);font-size:.75rem;font-weight:700;
   padding:3px 10px;border-radius:var(--r-pill)}
 .tl-title{font-size:.875rem;font-weight:660;color:var(--grey-900);margin:8px 0 10px}
 .tl-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 18px;padding-bottom:14px;border-bottom:1px solid var(--grey-200)}
@@ -440,11 +449,10 @@ body:not(.view-mode) .formcol .control[data-lock]{background:var(--grey-100);col
    --r-lg deliberately stays 14px: it is what draws the cards, and .boq-wrap is
    pinned back for the same reason — a table frame looks wrong when round. */
 :root{--r-sm:14px;--r-md:18px}
-.control{border-radius:999px;padding-left:16px;padding-right:16px}
-/* multi-line values keep a rectangle-with-soft-corners, same as navy's textareas */
-.control.area,.ro-1line,.rt-field textarea{border-radius:18px}
+.control{border-radius:10px;padding-left:16px;padding-right:16px}
+.control.area,.ro-1line,.rt-field textarea{border-radius:10px}
 .btn,.b-btn,.btn-map,.btn-remove,.boq-del{border-radius:999px}
-.boq td input{border-radius:999px;padding-left:12px;padding-right:12px}
+.boq td input{border-radius:10px;padding-left:12px;padding-right:12px}
 .step,.rsub{border-radius:999px}
 .nav-item{border-radius:999px}
 .boq-wrap{border-radius:10px}
@@ -490,7 +498,7 @@ body:not(.view-mode) .formcol .control[data-lock]{background:var(--grey-100);col
 body.view-mode .capture{display:none}
 body.view-mode .field:has(> label + .capture:last-child)::after{
   content:"Not set";display:flex;align-items:center;min-height:38px;
-  border:1px solid var(--grey-200);background:var(--grey-50);border-radius:999px;
+  border:1px solid var(--grey-200);background:var(--grey-50);border-radius:10px;
   padding:9px 16px;font-size:.875rem;color:var(--grey-400)}
 </style>
 </head>
