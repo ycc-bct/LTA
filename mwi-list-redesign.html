@@ -147,6 +147,8 @@ button{font-family:inherit;cursor:pointer}
 .chip{
   display:inline-flex;align-items:center;gap:6px;border-radius:var(--r-pill);
   font-size:var(--fs-sm);font-weight:620;padding:4px 12px;line-height:1.4;white-space:nowrap;
+  /* a defined edge, so a pastel chip never dissolves into a tinted row */
+  box-shadow:inset 0 0 0 1px rgba(22,31,38,.14);
 }
 .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
 .chip-draft{background:var(--warning-50);color:var(--warning-700)}
@@ -387,9 +389,9 @@ button{font-family:inherit;cursor:pointer}
 /* Desktop table */
 .wi-table{width:auto;min-width:100%;border-collapse:collapse;background:#fff}
 .wi-table th{
-  text-align:left;font-size:var(--fs-xs);font-weight:650;color:var(--grey-500);
+  text-align:left;font-size:var(--fs-xs);font-weight:650;color:var(--teal-800);
   text-transform:uppercase;letter-spacing:.045em;padding:12px 14px;
-  border-bottom:1px solid var(--grey-200);background:var(--grey-50);white-space:nowrap;
+  border-bottom:1px solid var(--grey-200);background:var(--teal-50);white-space:nowrap;
 }
 .wi-table th button{
   border:none;background:none;font:inherit;color:inherit;display:inline-flex;
@@ -404,12 +406,27 @@ button{font-family:inherit;cursor:pointer}
 .wi-table th button.sorted.asc .dn,.wi-table th button.sorted.desc .up{opacity:.15}
 .wi-table td{padding:13px 14px;border-bottom:1px solid var(--grey-100);font-size:var(--fs-base);font-weight:450;color:var(--grey-800);vertical-align:middle;white-space:nowrap}
 .wi-table tbody tr{cursor:pointer;transition:background .12s ease;scroll-margin-top:calc(var(--topbar-h) + 60px)}
-.wi-table tbody tr:hover{background:var(--teal-50)}
-.wi-table tbody tr:focus-within{background:var(--teal-50)}
+/* ── row zebra ─────────────────────────────────────────────────────────────
+   .zebra is set by render(), not nth-child: rows get hidden and re-appended as the
+   bucket / filter / page changes, so DOM position says nothing about what the reader
+   actually sees. The sticky action cell has to take the stripe too, or it floats
+   white over a tinted row. */
+.wi-table tbody tr.zebra,.wi-table.show-act tbody tr.zebra td.act-col{background-color:#fcfcef}
+/* ── hover: a veil, not a colour ────────────────────────────────────────────
+   The overlay is painted as a background-IMAGE, so it composites over whatever
+   background-color the cell already has. A white row and a striped row both step
+   down by exactly the same amount (1.15:1), which is why the stripe survives the
+   hover instead of being erased by it — and why every background above is written
+   as background-color: the shorthand would reset the image and kill the veil. */
+.wi-table tbody tr:hover td,.wi-table tbody tr:focus-within td{
+  background-image:linear-gradient(rgba(10,57,60,.08),rgba(10,57,60,.08))}
+/* the chips are pale enough to dissolve into a veiled row, so they go white and
+   keep their hairline */
+.wi-table tbody tr:hover .chip,.wi-table tbody tr:focus-within .chip{background:#fff}
 .wi-num{font-weight:450;color:var(--navy-700);white-space:nowrap}
 .wi-num small{display:block;font-weight:450;color:var(--grey-400);font-size:var(--fs-xs)}
 .cell-main{font-weight:450;color:var(--grey-900);white-space:nowrap}
-.cell-sub{display:block;font-size:var(--fs-xs);color:var(--grey-500);font-weight:450;margin-top:1px;white-space:nowrap}
+.cell-sub{display:block;font-size:var(--fs-xs);color:var(--grey-600);font-weight:450;margin-top:1px;white-space:nowrap}
 .cell-muted{color:var(--grey-400)}
 .cell-nowrap{white-space:nowrap}
 .asg{display:inline-flex;align-items:center;font-size:var(--fs-sm)}
@@ -562,9 +579,8 @@ button{font-family:inherit;cursor:pointer}
 .wi-table.show-act th.act-col,.wi-table.show-act td.act-col{display:table-cell}
 /* 9 data columns can outrun a narrow window — pin the primary action so it stays reachable */
 .wi-table.show-act th.act-col,.wi-table.show-act td.act-col{position:sticky;right:0;z-index:2}
-.wi-table.show-act th.act-col{background:var(--grey-50)}
-.wi-table.show-act td.act-col{background:#fff;box-shadow:-9px 0 9px -9px rgba(22,31,38,.22)}
-.wi-table.show-act tbody tr:hover td.act-col,.wi-table.show-act tbody tr:focus-within td.act-col{background:var(--teal-50)}
+.wi-table.show-act th.act-col{background:var(--teal-50)}
+.wi-table.show-act td.act-col{background-color:#fff;box-shadow:-9px 0 9px -9px rgba(22,31,38,.22)}
 .btn-assign{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--teal-600);background:var(--teal-600);color:#fff;border-radius:var(--r-md);font-family:inherit;font-size:var(--fs-sm);font-weight:600;padding:6px 12px;cursor:pointer;white-space:nowrap}
 .btn-assign:hover{background:var(--teal-700)}
 .card-assign{margin-top:10px;padding-top:10px;border-top:1px dashed var(--grey-100)}
@@ -690,7 +706,7 @@ button{font-family:inherit;cursor:pointer}
       <div class="rolesw-head">Prototype version</div>
       <div class="ver-seg" role="group" aria-label="Prototype version">
         <a class="vs-opt is-on" href="mwi-list-redesign.html">Original</a>
-        <a class="vs-opt" href="mwi-list-redesign-a.html">Slate</a>
+        <a class="vs-opt" href="mwi-list-redesign-a.html">Iris</a>
       </div>
     </div>
   </div>
@@ -1860,7 +1876,8 @@ button{font-family:inherit;cursor:pointer}
       var td=tr.querySelector('.act-cell');if(td){td.innerHTML='';
         if(cur==='inprogress'&&show){var b=document.createElement('button');b.className='btn-assign';b.type='button';b.textContent='Assign to self';
           b.addEventListener('click',function(e){e.stopPropagation();assign(tr.dataset.wi);});td.appendChild(b);}}});
-    page.forEach(function(tr){tbody.appendChild(tr);});
+    // stripe by visible position, after the page has been re-ordered
+    page.forEach(function(tr,i){tbody.appendChild(tr);tr.classList.toggle('zebra',i%2===1);});
     cards.forEach(function(c){var show=wis.indexOf(c.dataset.wi)>=0;c.parentNode.style.display=show?'':'none';
       var ex=c.querySelector('.card-assign');if(ex)ex.remove();
       if(cur==='inprogress'&&show){var d=document.createElement('div');d.className='card-assign';

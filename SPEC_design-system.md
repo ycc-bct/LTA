@@ -39,7 +39,7 @@ info     --info-50:#EBF1FB     --info-600:#175CD3      --info-700:#1247A4
 ```
 **maroon `#8F2D2B` 保留給警示/危險**，不當一般裝飾色。
 
-## 1b. ⭐ Slate 變體（原「Green」版）2026-08-04
+## 1b. ⭐ Iris 變體（Green → Slate → Iris）2026-08-04 起
 
 > 主管意見：**綠色少一點,多帶一些官網上的顏色**。原本的 teal 滿版側邊欄改成中性 chrome,
 > 主色換成官網自己的連結色,狀態色改用 LTA 官方 accent。**綠色只剩 closed 狀態的萊姆(約 4%)**,
@@ -63,7 +63,7 @@ info     --info-50:#EBF1FB     --info-600:#175CD3      --info-700:#1247A4
 ```
 --teal-50:#F1F1F6  --teal-100:#E1E2ED  --teal-200:#C5C9DD
 --teal-300:#9AA3D5 --teal-400:#7B87C9  --teal-500:#6E7CC4
---teal-600:#5C6BBC ← 官網原色,primary 按鈕(白字 4.9:1)
+--teal-600:#5C6BBC ← 官網原色,primary 按鈕(白字 4.90:1)
 --teal-700:#4453A4 ← hover / active 文字(6.96:1)
 --teal-800:#384488  --teal-900:#2B3569
 ```
@@ -109,14 +109,85 @@ WIP 刻意用珊瑚而非藍紫,是為了避開與 primary periwinkle(230°)色�
 | 版本 | 側邊欄 | primary |
 |---|---|---|
 | 原版 | 白 `#fff` | teal `#00747A` |
-| **Slate** | **中性墨 `#343A40`** | **periwinkle `#5C6BBC`** |
+| **Iris** | **淡紫 `#F4F5FC`**（2026-08-05 前是中性墨 `#343A40`） | **periwinkle `#5C6BBC`** |
 | Navy | 靛藍 `#273B8A` | 靛藍 |
 
-比較用的對照頁保留在 `sidebar-compare.html`(A–F 六案,含取樣色票與對比值)。
+比較用的對照頁：`sidebar-compare.html`（A–F 六案，中性 chrome 時期）、
+`sidebar-slate-compare.html`（五個較淺的中性底）、
+`palette-light-compare.html`（**採用的這一版**，以 `#5C6BBC` 為主色的四個清爽方向，選了 D）。
+
+### 1b-2. Iris chrome —— 淺色側欄（2026-08-05 取代中性墨）
+主管要「清爽輕盈一點、但不要單調」。`#343A40` 的白字對比 8.36:1，門檻只要 4.5 ——
+亮度全花在安全上，這就是它顯重的原因。改法是把側欄換成**主色的一層淡霧**，
+再用 LTA 自己的 accent 幫常用區塊上色，避免淺色變成一片灰。
+```
+--chrome-bg:#EDEFF9      側欄底（主色 #5C6BBC 的極淡階，2026-08-06 由 #F4F5FC 再深一階）
+--chrome-bd:#DDE1F2      右框線 / 分隔線
+--chrome-ink:#3F4652     導覽主項      8.29:1
+--chrome-ink-sub:#51616B 導覽子項      5.60:1
+--a-teal:#10757E · --a-coral:#AD210B · --a-amber:#866709 · --a-lime:#5B761B
+```
+⚠️ 子項原本是 `#6E7E88`，在 `#F4F5FC` 上只有 **3.66:1**（我一度誤記成 4.55）——
+子項是 13px，門檻 4.5，底色再深一階後更糟，所以一併換成 `--grey-600`。
+logo 用 **`logo_color.png`**（淺色 chrome 上用彩色版，不需要白色版）。
+- **作用中項目改成白色浮起的膠囊**（`background:#fff` ＋ 1px 陰影）——
+  淺底上要靠「浮起」而不是「加深」來表示選取。
+- **九個區塊各有一個 icon 色**，全部 ≥4.5:1（在 `#F4F5FC` 上）：
+  | 區塊 | 色 | 來源 | 對比 |
+  |---|---|---|---|
+  | Overview | `#10757E` | logo 湖水藍 | 4.99 |
+  | Work instruction | `#5C6BBC` | primary | 4.51 |
+  | Dashboard | `#AD210B` | color2 珊瑚 | 6.44 |
+  | Reports | `#866709` | color1 琥珀 | 4.88 |
+  | User | `#5B761B` | color3 萊姆 | 4.77 |
+  | Sector | `#243888` | logo 靛藍 | 9.68 |
+  | Contract | `#882428` | logo 楓紅 | 8.29 |
+  | Asset inventory | `#0F5C37` | 深青綠 | 7.41 |
+  | Configuration | `#46505A` | 石板中性（設定慣例用中性） | 7.56 |
+  最初只給前五個上色、其餘留 `--grey-400`，但**淺底上的淡灰會被讀成「還沒改」**而不是
+  「刻意的第二層」。Work instruction 231° 與 Sector 228° 同色相，靠明度與距離區分 ——
+  品牌裡沒有第十個色相。未上色的 icon（Notifications）用 `--grey-600`，淺底才站得住。
+  用 `data-sec="…"` 掛在 nav item 上，不要靠 `nth-of-type`（`.sb-brand` 也是 div，會算錯）。
+- `.nav-item.active` **不加陰影**（只有子項的白色膠囊留 1px 陰影，那是唯一標示所在位置的東西）。
+
+### 1b-3. 列表表格配色（2026-08-06，兩個 list 頁都套）
+- **表頭改主色系**：Iris `#d6ddfb` 底 ＋ `--teal-900 #2B3569` 字（8.59:1）；
+  原版維持 `--teal-50` 底 ＋ `--teal-800` 字 —— `#d6ddfb` 是 `#5C6BBC` 的淡階，屬於 Iris 家族，
+  套到還是青綠色系的原版會打架。sticky 的 `th.act-col` 要跟著換，否則捲動時會露出舊底色。
+- **列斑馬紋**：偶數列鋪 **`#fcfcef`**（奶油白，兩版共用；對白底 1.03:1）。
+  比先前的 `#F3F3E0`（1.12）更輕，是「隱約有條紋」而不是「這列被標記了」；
+  內文 `--grey-800` 11.13:1、副標 `--grey-600` 5.33:1，都還很寬裕。
+  - **`.zebra` 是 `render()` 掛上去的，不能用 `tr:nth-child(even)`** —— 列會依 bucket／
+    filter／分頁被隱藏與重新 append，DOM 位置跟讀者實際看到的順序無關，用 nth-child 會出現
+    連續兩列同色。`page.forEach(function(tr,i){…toggle('zebra', i%2===1)})` 才對得上。
+  - sticky 的 `td.act-col` 有自己的白底，**必須一起吃斑馬色**，否則它會浮在有色列上。
+- **hover 是「疊一層」，不是「換一個顏色」**：
+  ```css
+  .wi-table tbody tr:hover td,.wi-table tbody tr:focus-within td{
+    background-image:linear-gradient(rgba(43,53,105,.08),rgba(43,53,105,.08))}
+  ```
+  疊的是該版自己最深的品牌墨（Iris `43,53,105` ＝ teal-900；原版 `10,57,60`）8%，
+  用 **`background-image`** 疊在既有的 `background-color` 之上 —— 白列與斑馬列各自往下踩
+  **同樣的 1.15:1**，所以 hover 不會把條紋抹平，也不必為每種底色各寫一條 hover 規則。
+  - ⚠️ **上面每一條底色都要寫 `background-color`，不能用 `background` 簡寫** ——
+    簡寫會把 `background-image` 一起重設成 `none`，veil 就消失了。
+  - `td.act-col` 是 td，通用規則就蓋得到，不必再寫 sticky 專用的 hover。
+- **hover 時 status chip 轉白底**（`tr:hover .chip{background:#fff}`），文字與圓點維持狀態色。
+  chip 的底全是粉彩，壓在 veil 過的列上一定會有一個糊掉。
+- **所有 chip 加 1px 內陰影 `rgba(22,31,38,.14)`**（不是 border，避免 2px 的版面位移）。
+  ⚠️ 這條是必要的，不是裝飾：**五個 chip 底對任何一種淺色斑馬底，邊界對比都在 1.01～1.14 之間**，
+  沒有描邊就會有一顆糊掉。換底色只會換成哪一顆糊掉 ——
+  `#FCF8EB` 是 ver（1.02，因為 `--st-ver-bg` 就是同一支黃的 18%）、
+  `#F3F3E0` 是 draft（1.01）、`#fcfcef` 是 ver（1.05）。所以描邊留著。
+- `.cell-sub` 由 `--grey-500` 改 `--grey-600`：12px 在白底本來就只有 4.20:1，加了斑馬底更低。
+- 側欄夠淺，**彩色 logo 直接用 `logo_color.png`**，不必再維護 `logo_white.png`。手機 topbar 同色。
+- 通知紅點改 `--a-coral #AD210B`（淺底 6.44:1）；`--danger-on-dark` 只剩 Navy 版在用。
+- ⚠️ **純 `#5C6BBC` 不能當側欄底**：白字只有 4.90:1，次項目一降透明度（84%）就掉到 3.98，
+  整條導覽會被迫同一個明度。要做「側欄是一塊主色」得用 `#4E5DB0` 以上。
 
 ---
 
-### 5 狀態語意色（原版／layout3b 用；Slate 變體見 §1b）
+### 5 狀態語意色（原版／layout3b 用；Iris 變體見 §1b）
 | 狀態 | class | 底 / 字 |
 |---|---|---|
 | Draft | `.chip-draft` / `.st-draft` | warning-50 / warning-700 |
@@ -136,7 +207,7 @@ WIP 刻意用珊瑚而非藍紫,是為了避開與 primary periwinkle(230°)色�
 ```
 內文 base 14px。程式碼/代碼（REX-…、tag）用 mono，讓 raw code 一眼可辨。
 
-### 2b. 標題階層（2026-08-05 重新定義，Original ＋ Slate 五頁）
+### 2b. 標題階層（2026-08-05 重新定義，Original ＋ Iris 五頁）
 ```
 --fs-h1:1.25rem      /* 20px  頁標題      —— 上限，不得超過 */
 --fs-h1-sm:1.125rem  /* 18px  同一標題在手機 */
@@ -148,7 +219,7 @@ WIP 刻意用珊瑚而非藍紫,是為了避開與 primary periwinkle(230°)色�
 |---|---|---|
 | 列表頁（兩版） | `.page-head h1` | `.card-head h2`／`.fd-head h2`；手機卡片 `.wi-card .road` 同級 |
 | workflow Original／Stacked | `.context-bar .ctx strong`（WI 號） | `.card-head h2` |
-| workflow Slate | `.b-top h1`（WI 號） | `.sec-title` |
+| workflow Iris | `.b-top h1`（WI 號） | `.sec-title` |
 
 改動前的實測與問題：
 
@@ -156,16 +227,16 @@ WIP 刻意用珊瑚而非藍紫,是為了避開與 primary periwinkle(230°)色�
 |---|---|---|---|
 | 列表（兩版） | 28px | 17px | H1 超過上限 8px |
 | workflow Original／Stacked | **15px** | 17px | **階層反了** —— 頁標題比區塊標題小 |
-| workflow Slate | 22px | 22px | **完全沒有階層**，且兩者都超標 |
+| workflow Iris | 22px | 22px | **完全沒有階層**，且兩者都超標 |
 
 例外（都在上限內，刻意保留）：
-- Slate workflow 手機的 `.b-top h1` 用 **16px** 而非 18px —— 那條 bar 是單行 `nowrap`，
+- Iris workflow 手機的 `.b-top h1` 用 **16px** 而非 18px —— 那條 bar 是單行 `nowrap`，
   裝的是完整 WI 號，18px 會被截掉。
 - `.context-bar .ctx strong` 的第二條規則**刻意不分斷點**（註解寫著 one layout at every width），
   所以手機字級要另外開一條 `@media(max-width:1020px)`，直接寫進那條規則會讓桌機也變 18px。
 
 ### 2c. 標題文字＝導覽文字（2026-08-05）
-wizard step、section jump chip（Original）／rail sub（Slate）與它們指到的區塊標題**必須逐字相同**。
+wizard step、section jump chip（Original）／rail sub（Iris）與它們指到的區塊標題**必須逐字相同**。
 七個名稱是唯一來源，三頁共用：
 
 ```

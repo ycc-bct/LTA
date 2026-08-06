@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>清爽版配色 · #5C6BBC · RMWP</title>
+<style>
+:root{
+  /* the anchor */
+  --p:#5C6BBC; --p-700:#4453A4; --p-800:#384488;
+  --p-50:#F4F5FC; --p-100:#EDEEF9; --p-150:#E1E4F3;
+
+  --ink-900:#161F26; --ink-800:#27333B; --ink-700:#3F4B54;
+  --ink-600:#51616B; --ink-500:#6E7E88; --ink-400:#9AA4AC;
+  --line:#E4E7EE; --line-soft:#EDEFF3;
+  --danger:#C92A2A;
+
+  /* LTA accent set — the five stage colours, reused as secondary hues */
+  --a-teal:#10757E; --a-coral:#AD210B; --a-amber:#866709; --a-lime:#5B761B;
+  --st-draft-bg:#EFF1F2; --st-draft-ink:#3F4852;
+  --st-wip-bg:#FBE9E6;   --st-wip-ink:#8E1704;
+  --st-ver-bg:#FBF6E6;   --st-ver-ink:#8E6B04;
+  --st-appr-bg:#E8E8FA;  --st-appr-ink:#100D84;
+  --st-done-bg:#F4F8EA;  --st-done-ink:#5B761B;
+
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:#F7F8FB;color:var(--ink-800);font-size:14px;
+  line-height:1.5;-webkit-font-smoothing:antialiased;padding:32px 28px 80px}
+
+.wrap{max-width:1460px;margin:0 auto}
+.head h1{font-size:20px;font-weight:680;color:var(--ink-900);letter-spacing:-.01em}
+.head p{color:var(--ink-600);margin-top:8px;max-width:76ch}
+.head code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;
+  background:var(--p-100);color:var(--p-700);padding:1px 6px;border-radius:6px}
+.head .anchor{display:inline-flex;align-items:center;gap:8px;margin-top:14px;
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 14px 5px 5px;font-size:13px}
+.head .anchor i{width:26px;height:26px;border-radius:50%;background:var(--p);display:block}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(560px,1fr));gap:24px;margin-top:26px}
+
+/* ───────── option card ───────── */
+.opt{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  box-shadow:0 1px 2px rgba(22,31,38,.06)}
+.opt-head{display:flex;align-items:flex-start;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line-soft)}
+.opt-head .k{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;
+  justify-content:center;background:var(--p-100);color:var(--p-700);font-weight:700;font-size:12px}
+.opt-head .m{flex:1;min-width:0}
+.opt-head strong{display:block;font-size:16px;font-weight:660;color:var(--ink-900)}
+.opt-head .m span{display:block;font-size:12px;color:var(--ink-500);margin-top:2px}
+.sw{display:flex;gap:4px;flex:none;padding-top:3px}
+.sw i{width:16px;height:16px;border-radius:5px;display:block;border:1px solid rgba(22,31,38,.08)}
+
+/* ───────── the mini app frame ───────── */
+.app{display:flex;height:330px;font-size:12px;background:var(--page)}
+.sb{width:164px;flex:none;background:var(--sb);border-right:1px solid var(--sb-bd);
+  padding:12px 10px;display:flex;flex-direction:column}
+.sb .brand{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--brand-ink);
+  padding:2px 8px 10px;border-bottom:1px solid var(--sb-bd);margin-bottom:9px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;
+  color:var(--nav-ink);font-weight:600;margin-bottom:2px;position:relative;white-space:nowrap}
+.ni i{width:11px;height:11px;border-radius:3px;background:currentColor;opacity:.55;flex:none}
+.ni.on{background:var(--nav-on-bg);color:var(--nav-on-ink)}
+.ni.on i{opacity:1;color:var(--nav-on-ico,currentColor)}
+.ni.sub{margin-left:20px;padding:5px 10px;font-weight:500;color:var(--nav-sub);font-size:11px}
+.ni.sub.cur{background:var(--sub-cur-bg);color:var(--sub-cur-ink);font-weight:700}
+.sb .foot{margin-top:auto;padding-top:9px;border-top:1px solid var(--sb-bd)}
+.badge{margin-left:auto;min-width:17px;height:17px;padding:0 5px;border-radius:999px;
+  background:var(--badge-bg);color:var(--badge-ink);font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center}
+.acct{display:flex;align-items:center;gap:7px;background:var(--acct-bg);border:1px solid var(--acct-bd);
+  border-radius:999px;padding:3px 9px 3px 3px;margin-top:5px}
+.acct .av{width:22px;height:22px;border-radius:50%;background:var(--a-teal);color:#fff;font-size:9px;
+  font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.acct b{font-size:10px;color:var(--ink-900);font-weight:650;display:block;line-height:1.25}
+.acct em{font-size:9px;color:var(--ink-500);font-style:normal}
+
+.main{flex:1;min-width:0;padding:14px 16px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+.ph{display:flex;align-items:center;gap:10px}
+.ph h2{font-size:15px;font-weight:680;color:var(--ink-900);letter-spacing:-.01em}
+.ph .btn{margin-left:auto;background:var(--p);color:#fff;border-radius:999px;padding:6px 13px;
+  font-size:11px;font-weight:640;white-space:nowrap}
+.tabs{display:flex;gap:6px}
+.tab{border-radius:999px;padding:5px 11px;font-size:11px;font-weight:560;color:var(--ink-500)}
+.tab.on{background:var(--p);color:#fff;font-weight:640}
+.tab.on b{background:#fff;color:var(--p-700);border-radius:999px;padding:0 5px;margin-left:5px;font-size:10px}
+.tab b{background:var(--line-soft);color:var(--ink-600);border-radius:999px;padding:0 5px;margin-left:5px;font-size:10px}
+.tools{display:flex;gap:8px}
+.tools .s{flex:1;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;
+  font-size:11px;color:var(--ink-400)}
+.tools .f{width:28px;height:28px;border-radius:999px;background:#fff;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;color:var(--ink-500);font-size:11px;flex:none}
+.tbl{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;flex:1}
+.tr{display:grid;grid-template-columns:1.5fr 1.4fr 1.2fr;gap:10px;padding:8px 12px;align-items:center}
+.tr.h{background:var(--th-bg);color:var(--th-ink);font-size:9px;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase}
+.tr+.tr{border-top:1px solid var(--line-soft)}
+.tr .wi{font-size:11px;color:var(--p-700);font-weight:560;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tr .rd{font-size:11px;color:var(--ink-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;
+  font-size:10px;font-weight:620;white-space:nowrap}
+.chip::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.c1{background:var(--st-draft-bg);color:var(--st-draft-ink)}
+.c2{background:var(--st-appr-bg);color:var(--st-appr-ink)}
+.c3{background:var(--st-done-bg);color:var(--st-done-ink)}
+
+/* ───────── notes ───────── */
+.note{padding:14px 18px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--ink-600);line-height:1.6}
+.note b{color:var(--ink-900);font-weight:650}
+.note .cr{display:flex;flex-wrap:wrap;gap:5px 8px;margin-top:9px}
+.note .cr span{background:#F4F8EA;color:#5B761B;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:640}
+.note .cr span.w{background:#FBF6E6;color:#8E6B04}
+
+/* ═══════ A — 白紙 ═══════ */
+[data-o="A"]{--page:#F7F8FB;--sb:#FFFFFF;--sb-bd:#E6E8F2;--brand-ink:#384488;
+  --nav-ink:#46505A;--nav-on-bg:#EDEEF9;--nav-on-ink:#3B4794;--nav-on-ico:#5C6BBC;
+  --nav-sub:#6E7E88;--sub-cur-bg:transparent;--sub-cur-ink:#4453A4;
+  --badge-bg:#C92A2A;--badge-ink:#fff;--acct-bg:#F7F8FB;--acct-bd:#E6E8F2;--th-bg:#FBFBFD;--th-ink:#6E7E88}
+[data-o="A"] .ni.on{box-shadow:inset 3px 0 0 var(--p)}
+
+/* ═══════ B — 淡紫 ═══════ */
+[data-o="B"]{--page:#FFFFFF;--sb:#F0F1FA;--sb-bd:#E1E4F3;--brand-ink:#384488;
+  --nav-ink:#414A63;--nav-on-bg:#5C6BBC;--nav-on-ink:#FFFFFF;--nav-on-ico:#FFFFFF;
+  --nav-sub:#5E6784;--sub-cur-bg:#FFFFFF;--sub-cur-ink:#4453A4;
+  --badge-bg:#C92A2A;--badge-ink:#fff;--acct-bg:#FFFFFF;--acct-bd:#E1E4F3;--th-bg:#F4F5FC;--th-ink:#4453A4}
+
+/* ═══════ C — 主色塊 ═══════ */
+[data-o="C"]{--page:#F7F8FB;--sb:#4E5DB0;--sb-bd:#4453A4;--brand-ink:#FFFFFF;
+  --nav-ink:#FFFFFF;--nav-on-bg:rgba(255,255,255,.16);--nav-on-ink:#FFFFFF;--nav-on-ico:#FFFFFF;
+  --nav-sub:rgba(255,255,255,.84);--sub-cur-bg:#FFFFFF;--sub-cur-ink:#4453A4;
+  --badge-bg:#FFFFFF;--badge-ink:#8E1704;--acct-bg:#FFFFFF;--acct-bd:transparent;--th-bg:#FBFBFD;--th-ink:#6E7E88}
+
+/* ═══════ D — 彩色重點 ═══════ */
+[data-o="D"]{--page:#FFFFFF;--sb:#F4F5FC;--sb-bd:#E4E7F5;--brand-ink:#384488;
+  --nav-ink:#3F4652;--nav-on-bg:#FFFFFF;--nav-on-ink:#4453A4;
+  --nav-sub:#6E7E88;--sub-cur-bg:#FFFFFF;--sub-cur-ink:#4453A4;
+  --badge-bg:#AD210B;--badge-ink:#fff;--acct-bg:#FFFFFF;--acct-bd:#E4E7F5;--th-bg:#F4F5FC;--th-ink:#4453A4}
+[data-o="D"] .ni.on{box-shadow:0 1px 2px rgba(22,31,38,.10)}
+[data-o="D"] .ni i{opacity:1}
+[data-o="D"] .ni.d0 i{background:var(--a-teal)}
+[data-o="D"] .ni.g i{background:var(--p)}
+[data-o="D"] .ni.d1 i{background:var(--a-coral)}
+[data-o="D"] .ni.d2 i{background:var(--a-amber)}
+[data-o="D"] .foot .ni i{background:var(--a-lime)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="head">
+  <h1>清爽版配色 —— 以 #5C6BBC 為主色的四個方向</h1>
+  <p>目前的側邊欄是近黑的 <code>#343A40</code>，白字對比 8.36:1 —— 門檻只要 4.5，亮度都花在「安全」上，
+     所以看起來重。下面四案把重量從側邊欄拿掉，主色一律是 <code>#5C6BBC</code>，差別在
+     <b>顏色放在哪裡</b>。每案都附實測對比值（WCAG 2.1 相對亮度）。</p>
+  <span class="anchor"><i></i> 主色 #5C6BBC · 白字 4.90:1 · 深階 #4453A4 白底 6.96:1</span>
+</div>
+
+<div class="grid">
+
+  <!-- ══ A ══ -->
+  <div class="opt">
+    <div class="opt-head">
+      <span class="k">A</span>
+      <span class="m"><strong>白紙</strong><span>側欄純白 · 主色只出現在作用中項目</span></span>
+      <span class="sw"><i style="background:#FFFFFF"></i><i style="background:#EDEEF9"></i><i style="background:#5C6BBC"></i><i style="background:#F7F8FB"></i></span>
+    </div>
+    <div class="app" data-o="A">
+      <div class="sb">
+        <div class="brand">LAND TRANSPORT AUTHORITY</div>
+        <div class="ni"><i></i>Overview</div>
+        <div class="ni on"><i></i>Work instruction</div>
+        <div class="ni sub cur">Maintenance WI</div>
+        <div class="ni sub">Inspection WI</div>
+        <div class="ni"><i></i>Dashboard</div>
+        <div class="ni"><i></i>Reports</div>
+        <div class="foot">
+          <div class="ni"><i></i>Alerts<span class="badge">13</span></div>
+          <div class="acct"><span class="av">DC</span><span><b>DEV CO01</b><em>Contract Officer</em></span></div>
+        </div>
+      </div>
+      <div class="main">
+        <div class="ph"><h2>Maintenance work instructions</h2><span class="btn">+ New WI</span></div>
+        <div class="tabs"><span class="tab on">To do <b>4</b></span><span class="tab">In progress <b>6</b></span><span class="tab">Submitted <b>14</b></span></div>
+        <div class="tools"><span class="s">Search WI number, road or asset…</span><span class="f">≡</span></div>
+        <div class="tbl">
+          <div class="tr h"><span>WI number</span><span>Status</span><span>Road</span></div>
+          <div class="tr"><span class="wi">RMWP-TR388-CFM-M-2</span><span><span class="chip c1">Draft</span></span><span class="rd">Balestier Road</span></div>
+          <div class="tr"><span class="wi">RMWP-TR388-RRFM-M-38</span><span><span class="chip c2">Approval</span></span><span class="rd">Farrer Road</span></div>
+          <div class="tr"><span class="wi">RMWP-TR388-RRFM-M-40</span><span><span class="chip c3">Closed</span></span><span class="rd">Keppel Road</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="note">
+      最輕的一案。側欄退成紙，<b>唯一的顏色是作用中項目</b>（淡紫底＋左側主色細條）。
+      彩度靠五個狀態 chip 撐，所以不會變成純灰稿。
+      代價是側欄和內容區的分界只剩一條線 —— 螢幕大的時候可能會覺得左邊太空。
+      <div class="cr"><span>導覽字 8.22</span><span>作用中 7.24</span><span>WI 號 6.96</span><span>紅點 5.46</span></div>
+    </div>
+  </div>
+
+  <!-- ══ B ══ -->
+  <div class="opt">
+    <div class="opt-head">
+      <span class="k">B</span>
+      <span class="m"><strong>淡紫</strong><span>側欄一層主色薄霧 · 作用中實心</span></span>
+      <span class="sw"><i style="background:#F0F1FA"></i><i style="background:#5C6BBC"></i><i style="background:#FFFFFF"></i><i style="background:#4453A4"></i></span>
+    </div>
+    <div class="app" data-o="B">
+      <div class="sb">
+        <div class="brand">LAND TRANSPORT AUTHORITY</div>
+        <div class="ni"><i></i>Overview</div>
+        <div class="ni on"><i></i>Work instruction</div>
+        <div class="ni sub cur">Maintenance WI</div>
+        <div class="ni sub">Inspection WI</div>
+        <div class="ni"><i></i>Dashboard</div>
+        <div class="ni"><i></i>Reports</div>
+        <div class="foot">
+          <div class="ni"><i></i>Alerts<span class="badge">13</span></div>
+          <div class="acct"><span class="av">DC</span><span><b>DEV CO01</b><em>Contract Officer</em></span></div>
+        </div>
+      </div>
+      <div class="main">
+        <div class="ph"><h2>Maintenance work instructions</h2><span class="btn">+ New WI</span></div>
+        <div class="tabs"><span class="tab on">To do <b>4</b></span><span class="tab">In progress <b>6</b></span><span class="tab">Submitted <b>14</b></span></div>
+        <div class="tools"><span class="s">Search WI number, road or asset…</span><span class="f">≡</span></div>
+        <div class="tbl">
+          <div class="tr h"><span>WI number</span><span>Status</span><span>Road</span></div>
+          <div class="tr"><span class="wi">RMWP-TR388-CFM-M-2</span><span><span class="chip c1">Draft</span></span><span class="rd">Balestier Road</span></div>
+          <div class="tr"><span class="wi">RMWP-TR388-RRFM-M-38</span><span><span class="chip c2">Approval</span></span><span class="rd">Farrer Road</span></div>
+          <div class="tr"><span class="wi">RMWP-TR388-RRFM-M-40</span><span><span class="chip c3">Closed</span></span><span class="rd">Keppel Road</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="note">
+      側欄鋪一層 <b>#F0F1FA</b> 的主色薄霧，內容區反過來用純白 —— 左右靠<b>色溫</b>分區而不是靠明暗，
+      分界比 A 明確但一樣輕。作用中是實心主色，最好認。表頭也帶一點淡紫，讓表格不孤立。
+      這案的彩色 logo 可以直接用，不必準備白色版。
+      <div class="cr"><span>導覽字 7.83</span><span>作用中白字 4.90</span><span>表頭字 6.40</span><span>紅點 4.85</span></div>
+    </div>
+  </div>
+
+  <!-- ══ C ══ -->
+  <div class="opt">
+    <div class="opt-head">
+      <span class="k">C</span>
+      <span class="m"><strong>主色塊</strong><span>側欄就是主色 · 顏色仍在但不再是近黑</span></span>
+      <span class="sw"><i style="background:#4E5DB0"></i><i style="background:#FFFFFF"></i><i style="background:#F7F8FB"></i><i style="background:#4453A4"></i></span>
+    </div>
+    <div class="app" data-o="C">
+      <div class="sb">
+        <div class="brand">LAND TRANSPORT AUTHORITY</div>
+        <div class="ni"><i></i>Overview</div>
+        <div class="ni on"><i></i>Work instruction</div>
+        <div class="ni sub cur">Maintenance WI</div>
+        <div class="ni sub">Inspection WI</div>
+        <div class="ni"><i></i>Dashboard</div>
+        <div class="ni"><i></i>Reports</div>
+        <div class="foot">
+          <div class="ni"><i></i>Alerts<span class="badge">13</span></div>
+          <div class="acct"><span class="av">DC</span><span><b>DEV CO01</b><em>Contract Officer</em></span></div>
+        </div>
+      </div>
+      <div class="main">
+        <div class="ph"><h2>Maintenance work instructions</h2><span class="btn">+ New WI</span></div>
+        <div class="tabs"><span class="tab on">To do <b>4</b></span><span class="tab">In progress <b>6</b></span><span class="tab">Submitted <b>14</b></span></div>
+        <div class="tools"><span class="s">Search WI number, road or asset…</span><span class="f">≡</span></div>
+        <div class="tbl">
+          <div class="tr h"><span>WI number</span><span>Status</span><span>Road</span></div>
+          <div class="tr"><span class="wi">RMWP-TR388-CFM-M-2</span><span><span class="chip c1">Draft</span></span><span class="rd">Balestier Road</span></div>
+          <div class="tr"><span class="wi">RMWP-TR388-RRFM-M-38</span><span><span class="chip c2">Approval</span></span><span class="rd">Farrer Road</span></div>
+          <div class="tr"><span class="wi">RMWP-TR388-RRFM-M-40</span><span><span class="chip c3">Closed</span></span><span class="rd">Keppel Road</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="note">
+      保留「側欄是一塊顏色」的份量，但把近黑換成 <b>#4E5DB0</b> —— 比主色深半階，
+      這樣次項目才有 4.76:1 的空間；<b>純 #5C6BBC 做側欄的話白字只有 4.90，次項目一降透明度就不合格</b>，
+      整條導覽會被迫同一個明度。紅點改成白底深紅，因為紅色壓在紫色上只有 1.1:1。
+      <div class="cr"><span>主項白字 5.97</span><span>次項 84% 4.76</span><span>作用中 6.96</span><span class="w">需要白色 logo</span></div>
+    </div>
+  </div>
+
+  <!-- ══ D ══ -->
+  <div class="opt">
+    <div class="opt-head">
+      <span class="k">D</span>
+      <span class="m"><strong>彩色重點</strong><span>淡紫側欄 · 每個區塊一個 LTA 官方 accent</span></span>
+      <span class="sw"><i style="background:#F4F5FC"></i><i style="background:#10757E"></i><i style="background:#AD210B"></i><i style="background:#866709"></i></span>
+    </div>
+    <div class="app" data-o="D">
+      <div class="sb">
+        <div class="brand">LAND TRANSPORT AUTHORITY</div>
+        <div class="ni d0"><i></i>Overview</div>
+        <div class="ni on g"><i></i>Work instruction</div>
+        <div class="ni sub cur">Maintenance WI</div>
+        <div class="ni sub">Inspection WI</div>
+        <div class="ni d1"><i></i>Dashboard</div>
+        <div class="ni d2"><i></i>Reports</div>
+        <div class="foot">
+          <div class="ni"><i></i>Alerts<span class="badge">13</span></div>
+          <div class="acct"><span class="av">DC</span><span><b>DEV CO01</b><em>Contract Officer</em></span></div>
+        </div>
+      </div>
+      <div class="main">
+        <div class="ph"><h2>Maintenance work instructions</h2><span class="btn">+ New WI</span></div>
+        <div class="tabs"><span class="tab on">To do <b>4</b></span><span class="tab">In progress <b>6</b></span><span class="tab">Submitted <b>14</b></span></div>
+        <div class="tools"><span class="s">Search WI number, road or asset…</span><span class="f">≡</span></div>
+        <div class="tbl">
+          <div class="tr h"><span>WI number</span><span>Status</span><span>Road</span></div>
+          <div class="tr"><span class="wi">RMWP-TR388-CFM-M-2</span><span><span class="chip c1">Draft</span></span><span class="rd">Balestier Road</span></div>
+          <div class="tr"><span class="wi">RMWP-TR388-RRFM-M-38</span><span><span class="chip c2">Approval</span></span><span class="rd">Farrer Road</span></div>
+          <div class="tr"><span class="wi">RMWP-TR388-RRFM-M-40</span><span><span class="chip c3">Closed</span></span><span class="rd">Keppel Road</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="note">
+      同樣是淡紫側欄，但<b>每個主區塊配一個 LTA 官網的 accent</b>（teal / 珊瑚 / 琥珀 / 萊姆），
+      作用中是白色浮起的膠囊。這是四案裡最不單調的 —— 導覽變得可以「用顏色記位置」。
+      風險是十個項目全上色會太花，實作時建議只給前五個常用區塊上色、其餘留灰。
+      <div class="cr"><span>導覽字 8.74</span><span>teal 4.99</span><span>珊瑚 6.44</span><span>琥珀 4.88</span><span>萊姆 4.77</span></div>
+    </div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

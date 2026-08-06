@@ -58,7 +58,7 @@
 - **New WI** 僅 Contract Officer 顯示。
 - META map 以 WI 號為 key：`{b:bucket, s:status}`。
 
-## `mwi-list-redesign-a.html` / `mwi-wi-workflow_layouta.html` — ⭐ Slate 變體（原「Green」）
+## `mwi-list-redesign-a.html` / `mwi-wi-workflow_layouta.html` — ⭐ Iris 變體（Green → Slate → Iris）
 2026-08-04 依主管意見（綠色少一點、多用官網的顏色）重做配色：
 - 側邊欄由 teal 滿版改成**中性墨 `#343A40`**（＝官網內文墨色）；主色改成**官網連結色 `#5C6BBC`**。
 - 5 狀態 chip 改用 **LTA 官方 accent `.bg-color1..5`**，語意維持（綠＝完成、黃＝審查中）。
@@ -90,7 +90,7 @@
 - **展開的父層不再填色**：子項已經用白色藥丸標出所在位置，父層再填一層是重複。
   `.nav-group>.nav-item.active:not(:hover){background:none}` —— `:not(:hover)` 是為了留住
   hover 狀態（兩者權重同為 0,2,0，不加會被後寫的規則蓋掉）。workflow 收合群組時父層填色會回來。
-- **`.wi-tabs` 改藥丸**：拿掉底線軌，作用中填 `--teal-600`＋白字（4.59:1），計數改白底
+- **`.wi-tabs` 改藥丸**：拿掉底線軌，作用中填 `--teal-600`＋白字（4.90:1），計數改白底
   `--teal-700` 字（6.96:1）—— 半透明計數在填色 tab 上會掉到 4.5:1 以下。
 - **`.rail` 補滿視窗高**：原本 `calc(100vh - 233px)` 是為 72px topbar 寫的，topbar 拿掉後
   下方空 92px。改成 `calc(100vh - 73px - 84px)`（頁首 73 ＋ action bar 68 ＋ 留白 16），
@@ -126,6 +126,24 @@ View/Edit 分離的示範頁（最能展示「唯讀該長怎樣」）。
 - **送出並指派彈窗**「Select X and submit」（Common Queue / 特定人 + Remarks）。
 - logo 用 `<img src="logo.png">`（其餘頁多為 base64 內嵌）。
 
+## `mwi-wi-draft.html` / `mwi-wi-draft-a.html` — Draft 階段（2026-08-06）
+列表上 status＝Draft 的那幾筆點進來的頁，資料是 **RMWP-TR388-RRFM-M-13**，兩版共用同一份值。
+Draft 還沒送出去，所以它**不是**角色感知的：只有 Contract Officer 看得到，wizard 只有 2 步
+（Work / Task / Site Detail、Fund Detail），底部是 **Reassign／Withdraw ｜ Submit to Site Supervisor**，
+timeline 只有一筆「Work Instruction created」，Site & assets 沒有現場執行區塊（照片／量測／進度）。
+
+- `mwi-wi-draft.html` ＝ **Original 排版**（sticky head ＋ 橫向 wizard ＋ sec-jump chips），
+  chrome 已跟 `mwi-wi-workflow.html` 對齊：H1/H2 字階、`.main{max-width:none}`、側欄 `z-index:46`、
+  動作列桌機對齊內容邊、手機 2＋1 排列、卡片標題改成與跳轉 chip **逐字相同**
+  （Work instruction／Location／Fund Detail）。
+- `mwi-wi-draft-a.html` ＝ **Iris 排版**（左側 rail ＋ `.sec-title` ＋ 淺色側欄），由
+  `mwi-wi-workflow_layouta.html` 複製而來，值全部換成 M-13、沒有值的欄位顯示 `Not set`。
+  Reassign 彈窗沿用 Draft 頁自己的兩個對象（DRC／Engineer），不是 workflow 的 Return 三選一。
+- **不套進 draft 的東西**（是 workflow 的角色機制，Draft 沒有這個狀態）：
+  `role-ro` 步驟所有權、照片 add/remove、`wiz-step[hidden]` 的階段裁切、`.chip-ver`。
+  角色選單裡的 SS／Engineer 也**維持 hidden** —— 草稿還沒送出，那兩個角色看不到這筆。
+- Site & assets 的 **Tab switch／Stacked 切換器沒有放**：draft 沒有 `_stacked` 對應檔。
+
 ## `mwi-task-edit.html` — Site Supervisor 手機現場填單
 task stepper、照片三槽 Add Photo、progress chip、sticky 動作列。實機錄影已驗證此方向正確。
 
@@ -136,8 +154,8 @@ task stepper、照片三槽 Add Photo、progress chip、sticky 動作列。實�
 
 ## 全站統一元件（六頁一致）
 - **角色切換器**（右上）：三色頭像 CO=navy / SS=橘 / Engineer=紫；無 tag、無 hint banner；`?role=` 跨頁保留。
-  底部的 **Prototype version 切換器只剩 Original / Slate 兩版**（2026-08-05）—— Navy 的樣式已經
-  併進 Slate（側欄佈局、圓角語彙），連結全部撤掉。`mwi-list-redesign-navy.html` 與
+  底部的 **Prototype version 切換器只剩 Original / Iris 兩版**（2026-08-05）—— Navy 的樣式已經
+  併進這一版（側欄佈局、圓角語彙），連結全部撤掉。`mwi-list-redesign-navy.html` 與
   `mwi-wi-workflow_photoswipe-navy.html` **檔案保留、切換器也保留**，直接開網址還能看，只是動線上進不去。
 - **自訂下拉 `.xselect`** / **自訂 date picker `.xdate`**：fixed 定位、永遠最上層。
 - toggle、empty state、toast、5 色狀態 chip。
@@ -145,3 +163,15 @@ task stepper、照片三槽 Add Photo、progress chip、sticky 動作列。實�
 
 ## 導覽動線（已串接）
 列表（分頁 / Assign to self）→ workflow 頁（帶角色）；workflow 返回 → 列表；View ↔ Edit ↔ Task；手機 sidebar 收進 hamburger 抽屜。**角色在整條動線保留**。返回鍵放頁面左上。
+
+**status → 目的頁（2026-08-06，桌機列與手機卡片都適用）**
+
+| status | Original | Iris |
+|---|---|---|
+| `draft` | `mwi-wi-draft.html` | `mwi-wi-draft-a.html` |
+| `wip` / `ver` / `appr` / `closed` | `mwi-wi-workflow.html` | `mwi-wi-workflow_layouta.html` |
+
+兩條路徑要一起改：桌機是 `.row-link` 的 `go()`（`r.dataset.fstatus==='draft' ? …`），
+手機是 `cards.forEach` 裡的 `c.setAttribute('href',siblingUrl(…))`。
+只改一邊的話，手機點 Draft 卡片會掉到 workflow 頁——**這正是 Iris 版原本的 bug**：
+它照抄了 Original 的 `'mwi-wi-draft.html'`，於是 Iris 列表的 Draft 會跳去 Original 的排版。

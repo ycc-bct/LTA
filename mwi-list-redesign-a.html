@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Maintenance Work Instructions · Slate · RMWP</title>
+<title>Maintenance Work Instructions · Iris · RMWP</title>
 <style>
 /* ============================================================
    RMWP Design Tokens — SGDS-informed, LTA-branded
@@ -16,7 +16,7 @@
    portable to OutSystems.
    ============================================================ */
 :root{
-  /* ── Slate palette ──────────────────────────────────────────────────────────
+  /* ── Iris palette ──────────────────────────────────────────────────────────
      Primary is periwinkle #5C6BBC — the colour lta.gov.sg actually uses for every
      link and nav item (143 occurrences in its computed styles). It is neither the
      old teal nor the logo navy, so this version stays distinct from the other two.
@@ -25,8 +25,21 @@
   --teal-300:#9AA3D5; --teal-400:#7B87C9; --teal-500:#6E7CC4;
   --teal-600:#5C6BBC; --teal-700:#4453A4; --teal-800:#384488;
   --teal-900:#2B3569;
-  /* Chrome stays neutral so it carries no meaning: --chrome-800 is the site's body ink. */
   --chrome-600:#5E6A78; --chrome-700:#46505A; --chrome-800:#343A40; --chrome-900:#272C32;
+  /* ── Iris chrome ──────────────────────────────────────────────────────────
+     The sidebar is a light wash of the primary rather than a dark block: at
+     #F4F5FC the body ink reads 8.74:1, so nothing has to be dimmed to fit.
+     The five most-used sections are colour-coded with LTA's own accent inks
+     (.bg-color1..5) — that is what keeps a light chrome from going flat.
+     Anything below "User" stays grey on purpose; nine coloured icons is noise. */
+  --chrome-bg:#EDEFF9; --chrome-bd:#DDE1F2;
+  --chrome-ink:#3F4652;      /* 8.29:1 on the wash */
+  --chrome-ink-sub:#51616B;  /* 5.60:1 — sub items are 13px, so 4.5 is the floor and
+                                the old #6E7E88 only made 3.66 once the wash deepened */
+  --a-teal:#10757E;   /* 4.99 */
+  --a-coral:#AD210B;  /* 6.44 */
+  --a-amber:#866709;  /* 4.88 */
+  --a-lime:#5B761B;   /* 4.77 */
   /* Status accents = LTA's own .bg-color1..5 (Featured Projects), mapped to the five stages. */
   --st-draft-bg:#EFF1F2; --st-draft-ink:#3F4852;   /* color5 slate  */
   --st-wip-bg:#FBE9E6;   --st-wip-ink:#8E1704;     /* color2 coral  */
@@ -124,14 +137,14 @@ button{font-family:inherit;cursor:pointer}
   /* full height: the brand sits at the top and the account block at the bottom, so on
      desktop there is no topbar at all. z-index clears the action bar (45). */
   position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);z-index:48;
-  background:var(--chrome-800);border-right:1px solid var(--chrome-900);
+  background:var(--chrome-bg);border-right:1px solid var(--chrome-bd);
   padding:18px 14px;overflow-y:auto;display:flex;flex-direction:column;transition:width .2s ease;
 }
-.sb-brand{padding:6px 8px 14px;border-bottom:1px solid rgba(255,255,255,.14);margin-bottom:12px}
+.sb-brand{padding:6px 8px 14px;border-bottom:1px solid var(--chrome-bd);margin-bottom:12px}
 .sb-brand img{height:30px;display:block;max-width:100%}
-.sb-foot{margin-top:auto;padding-top:10px;border-top:1px solid rgba(255,255,255,.14);display:flex;flex-direction:column;gap:2px}
+.sb-foot{margin-top:auto;padding-top:10px;border-top:1px solid var(--chrome-bd);display:flex;flex-direction:column;gap:2px}
 .sb-notif{width:100%;border:none;background:none;cursor:pointer;font-family:inherit;text-align:left}
-.sb-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--danger-on-dark);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sb-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--a-coral);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .sb-foot .rolesw{width:100%;min-width:0;margin-top:6px}
 .sb-foot .rolesw-trg{width:100%}
 .sb-foot .rolesw-trg .rs-meta{min-width:0}
@@ -143,17 +156,30 @@ button{font-family:inherit;cursor:pointer}
 .nav-group,.nav-sub-list{display:contents}
 .nav-item{
   display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;
-  color:rgba(255,255,255,.82);font-size:var(--fs-base);font-weight:600;margin-bottom:3px;
+  color:var(--chrome-ink);font-size:var(--fs-base);font-weight:600;margin-bottom:3px;
 }
-.nav-item:hover{background:rgba(255,255,255,.12);text-decoration:none;color:#fff}
-.nav-item.active{background:rgba(255,255,255,.12);color:#fff;font-weight:700}
-.nav-item.active .nav-ico{color:#fff}
-.nav-item.sub{margin-left:30px;padding:9px 14px;font-size:var(--fs-sm);color:rgba(255,255,255,.68);font-weight:500;position:relative}
-.nav-item.sub::before{content:"";position:absolute;left:-11px;top:-3px;bottom:0;width:1.5px;background:rgba(255,255,255,.25)}
-.nav-item.sub:hover{color:#fff;background:rgba(255,255,255,.12)}
-.nav-item.sub.current{color:var(--teal-700);font-weight:700;background:#fff}
-.nav-ico{width:18px;height:18px;flex:none;color:rgba(255,255,255,.72)}
-.nav-item:hover .nav-ico{color:#fff}
+/* on a light chrome the selected state has to lift, not darken */
+.nav-item:hover{background:#fff;text-decoration:none;color:var(--grey-900)}
+.nav-item.active{background:#fff;color:var(--teal-700);font-weight:700}
+
+/* every section carries a colour; all ≥4.5:1 on the #F4F5FC wash.
+   Work instruction and Sector share a hue (231° / 228°) but sit four rows
+   apart and differ hugely in lightness — the brand has no tenth hue. */
+.nav-item[data-sec="overview"] .nav-ico{color:var(--a-teal)}
+.nav-item[data-sec="wi"] .nav-ico{color:var(--teal-600)}
+.nav-item[data-sec="dash"] .nav-ico{color:var(--a-coral)}
+.nav-item[data-sec="rep"] .nav-ico{color:var(--a-amber)}
+.nav-item[data-sec="user"] .nav-ico{color:var(--a-lime)}
+.nav-item[data-sec="sector"] .nav-ico{color:#243888}   /* logo 靛藍  9.68 */
+.nav-item[data-sec="contract"] .nav-ico{color:#882428}   /* logo 楓紅  8.29 */
+.nav-item[data-sec="asset"] .nav-ico{color:#0F5C37}   /* 深青綠    7.41 */
+.nav-item[data-sec="config"] .nav-ico{color:#46505A}   /* 石板中性  7.56 */
+.nav-item.sub{margin-left:30px;padding:9px 14px;font-size:var(--fs-sm);color:var(--chrome-ink-sub);font-weight:500;position:relative}
+.nav-item.sub::before{content:"";position:absolute;left:-11px;top:-3px;bottom:0;width:1.5px;background:var(--chrome-bd)}
+.nav-item.sub:hover{color:var(--grey-900);background:#fff}
+.nav-item.sub.current{color:var(--teal-700);font-weight:700;background:#fff;box-shadow:0 1px 2px rgba(22,31,38,.10)}
+.nav-ico{width:18px;height:18px;flex:none;color:var(--grey-600)}
+
 
 .main{margin-left:var(--sidebar-w);padding:calc(var(--topbar-h) + 24px) 32px 96px;max-width:none;
   min-height:100vh;display:flex;flex-direction:column}
@@ -181,6 +207,8 @@ button{font-family:inherit;cursor:pointer}
 .chip{
   display:inline-flex;align-items:center;gap:6px;border-radius:var(--r-pill);
   font-size:var(--fs-sm);font-weight:620;padding:4px 12px;line-height:1.4;white-space:nowrap;
+  /* a defined edge, so a pastel chip never dissolves into a tinted row */
+  box-shadow:inset 0 0 0 1px rgba(22,31,38,.14);
 }
 .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
 .chip-draft{background:var(--st-draft-bg);color:var(--st-draft-ink)}
@@ -377,8 +405,8 @@ button{font-family:inherit;cursor:pointer}
   body.nav-collapsed .sidebar{overflow:visible}
   body.nav-collapsed .nav-group{display:block;position:relative}
   body.nav-collapsed .nav-group::after{content:"";position:absolute;left:100%;top:0;width:12px;height:100%}
-  body.nav-collapsed .nav-group:hover .nav-sub-list{display:block;position:absolute;left:calc(100% + 10px);top:0;margin:0;padding:8px;width:196px;background:var(--chrome-800);border:1px solid rgba(255,255,255,.15);border-radius:12px;box-shadow:var(--shadow-lg);z-index:70}
-  body.nav-collapsed .nav-group:hover .nav-sub-list::before{content:"Work instruction";display:block;font-size:11px;font-weight:650;color:rgba(255,255,255,.6);padding:6px 10px 8px}
+  body.nav-collapsed .nav-group:hover .nav-sub-list{display:block;position:absolute;left:calc(100% + 10px);top:0;margin:0;padding:8px;width:196px;background:var(--chrome-bg);border:1px solid var(--chrome-bd);border-radius:12px;box-shadow:var(--shadow-lg);z-index:70}
+  body.nav-collapsed .nav-group:hover .nav-sub-list::before{content:"Work instruction";display:block;font-size:11px;font-weight:650;color:var(--grey-400);padding:6px 10px 8px}
   body.nav-collapsed .nav-group:hover .nav-item.sub{display:flex;width:auto;height:auto;margin:0 0 2px 0;padding:9px 14px;font-size:var(--fs-sm);justify-content:flex-start}
   body.nav-collapsed .nav-group:hover .nav-item.sub::before{display:none}
 }
@@ -394,9 +422,9 @@ button{font-family:inherit;cursor:pointer}
   .main{margin-left:0;padding:calc(var(--topbar-h) + 16px) 16px 72px}
   .avatar-meta{display:none}
   /* mobile topbar matches the sidebar it opens */
-  .topbar{background:var(--chrome-800);border-bottom-color:var(--chrome-900)}
-  .topbar .menu-btn{color:#fff}
-  .topbar .menu-btn:hover{background:rgba(255,255,255,.12)}
+  .topbar{background:var(--chrome-bg);border-bottom-color:var(--chrome-bd)}
+  .topbar .menu-btn{color:var(--chrome-ink)}
+  .topbar .menu-btn:hover{background:#fff}
   .brand-logo-img{display:block;height:30px}
   .brand-name{display:none}
 }
@@ -456,9 +484,9 @@ button{font-family:inherit;cursor:pointer}
 /* Desktop table */
 .wi-table{width:auto;min-width:100%;border-collapse:collapse;background:#fff}
 .wi-table th{
-  text-align:left;font-size:var(--fs-xs);font-weight:650;color:var(--grey-500);
+  text-align:left;font-size:var(--fs-xs);font-weight:650;color:var(--teal-900);
   text-transform:uppercase;letter-spacing:.045em;padding:12px 14px;
-  border-bottom:1px solid var(--grey-200);background:var(--grey-50);white-space:nowrap;
+  border-bottom:1px solid var(--grey-200);background:#d6ddfb;white-space:nowrap;
 }
 .wi-table th button{
   border:none;background:none;font:inherit;color:inherit;display:inline-flex;
@@ -473,12 +501,27 @@ button{font-family:inherit;cursor:pointer}
 .wi-table th button.sorted.asc .dn,.wi-table th button.sorted.desc .up{opacity:.15}
 .wi-table td{padding:13px 14px;border-bottom:1px solid var(--grey-100);font-size:var(--fs-base);font-weight:450;color:var(--grey-800);vertical-align:middle;white-space:nowrap}
 .wi-table tbody tr{cursor:pointer;transition:background .12s ease;scroll-margin-top:calc(var(--topbar-h) + 60px)}
-.wi-table tbody tr:hover{background:var(--teal-50)}
-.wi-table tbody tr:focus-within{background:var(--teal-50)}
+/* ── row zebra ─────────────────────────────────────────────────────────────
+   .zebra is set by render(), not nth-child: rows get hidden and re-appended as the
+   bucket / filter / page changes, so DOM position says nothing about what the reader
+   actually sees. The sticky action cell has to take the stripe too, or it floats
+   white over a tinted row. */
+.wi-table tbody tr.zebra,.wi-table.show-act tbody tr.zebra td.act-col{background-color:#fcfcef}
+/* ── hover: a veil, not a colour ────────────────────────────────────────────
+   The overlay is painted as a background-IMAGE, so it composites over whatever
+   background-color the cell already has. A white row and a striped row both step
+   down by exactly the same amount (1.15:1), which is why the stripe survives the
+   hover instead of being erased by it — and why every background above is written
+   as background-color: the shorthand would reset the image and kill the veil. */
+.wi-table tbody tr:hover td,.wi-table tbody tr:focus-within td{
+  background-image:linear-gradient(rgba(43,53,105,.08),rgba(43,53,105,.08))}
+/* the chips are pale enough to dissolve into a veiled row, so they go white and
+   keep their hairline */
+.wi-table tbody tr:hover .chip,.wi-table tbody tr:focus-within .chip{background:#fff}
 .wi-num{font-weight:450;color:var(--navy-700);white-space:nowrap}
 .wi-num small{display:block;font-weight:450;color:var(--grey-400);font-size:var(--fs-xs)}
 .cell-main{font-weight:450;color:var(--grey-900);white-space:nowrap}
-.cell-sub{display:block;font-size:var(--fs-xs);color:var(--grey-500);font-weight:450;margin-top:1px;white-space:nowrap}
+.cell-sub{display:block;font-size:var(--fs-xs);color:var(--grey-600);font-weight:450;margin-top:1px;white-space:nowrap}
 .cell-muted{color:var(--grey-400)}
 .cell-nowrap{white-space:nowrap}
 .asg{display:inline-flex;align-items:center;font-size:var(--fs-sm)}
@@ -631,9 +674,8 @@ button{font-family:inherit;cursor:pointer}
 .wi-table.show-act th.act-col,.wi-table.show-act td.act-col{display:table-cell}
 /* 9 data columns can outrun a narrow window — pin the primary action so it stays reachable */
 .wi-table.show-act th.act-col,.wi-table.show-act td.act-col{position:sticky;right:0;z-index:2}
-.wi-table.show-act th.act-col{background:var(--grey-50)}
-.wi-table.show-act td.act-col{background:#fff;box-shadow:-9px 0 9px -9px rgba(22,31,38,.22)}
-.wi-table.show-act tbody tr:hover td.act-col,.wi-table.show-act tbody tr:focus-within td.act-col{background:var(--teal-50)}
+.wi-table.show-act th.act-col{background:#d6ddfb}
+.wi-table.show-act td.act-col{background-color:#fff;box-shadow:-9px 0 9px -9px rgba(22,31,38,.22)}
 .btn-assign{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--teal-600);background:var(--teal-600);color:#fff;border-radius:var(--r-md);font-family:inherit;font-size:var(--fs-sm);font-weight:600;padding:6px 12px;cursor:pointer;white-space:nowrap}
 .btn-assign:hover{background:var(--teal-700)}
 .card-assign{margin-top:10px;padding-top:10px;border-top:1px dashed var(--grey-100)}
@@ -731,7 +773,7 @@ button{font-family:inherit;cursor:pointer}
 <style>
 /* chrome parity with mwi-wi-workflow_layouta */
 /* the old .brand overrides went with the desktop topbar — the mobile bar sizes its own logo */
-.ni-chev{width:16px;height:16px;flex:none;margin-left:auto;color:rgba(255,255,255,.6);transform:rotate(180deg)}
+.ni-chev{width:16px;height:16px;flex:none;margin-left:auto;color:var(--grey-400);transform:rotate(180deg)}
 @media(min-width:1021px){body.nav-collapsed .ni-chev{display:none}}
 </style>
 <style>
@@ -756,8 +798,8 @@ select.control{background-position:right 16px center}
 /* an expanded group already says where you are through its highlighted child, so the
    parent drops the whole active treatment — fill, white text and white icon.
    :not(:hover) keeps the hover state alive. */
-.nav-group>.nav-item.active:not(:hover){background:none;color:rgba(255,255,255,.82);font-weight:600}
-.nav-group>.nav-item.active:not(:hover) .nav-ico{color:rgba(255,255,255,.72)}
+.nav-group>.nav-item.active:not(:hover){background:none;color:var(--chrome-ink);font-weight:600}
+/* the icon keeps its section colour — that is identity, not an "active" emphasis */
 
 /* ===== Bucket tabs as pills ===== */
 .wi-tabs{gap:8px;border-bottom:none;margin-bottom:18px}
@@ -775,7 +817,7 @@ select.control{background-position:right 16px center}
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
   </button>
   <div class="brand">
-    <img class="brand-logo-img" src="logo_white.png" alt="Land Transport Authority — We Keep Your World Moving">
+    <img class="brand-logo-img" src="logo_color.png" alt="Land Transport Authority — We Keep Your World Moving">
     <div class="brand-name">Road Maintenance Workflow Platform</div>
   </div>
   <div class="topbar-spacer"></div>
@@ -784,24 +826,24 @@ select.control{background-position:right 16px center}
 <!-- ============ Sidebar (desktop) ============ -->
 <nav class="sidebar" aria-label="Main navigation">
   <div class="sb-brand">
-    <img src="logo_white.png" alt="Land Transport Authority — Road Maintenance Workflow Platform">
+    <img src="logo_color.png" alt="Land Transport Authority — Road Maintenance Workflow Platform">
   </div>
-  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/><path d="M9 22V12h6v10"/></svg>Overview</a>
+  <a class="nav-item" data-sec="overview" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/><path d="M9 22V12h6v10"/></svg>Overview</a>
   <div class="nav-group">
-  <a class="nav-item active" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>Work instruction<svg class="ni-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
+  <a class="nav-item active" data-sec="wi" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>Work instruction<svg class="ni-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
   <div class="nav-sub-list">
   <a class="nav-item sub current" href="mwi-list-redesign-a.html">Maintenance WI</a>
   <a class="nav-item sub" href="#">Inspection WI</a>
   <a class="nav-item sub" href="#">WI template</a>
   </div>
   </div>
-  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15.9A10 10 0 1 1 8 2.8"/><path d="M22 12A10 10 0 0 0 12 2v10Z"/></svg>Dashboard</a>
-  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Reports</a>
-  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>User</a>
-  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Sector</a>
-  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg>Contract</a>
-  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.3 9 5.2M21 8l-9-5-9 5v8l9 5 9-5Z"/></svg>Asset inventory</a>
-  <a class="nav-item" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>Configuration</a>
+  <a class="nav-item" data-sec="dash" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15.9A10 10 0 1 1 8 2.8"/><path d="M22 12A10 10 0 0 0 12 2v10Z"/></svg>Dashboard</a>
+  <a class="nav-item" data-sec="rep" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Reports</a>
+  <a class="nav-item" data-sec="user" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>User</a>
+  <a class="nav-item" data-sec="sector" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Sector</a>
+  <a class="nav-item" data-sec="contract" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg>Contract</a>
+  <a class="nav-item" data-sec="asset" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.3 9 5.2M21 8l-9-5-9 5v8l9 5 9-5Z"/></svg>Asset inventory</a>
+  <a class="nav-item" data-sec="config" href="#"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>Configuration</a>
   <div class="sb-foot">
   <button class="nav-item sb-notif" type="button" aria-label="Notifications — 13 unread">
     <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>Notifications
@@ -822,7 +864,7 @@ select.control{background-position:right 16px center}
       <div class="rolesw-head">Prototype version</div>
       <div class="ver-seg" role="group" aria-label="Prototype version">
         <a class="vs-opt" href="mwi-list-redesign.html">Original</a>
-        <a class="vs-opt is-on" href="mwi-list-redesign-a.html">Slate</a>
+        <a class="vs-opt is-on" href="mwi-list-redesign-a.html">Iris</a>
       </div>
     </div>
   </div>
@@ -1465,7 +1507,7 @@ select.control{background-position:right 16px center}
   btn.addEventListener('click',function(){set(!sb.classList.contains('open'));});
   document.querySelectorAll('.row-link').forEach(function(r){
     function go(){
-      var target=(r.dataset.fstatus==='draft') ? 'mwi-wi-draft.html' : r.getAttribute('data-href');
+      var target=(r.dataset.fstatus==='draft') ? 'mwi-wi-draft-a.html' : r.getAttribute('data-href');
       var src=location.search.replace(/^\?/,'');
       if(/^https?:\/\//.test(src)){   // served through htmlpreview — rebuild against the source URL
         window.location.href=location.origin+'/?'+src.replace(/[^\/]*$/,target); return; }
@@ -1659,7 +1701,7 @@ select.control{background-position:right 16px center}
       wt:function(e){return txt(e.querySelector('[data-f="wt"] dd'));},
       est:function(e){return txt(e.querySelector('[data-f="est"] b'));},
       upd:function(e){return txt(e.querySelector('[data-f="upd"] b'));}});
-    if((META[c.dataset.wi]||{}).st==='draft')c.setAttribute('href',siblingUrl('mwi-wi-draft.html'));
+    if((META[c.dataset.wi]||{}).st==='draft')c.setAttribute('href',siblingUrl('mwi-wi-draft-a.html'));
     cardBy[c.dataset.wi]=c;
   });
 
@@ -1978,7 +2020,8 @@ select.control{background-position:right 16px center}
       var td=tr.querySelector('.act-cell');if(td){td.innerHTML='';
         if(cur==='inprogress'&&show){var b=document.createElement('button');b.className='btn-assign';b.type='button';b.textContent='Assign to self';
           b.addEventListener('click',function(e){e.stopPropagation();assign(tr.dataset.wi);});td.appendChild(b);}}});
-    page.forEach(function(tr){tbody.appendChild(tr);});
+    // stripe by visible position, after the page has been re-ordered
+    page.forEach(function(tr,i){tbody.appendChild(tr);tr.classList.toggle('zebra',i%2===1);});
     cards.forEach(function(c){var show=wis.indexOf(c.dataset.wi)>=0;c.parentNode.style.display=show?'':'none';
       var ex=c.querySelector('.card-assign');if(ex)ex.remove();
       if(cur==='inprogress'&&show){var d=document.createElement('div');d.className='card-assign';
