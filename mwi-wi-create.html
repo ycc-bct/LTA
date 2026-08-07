@@ -48,6 +48,11 @@
   --font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
   --fs-xs:.75rem; --fs-sm:.8125rem; --fs-base:.875rem;
   --fs-md:.9375rem; --fs-lg:1.0625rem; --fs-xl:1.375rem; --fs-2xl:1.75rem;
+  /* Heading scale (2026-08-05). Hard ceilings: H1 20px, H2 16px — anything that reads
+     as a page title or a section/card title must use these, not a raw rem value. */
+  --fs-h1:1.25rem;      /* 20px  page title           */
+  --fs-h1-sm:1.125rem;  /* 18px  same title on mobile */
+  --fs-h2:1rem;         /* 16px  section / card title */
   /* Shape & elevation */
   --r-sm:6px; --r-md:10px; --r-lg:14px; --r-pill:999px;
   --shadow-sm:0 1px 2px rgba(22,31,38,.06);
@@ -81,6 +86,16 @@ button{font-family:inherit;cursor:pointer}
 .brand-name{border-left:1px solid var(--grey-200);padding-left:14px;margin-left:2px}
 .brand-name{font-weight:650;color:var(--navy-700);font-size:var(--fs-md);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand-name small{display:block;font-weight:450;color:var(--grey-500);font-size:var(--fs-xs)}
+/* The header splits where the body does: the logo occupies the sidebar column, so the
+   divider falls on the sidebar's right edge — the same line .main starts on. It used
+   to stop 30px short, which read as a misalignment rather than a choice.
+   Desktop only: below 1021px the sidebar is a drawer and there is nothing to line up
+   with, and below 640px .brand-name is hidden outright. */
+@media(min-width:1021px){
+  .topbar .brand{gap:0}
+  .topbar .brand-logo-img{width:calc(var(--sidebar-w) - 20px);object-fit:contain;object-position:left center}
+  .topbar .brand-name{margin-left:0}
+}
 .topbar-spacer{flex:1}
 .icon-btn{
   width:38px;height:38px;border-radius:var(--r-md);border:1px solid transparent;
@@ -107,7 +122,10 @@ button{font-family:inherit;cursor:pointer}
 .avatar-meta span{font-size:var(--fs-xs);color:var(--grey-500)}
 
 .sidebar{
-  position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);z-index:30;
+  /* above .action-bar (45) so the fixed bar stops at the sidebar edge instead of
+     running its band underneath — matches the navy build. Still below the mobile
+     backdrop (50) / drawer (60) / scrim (70) / modal (71). */
+  position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);z-index:46;
   background:#fff;border-right:1px solid var(--grey-200);
   padding:16px 12px;overflow-y:auto;
 }
@@ -123,13 +141,13 @@ button{font-family:inherit;cursor:pointer}
 .nav-item.sub.current{color:var(--teal-700);font-weight:620;background:linear-gradient(to right,var(--teal-50),transparent)}
 .nav-ico{width:18px;height:18px;flex:none;color:var(--grey-400)}
 
-.main{margin-left:var(--sidebar-w);padding:var(--topbar-h) 32px 96px;max-width:1220px}
+.main{margin-left:var(--sidebar-w);padding:var(--topbar-h) 32px 96px;max-width:none}
 
 /* ---------- Page header ---------- */
 .breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:var(--fs-sm);color:var(--grey-500);margin-bottom:14px}
 .breadcrumb .sep{color:var(--grey-300)}
 .page-head{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
-.page-head h1{font-size:var(--fs-2xl);line-height:1.2;color:var(--grey-900);font-weight:680;letter-spacing:-.01em}
+.page-head h1{font-size:var(--fs-h1);line-height:1.2;color:var(--grey-900);font-weight:680;letter-spacing:-.01em}
 .eyebrow{font-size:var(--fs-sm);font-weight:600;color:var(--teal-700);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
 .page-sub{color:var(--grey-600);font-size:var(--fs-md);margin-top:6px;max-width:60ch}
 .head-actions{display:flex;gap:10px;flex:none}
@@ -197,7 +215,7 @@ button{font-family:inherit;cursor:pointer}
   display:flex;flex-wrap:wrap;align-items:center;gap:10px;
   padding:18px 24px;border-bottom:1px solid var(--grey-100);
 }
-.card-head h2{font-size:var(--fs-lg);font-weight:660;color:var(--grey-900)}
+.card-head h2{font-size:var(--fs-h2);font-weight:660;color:var(--grey-900)}
 .card-head .hint{font-size:var(--fs-sm);color:var(--grey-500)}
 .card-head .spacer{flex:1}
 .card-body{padding:22px 24px}
@@ -342,7 +360,7 @@ button{font-family:inherit;cursor:pointer}
 }
 @media(max-width:640px){
   .brand-name{display:none}
-  .page-head h1{font-size:var(--fs-xl)}
+  .page-head h1{font-size:var(--fs-h1-sm)}
   .summary-strip{grid-template-columns:1fr 1fr}
   .summary-cell{border-left:none;border-top:1px solid var(--grey-100)}
   .summary-cell:nth-child(-n+2){border-top:none}
@@ -376,7 +394,7 @@ button{font-family:inherit;cursor:pointer}
   background:#fff;color:var(--grey-700);display:inline-flex;align-items:center;justify-content:center;
 }
 .context-bar .ctx{min-width:0}
-.context-bar .ctx strong{display:block;font-size:var(--fs-md);color:var(--grey-900);font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.context-bar .ctx strong{display:block;font-size:var(--fs-h1);color:var(--grey-900);font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .task-stepper{
   display:flex;align-items:center;gap:10px;background:var(--navy-700);color:#fff;
   border-radius:var(--r-lg);padding:12px 14px;margin-bottom:18px;box-shadow:var(--shadow-md);
@@ -582,6 +600,10 @@ select.control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg x
 .card-body>.btn{grid-column:1 / -1}
 .card-body>.btn{justify-self:start}
 .action-bar .inner{max-width:none;margin:0 0 0 var(--sidebar-w);padding:0 32px}
+/* desktop: action bar aligns with the step-panel content edges (16px bar padding + 16px = 32px) */
+@media(min-width:1021px){
+  .action-bar .inner{max-width:none;margin:0 16px 0 calc(var(--sidebar-w) + 16px);padding:0}
+}
 /* full-row textarea fields: on a wide screen the box itself is only half-width
    (full 100% span is too wide); it fills the row again once the grid collapses */
 @media(min-width:1021px){
@@ -863,6 +885,8 @@ body.view-mode .gate-note{display:none}
 /* one layout at every width: title, status chip beneath it, actions on the right */
 .context-bar .ctx{flex:1;min-width:0}
 .context-bar .ctx strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* this block is deliberately width-agnostic, so the mobile size needs its own query */
+@media(max-width:1020px){.context-bar .ctx strong{font-size:var(--fs-h1-sm)}}
 .ctx-meta{display:flex;align-items:center;gap:10px;margin-top:5px}
 .ctx-sub{display:none}                 /* path is in the sidebar (desktop) / the burger menu (mobile) */
 .ctx-actions{display:flex;gap:10px;flex:none}
@@ -996,9 +1020,13 @@ body.view-mode #boqAdd{display:none}
   .action-bar .inner{display:flex;flex-direction:column;align-items:stretch;gap:8px;overflow:visible;padding:0}
   .act-left{display:grid;grid-template-columns:1fr;gap:8px;overflow:visible;flex:none;min-width:0}
   .act-right{display:flex;gap:8px;flex:none}
-  .act-right .btn{flex:1 1 0;width:auto;min-width:0}
   .action-bar .btn{flex:none;width:100%;min-height:46px;padding:8px 12px;
     white-space:nowrap;line-height:1.25;text-align:center}
+  /* Step 2 shows Reassign AND Submit in this group. .action-bar .btn forces
+     width:100% and has the same weight as .act-right .btn, so on source order the
+     100% won and the second button was pushed off the right edge of a 375px screen.
+     One class deeper so the pair shares the row whatever the order. */
+  .action-bar .act-right .btn{flex:1 1 0;width:auto;min-width:0}
   .main.narrow{padding-bottom:170px}      /* clear the two stacked rows */
   .lbl-full{display:none}                 /* Reassign to LTA Officer -> Reassign */
   .lbl-short{display:inline}
@@ -1043,6 +1071,14 @@ body.view-mode .boq-actions{display:none}
   .tt-count-r{margin-left:0}
 }
 </style>
+<style>
+/* Demo: prototype-version switcher inside the role menu */
+.rolesw-sep{height:1px;background:var(--grey-200);margin:6px 8px}
+.ver-seg{display:flex;gap:4px;padding:2px 8px 10px}
+.ver-seg .vs-opt{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:7px 6px;border-radius:var(--r-sm,8px);font-size:var(--fs-xs,.75rem);font-weight:650;color:var(--grey-600);background:var(--grey-100);text-decoration:none;white-space:nowrap}
+.ver-seg .vs-opt:hover{background:var(--grey-200);color:var(--grey-900)}
+.ver-seg .vs-opt.is-on{background:var(--teal-700);color:#fff}
+</style>
 </head>
 <body>
 
@@ -1071,6 +1107,12 @@ body.view-mode .boq-actions{display:none}
       <!-- Site Supervisor / Engineer hidden until their screens are built (only CO exists for now) -->
       <button class="rolesw-opt" data-role="ss" hidden><span class="rs-av rs-ss">DT</span><span class="m"><strong>DEV TR388SS01</strong><span>Site Supervisor</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
       <button class="rolesw-opt" data-role="eng" hidden><span class="rs-av rs-eng">DT</span><span class="m"><strong>DEV TR388ENG01</strong><span>Engineer</span></span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>
+      <div class="rolesw-sep"></div>
+      <div class="rolesw-head">Prototype version</div>
+      <div class="ver-seg" role="group" aria-label="Prototype version">
+        <a class="vs-opt is-on" href="mwi-wi-create.html">Original</a>
+        <a class="vs-opt" href="mwi-wi-create-a.html">Iris</a>
+      </div>
     </div>
   </div>
 </header>
@@ -1124,7 +1166,7 @@ body.view-mode .boq-actions{display:none}
   <div class="step-panel is-on" data-panel="1">
 
   <section class="card" id="s-ref">
-    <div class="card-head"><h2>Work instruction details</h2></div>
+    <div class="card-head"><h2>Work instruction</h2></div>
     <div class="card-body">
       <div class="field">
         <label for="e-con">Contract no. <span class="req">*</span></label>
@@ -1197,7 +1239,7 @@ body.view-mode .boq-actions{display:none}
   </section>
 
   <section class="card" id="s-desc">
-    <div class="card-head"><h2>Location &amp; description</h2></div>
+    <div class="card-head"><h2>Location</h2></div>
     <div class="card-body">
       <div class="field dep-field">
         <label for="e-road">Road name <span class="req">*</span></label>
@@ -1355,7 +1397,7 @@ body.view-mode .boq-actions{display:none}
 
   <div class="step-panel" data-panel="2">
   <section class="card" id="s-fund">
-    <div class="card-head"><h2>Funding</h2></div>
+    <div class="card-head"><h2>Fund Detail</h2></div>
     <div class="card-body">
       <div class="boq-wrap">
         <table class="boq">
@@ -1420,7 +1462,7 @@ body.view-mode .boq-actions{display:none}
     </div>
     <div class="act-right">
       <button class="btn btn-primary" id="btnNext" type="button">Next</button>
-      <button class="btn btn-primary" id="btnReassign" type="button">Reassign</button>
+      <button class="btn" id="btnReassign" type="button">Reassign</button>
       <button class="btn btn-primary" id="btnSubmit" type="button"><span class="lbl-full">Submit to Site Supervisor</span><span class="lbl-short">Submit</span></button>
     </div>
   </div>
@@ -1839,15 +1881,16 @@ body.view-mode .boq-actions{display:none}
     if(i){i.textContent=M.ini;i.className='rs-av rs-'+r;} if(n)n.textContent=M.name; if(o)o.textContent=M.role;
     document.querySelectorAll('.rolesw-opt').forEach(function(b){b.classList.toggle('on',b.dataset.role===r);});
     document.querySelectorAll('.sidebar .nav-item').forEach(function(a){var t=(a.textContent||'').trim();if(SHOW[t])a.style.display=SHOW[t].indexOf(r)>=0?'':'none';});
-    document.querySelectorAll('a[href]').forEach(function(a){var h=a.getAttribute('href');if(/^mwi-[a-z0-9-]+\.html/i.test(h)){a.setAttribute('href',h.split('?')[0].split('#')[0]+'?role='+r);}});
+    document.querySelectorAll('a[href]').forEach(function(a){var h=a.getAttribute('href');if(/^mwi-[a-z0-9_-]+\.html/i.test(h)){var hash=(h.match(/#.*$/)||[''])[0];a.setAttribute('href',h.split('?')[0].split('#')[0]+'?role='+r+hash);}});
   }
   function setRole(r){apply(r);try{history.replaceState(null,'',location.pathname+'?role='+r);}catch(e){}}
   var rs=document.getElementById('rolesw');
   if(rs){
     var trg=document.getElementById('rolesw-trg');
-    // only wire the dropdown when there's actually more than one role to switch to
     var choices=Array.prototype.slice.call(rs.querySelectorAll('.rolesw-opt')).filter(function(b){return !b.hidden;});
-    if(choices.length>1){
+    // The menu also holds the prototype-version switcher, so it is worth opening even
+    // on a screen with a single role — a new WI belongs to the Contract Officer alone.
+    if(choices.length>1 || rs.querySelector('.ver-seg')){
       trg.addEventListener('click',function(e){e.stopPropagation();var op=rs.classList.toggle('open');this.setAttribute('aria-expanded',op);});
       document.addEventListener('click',function(){rs.classList.remove('open');});
       choices.forEach(function(b){b.addEventListener('click',function(){setRole(b.dataset.role);rs.classList.remove('open');});});

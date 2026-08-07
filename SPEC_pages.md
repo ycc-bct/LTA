@@ -155,7 +155,20 @@ View/Edit 分離的示範頁（最能展示「唯讀該長怎樣」）。
 - fixed topbar 遮住定位 → 用 `scroll-margin-top` 修正。
 
 ## `mwi-wi-create.html` — 新建 WI（Contract Officer）
-對齊實際 Add 表單。
+對齊實際 Add 表單。**2026-08-06 chrome 對齊到 `mwi-wi-draft.html`**：字階 tokens、
+`.main{max-width:none}`、側欄 `z-index:46`、動作列桌機對齊內容邊、卡片標題改成與跳轉 chip
+逐字相同（Work instruction／Location／Fund Detail）、表頭 brand 分隔線對齊側欄右緣、
+角色連結改寫保留 hash 並支援底線檔名、角色選單加上 Prototype version 切換器
+（Original `mwi-wi-create.html` ／ Iris `mwi-wi-create-a.html`）。
+- **沒有跟著搬的**：Timeline／Edit 按鈕與 `body.view-mode` 那一整套。這頁沒有「已儲存的
+  版本」可以檢視，欄位一直是活的 —— 那是 create 之所以是 create。
+- 底部的 **Next ／ Reassign＋Submit 是依步驟互斥**（step 1 只有 Next，step 2 換成另外兩顆），
+  不是三顆並排的殘留。但 step 2 上 Reassign 與 Submit 同時出現，**Reassign 降成次要**，
+  維持「一條 bar 只有一顆 primary」。
+- ⚠️ **手機動作列的溢出**（同日修）：`.action-bar .btn{width:100%}` 與
+  `.act-right .btn{width:auto}` 權重相同，靠順序前者贏，於是 step 2 的 Submit 被推出
+  375px 畫面外。改寫成 `.action-bar .act-right .btn`（多一層）才蓋得過。
+  draft 的手機 grid 不能照抄 —— 那頁是左二右一，這頁是左一右二。
 - 合約下拉、Location Tag、日期預設今日。
 - **Site & assets**：type / tag / ID 併成**三欄一列**（`.asset-lite-grid`）＋地圖圈選；**Add / Remove asset 可運作**，Remove 僅多 asset 時顯示（單一時淡化/隱藏）。
 - 附件；**Fund Detail** 多列表格；滿版多欄佈局。
