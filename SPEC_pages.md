@@ -172,6 +172,31 @@ View/Edit 分離的示範頁（最能展示「唯讀該長怎樣」）。
 | Engineer | 中 | Verification in progress | 3 步 | Price Schedule（BOQ＋聲明） | Return／Reassign QS／**Submit to LTA Officer** |
 - 面板：step1 Work/Task/Site（SS「site update」owner 區塊：Add Photo + 進度 chip）、step2 Fund Detail、step3 Price Schedule（BOQ 表 + Contractor Declaration）、step4 Approval。
 - **送出並指派彈窗**「Select X and submit」（Common Queue / 特定人 + Remarks）。
+- ⚠️ **切 asset／task 分頁＝切狀態，不是重建**（2026-08-06 修，四個 Original 頁都套）。
+  原本 chip 的 click 直接呼叫 `buildAssetTabs()`／`updateTaskRemove(a)`，那兩個函式會
+  `bar.innerHTML=''` 再把每一顆按鈕重新造出來 —— 每點一下整條 chip bar 重繪（會閃），
+  而且剛加的 chip 也是被丟掉重生的（讀起來像「又重新新增一次」）。
+  改成 `selectAsset(i)`／`selectTask(a,i)`：只翻 `hidden` 與 `.is-on`，DOM 節點原地不動。
+  - ⚠️ **但真正的元凶不是 chip 的 click**，是這一行：
+    ```js
+    ['change','input'].forEach(function(ev){ site.addEventListener(ev,refreshGates); });
+    ```
+    `#s-site` 內任何一次 `input` 都會呼叫 `refreshGates()` → 每個 asset 的
+    `updateTaskRemove()` ＋ `buildAssetTabs()`，而那兩個第一件事就是 `bar.innerHTML=''`。
+    **等於每按一個鍵，兩排 chip 都被砍掉重造。** 只修 click 沒有用。
+    正解是在兩個 bar 的重建前面加一道 **signature 判斷**（掛在 `bar.dataset.sig`）：
+    簽名＝「這排 chip 實際顯示的東西」＝ 數量、目前選中、每個 asset 的 task 數、
+    第一個未完成項的序號（Add 的 disabled 狀態）。沒變就整段跳過，節點原地保留。
+    - 簽名裡有 blocker 序號，所以**填完必填欄位時 Add 仍會即時解鎖**（實測過）。
+    - 早退會跳過 bar 之後的 `.empty-tasks`／`gateCount`，但那兩者只吃 `list.length`，
+      而 `list.length` 是簽名的第一項 —— 數量一變簽名就失效，所以安全。
+  - Stacked 版的 `selectAsset` 要維持 `a.hidden=false`（那一版所有 asset 都留在畫面上），
+    tab 版才是 `a.hidden=(k!==activeAsset)`。兩種 variant 的 `hidden` 規則不一樣。
+- **`#s-site` 落點改成 parse 時就跑**（不再等 `load`）。腳本本來就在 `</body>` 前，
+  section 已經排版好了；等 `load` 會先在捲軸 0 畫一次再跳，那一下就是切換時看到的「閃」。
+  `load` 的重跑保留，處理字體載入後的位移。
+  ⚠️ 兩頁是兩個獨立檔案，**切換必然是一次完整的頁面載入**，這一段白閃無法靠 CSS 消掉；
+  要真的無縫得把兩種版面併成同一頁用 class 切換。
 - logo 用 `<img src="logo.png">`（其餘頁多為 base64 內嵌）。
 
 ## `mwi-wi-draft.html` / `mwi-wi-draft-a.html` — Draft 階段（2026-08-06）
@@ -191,6 +216,28 @@ timeline 只有一筆「Work Instruction created」，Site & assets 沒有現場
   `role-ro` 步驟所有權、照片 add/remove、`wiz-step[hidden]` 的階段裁切、`.chip-ver`。
   角色選單裡的 SS／Engineer 也**維持 hidden** —— 草稿還沒送出，那兩個角色看不到這筆。
 - Site & assets 的 **Tab switch／Stacked 切換器沒有放**：draft 沒有 `_stacked` 對應檔。
+- ⚠️ **角色選單的開關條件**（2026-08-06 修）：原本是 `choices.length>1` 才綁下拉。
+  Draft 只有 CO 一個角色，於是整顆退化成 `.rolesw.single` —— 只剩一個頭像、沒有名字、
+  沒有 caret，**而且 Prototype version（Original／Iris）切換器就關在那個打不開的選單裡**。
+  條件改成 `choices.length>1 || rs.querySelector('.ver-seg')`。
+
+## `mwi-wi-create-a.html` — Iris 的新建 WI（2026-08-06）
+列表右上「New WI」在 Iris 版連到這裡（原本兩版都連 `mwi-wi-create.html`，等於在紫色的
+列表按下去會跳到青綠色的頁）。**兩版的關係是一樣的：create 就是 draft 把值清空**，
+所以這頁是從 `mwi-wi-draft-a.html` 產生的，不是另外手寫 —— 版面天生跟 draft 同步。
+
+| | Original | Iris |
+|---|---|---|
+| 已存在的 Draft | `mwi-wi-draft.html` | `mwi-wi-draft-a.html` |
+| 新建 | `mwi-wi-create.html` | **`mwi-wi-create-a.html`** |
+
+- 標題 `New maintenance WI` ＋ Draft chip；WI 號還沒有，欄位維持 `data-lock` 灰底。
+- **一進來就是編輯狀態**（`setMode(false)`）—— 還沒有「已儲存的版本」可以檢視，
+  Original 的 create 也是一進來就是活的 input。右上按鈕因此是 **Save** 而不是 Edit。
+- **沒有 Timeline、沒有 Reassign／Withdraw** —— 還沒送出，沒有歷程也沒有對象。
+  底部是 `Save as draft ｜ Submit to Site Supervisor`。
+  ⚠️ Original 的 create 底部同時放了 Next／Reassign／Submit **三顆 btn-primary**，
+  看起來是沒收乾淨的殘留；Iris 這版只留有意義的兩顆。要對齊的話是改 Original，不是抄過來。
 
 ## `mwi-task-edit.html` — Site Supervisor 手機現場填單
 task stepper、照片三槽 Add Photo、progress chip、sticky 動作列。實機錄影已驗證此方向正確。

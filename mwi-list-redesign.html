@@ -79,6 +79,16 @@ button{font-family:inherit;cursor:pointer}
 .brand-name{border-left:1px solid var(--grey-200);padding-left:14px;margin-left:2px}
 .brand-name{font-weight:650;color:var(--navy-700);font-size:var(--fs-md);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand-name small{display:block;font-weight:450;color:var(--grey-500);font-size:var(--fs-xs)}
+/* The header splits where the body does: the logo occupies the sidebar column, so the
+   divider falls on the sidebar's right edge — the same line .main starts on. It used
+   to stop 30px short, which read as a misalignment rather than a choice.
+   Desktop only: below 1021px the sidebar is a drawer and there is nothing to line up
+   with, and below 640px .brand-name is hidden outright. */
+@media(min-width:1021px){
+  .topbar .brand{gap:0}
+  .topbar .brand-logo-img{width:calc(var(--sidebar-w) - 20px);object-fit:contain;object-position:left center}
+  .topbar .brand-name{margin-left:0}
+}
 .topbar-spacer{flex:1}
 .icon-btn{
   width:38px;height:38px;border-radius:var(--r-md);border:1px solid transparent;

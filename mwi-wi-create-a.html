@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WI workflow · Iris · RMWP</title>
+<title>New maintenance WI · Iris · RMWP</title>
 <style>
 :root{
   /* ── Iris palette ──────────────────────────────────────────────────────────
@@ -206,7 +206,7 @@ button{font-family:inherit;cursor:pointer}
 .ph-id h1{overflow:hidden;text-overflow:ellipsis}
 .b-top h1{font-size:var(--fs-h1);font-weight:700;letter-spacing:-.01em;color:var(--grey-900)}
 /* this page sits at Approval-in-progress -> LTA color4 violet, see :root */
-.chip{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:var(--r-pill);font-size:.75rem;font-weight:650;background:var(--st-appr-bg);color:var(--st-appr-ink)}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:var(--r-pill);font-size:.75rem;font-weight:650;background:var(--st-draft-bg);color:var(--st-draft-ink)}
 .chip .d{width:8px;height:8px;border-radius:50%;background:currentColor}
 .b-sub{font-size:.875rem;color:var(--grey-600);margin-top:8px}
 .b-actions{display:flex;gap:9px;flex:none;margin-left:auto}
@@ -560,8 +560,8 @@ body.view-mode .field:has(> label + .capture:last-child)::after{
       <div class="rolesw-sep"></div>
       <div class="rolesw-head">Prototype version</div>
       <div class="ver-seg" role="group" aria-label="Prototype version">
-        <a class="vs-opt" href="mwi-wi-workflow.html">Original</a>
-        <a class="vs-opt is-on" href="mwi-wi-workflow_layouta.html">Iris</a>
+        <a class="vs-opt" href="mwi-wi-create.html">Original</a>
+        <a class="vs-opt is-on" href="mwi-wi-create-a.html">Iris</a>
       </div>
     </div>
   </div>
@@ -575,11 +575,10 @@ body.view-mode .field:has(> label + .capture:last-child)::after{
     <div class="b-top">
       <a class="ph-back" href="mwi-list-redesign-a.html" aria-label="Back to work instructions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></a>
       <div class="ph-id">
-        <h1>RMWP-TR388-RRFM-M-5</h1>
-        <span class="chip"><span class="d"></span>Approval in progress</span>
+        <h1>New maintenance WI</h1>
+        <span class="chip"><span class="d"></span>Draft</span>
       </div>
       <div class="b-actions">
-        <button class="b-btn" id="btnTimeline" type="button" title="Timeline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/></svg><span class="bl">Timeline</span></button>
         <button class="b-btn primary" id="btnEdit" type="button" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg><span class="bl">Edit</span></button>
       </div>
     </div>
@@ -588,7 +587,7 @@ body.view-mode .field:has(> label + .capture:last-child)::after{
   <div class="body-grid">
   <aside class="rail" aria-label="Workflow progress">
     <div class="steps" id="steps" role="tablist">
-      <button class="step done active" data-step="1" type="button"><span class="tn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="sl"><span class="sn">Work / Task / Site Detail</span><span class="ss">Completed</span></span></button>
+      <button class="step active" data-step="1" type="button"><span class="tn">1</span><span class="sl"><span class="sn">Work / Task / Site Detail</span><span class="ss">In progress</span></span></button>
       <div class="rsubs on" id="railSubs">
         <button class="rsub active" data-target="1-1" type="button">Work instruction</button>
         <button class="rsub" data-target="1-2" type="button">Location</button>
@@ -596,11 +595,7 @@ body.view-mode .field:has(> label + .capture:last-child)::after{
         <button class="rsub" data-target="1-4" type="button">Attachment</button>
       </div>
       <div class="rconn"></div>
-      <button class="step done" data-step="2" type="button"><span class="tn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="sl"><span class="sn">Fund Detail</span><span class="ss">Completed</span></span></button>
-      <div class="rconn"></div>
-      <button class="step done" data-step="3" type="button"><span class="tn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="sl"><span class="sn">Price Schedule</span><span class="ss">Completed</span></span></button>
-      <div class="rconn"></div>
-      <button class="step" data-step="4" type="button"><span class="tn">4</span><span class="sl"><span class="sn">Approval</span><span class="ss">In progress</span></span></button>
+      <button class="step" data-step="2" type="button"><span class="tn">2</span><span class="sl"><span class="sn">Fund Detail</span><span class="ss">Not started</span></span></button>
     </div>
   </aside>
   <div class="formcol">
@@ -608,31 +603,31 @@ body.view-mode .field:has(> label + .capture:last-child)::after{
   <!-- ===== STEP 1 ===== -->
   <div class="step-group on" data-group="1">
 
-    <!-- 1-1 Work instruction details -->
+    <!-- 1-1 Work instruction -->
     <div class="sec on" data-sec="1-1"><div class="card"><div class="card-body">
       <div class="sec-title">Work instruction</div>
       <div class="fgrid">
-        <div class="field"><label>Contract no. <span class="req">*</span></label><div class="control">TR388</div></div>
-        <div class="field"><label>Work instruction no.</label><div class="control mono" data-lock>RMWP-TR388-RRFM-M-5</div></div>
+        <div class="field"><label>Contract no. <span class="req">*</span></label><div class="control empty">Not set</div></div>
+        <div class="field"><label>Work instruction no.</label><div class="control empty" data-lock>Not set</div></div>
         <div class="field"><label>LTA CCS work order no.</label><div class="control empty">Not set</div></div>
         <div class="field"><label>Defect reference no.</label><div class="control empty">Not set</div></div>
-        <div class="field"><label>Department <span class="req">*</span></label><div class="control">RRFM</div></div>
-        <div class="field"><label>Work type <span class="req">*</span></label><div class="control">Works order &mdash; accident</div></div>
-        <div class="field"><label>Feedback date <span class="req">*</span></label><div class="control">2 Jun 2026</div></div>
-        <div class="field"><label>Instruction date <span class="req">*</span></label><div class="control">2 Jun 2026</div></div>
-        <div class="field"><label>Defect reported by</label><div class="control">Inspection</div></div>
+        <div class="field"><label>Department <span class="req">*</span></label><div class="control empty">Not set</div></div>
+        <div class="field"><label>Work type <span class="req">*</span></label><div class="control empty">Not set</div></div>
+        <div class="field"><label>Feedback date <span class="req">*</span></label><div class="control empty">Not set</div></div>
+        <div class="field"><label>Instruction date <span class="req">*</span></label><div class="control empty">Not set</div></div>
+        <div class="field"><label>Defect reported by</label><div class="control empty">Not set</div></div>
       </div>
       <label class="toggle" style="margin-top:18px"><input type="checkbox"><span class="tk"></span><span class="tx"><strong>Recurring work instruction</strong><span>Repeats on a schedule defined in the contract</span></span></label>
     </div></div></div>
 
-    <!-- 1-2 Location & description -->
+    <!-- 1-2 Location -->
     <div class="sec" data-sec="1-2"><div class="card"><div class="card-body">
       <div class="sec-title">Location</div>
       <div class="fgrid">
-        <div class="field"><label>Road name <span class="req">*</span></label><div class="control">Adis Road</div></div>
-        <div class="field"><label>Location tag</label><div class="control mono">REX-ADI00Y-00000</div></div>
-        <div class="field"><label>Sector <span class="req">*</span></label><div class="control">NW3</div></div>
-        <div class="field"><label>Sub-sector <span class="req">*</span></label><div class="control">CS4</div></div>
+        <div class="field"><label>Road name <span class="req">*</span></label><div class="control empty">Not set</div></div>
+        <div class="field"><label>Location tag</label><div class="control empty">Not set</div></div>
+        <div class="field"><label>Sector <span class="req">*</span></label><div class="control empty">Not set</div></div>
+        <div class="field"><label>Sub-sector <span class="req">*</span></label><div class="control empty">Not set</div></div>
       </div>
       <div class="field-row" style="margin-top:16px">
         <div class="field"><label>Work / defect description</label><div class="control area empty">Not set</div></div>
@@ -640,7 +635,7 @@ body.view-mode .field:has(> label + .capture:last-child)::after{
       </div>
     </div></div></div>
 
-    <!-- 1-3 Site & assets -->
+    <!-- 1-3 Site &amp; assets -->
     <div class="sec" data-sec="1-3"><div class="card"><div class="card-body">
       <div class="sec-head">
         <div class="sec-title">Site &amp; assets</div>
@@ -656,8 +651,8 @@ body.view-mode .field:has(> label + .capture:last-child)::after{
         <div class="asset-lite" data-asset>
           <div class="al-head"><strong class="asset-name">Asset 1</strong><button class="btn-remove asset-remove" type="button">Remove</button></div>
           <div class="al-grid">
-            <div class="field"><label>Asset type name (code) <span class="req">*</span></label><div class="control">Bollard</div></div>
-            <div class="field"><label>Asset tag</label><div class="with-map"><div class="control mono">REX-BRR-BOLL-07896</div><button class="btn-map" type="button">Map</button></div></div>
+            <div class="field"><label>Asset type name (code) <span class="req">*</span></label><div class="control empty">Not set</div></div>
+            <div class="field"><label>Asset tag</label><div class="with-map"><div class="control empty">Not set</div><button class="btn-map" type="button">Map</button></div></div>
             <div class="field"><label>Asset ID</label><div class="control empty">Not set</div></div>
           </div>
           <nav class="task-tabs at-tabs" data-tasktabs></nav>
@@ -665,31 +660,13 @@ body.view-mode .field:has(> label + .capture:last-child)::after{
             <div class="task-lite" data-task>
               <div class="al-head"><strong class="task-name">Task 1</strong><button class="btn-remove task-remove" type="button">Remove</button></div>
               <div class="al-grid">
-                <div class="field"><label>Element type <span class="req">*</span></label><div class="control">Bollard</div></div>
-                <div class="field"><label>Defect type <span class="req">*</span></label><div class="control">Hole</div></div>
-                <div class="field"><label>Default X Y coordinates</label><div class="with-map"><div class="control mono">26495.53, 37133.86</div><button class="btn-map" type="button">Map</button></div></div>
+                <div class="field"><label>Element type <span class="req">*</span></label><div class="control empty">Not set</div></div>
+                <div class="field"><label>Defect type <span class="req">*</span></label><div class="control empty">Not set</div></div>
+                <div class="field"><label>Default X Y coordinates</label><div class="with-map"><div class="control empty">Not set</div><button class="btn-map" type="button">Map</button></div></div>
               </div>
               <div class="al-grid" style="margin-top:16px">
-                <div class="field"><label>Landmark</label><div class="control">Opp Blk 123 Adis Road</div></div>
-                <div class="field"><label>Start work date</label><div class="control">5 Jun 2026</div></div>
-                <div class="field"><label>End work date</label><div class="control">12 Jun 2026</div></div>
+                <div class="field"><label>Landmark</label><div class="control empty">Not set</div></div>
               </div>
-              <div class="wip-sep">Site execution · recorded by the site supervisor</div>
-              <div class="photo-grid-ro">
-                <div class="photo-ro"><span class="lbl">Before photo</span><div class="ph ph-before"><span class="cap">Before</span></div></div>
-                <div class="photo-ro"><span class="lbl">During photo</span><div class="ph ph-during"><span class="cap">During</span></div></div>
-                <div class="photo-ro"><span class="lbl">After photo</span><div class="ph ph-after"><span class="cap">After</span></div></div>
-              </div>
-              <div class="al-grid" style="margin-top:18px">
-                <div class="field"><label>Defect cause</label><div class="control">Ageing</div></div>
-                <div class="field"><label>Action taken on site</label><div class="control">Repair</div></div>
-                <div class="field"><label>Unit</label><div class="control">M</div></div>
-                <div class="field"><label>Length</label><div class="control">1</div></div>
-                <div class="field"><label>Measurement</label><div class="control">1</div></div>
-                <div class="field"><label>Work progress status (10% – 100%)</label><div class="control">100%</div></div>
-              </div>
-              <div class="field" style="margin-top:16px"><label>Task remarks</label><div class="control area">Bollard hole patched and repainted; area made good.</div></div>
-              <div class="field" style="margin-top:16px"><label>Attachment</label><div class="file-ro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>RRFM-M-5_site-record.pdf</div></div>
             </div>
           </div>
         </div>
@@ -700,13 +677,12 @@ body.view-mode .field:has(> label + .capture:last-child)::after{
     <div class="sec" data-sec="1-4"><div class="card"><div class="card-body">
       <div class="sec-title">Attachment</div>
       <div class="field"><label>Attachment</label>
-        <div class="file-ro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>RRFM-M-5_work-instruction.pdf</div>
-        <div class="capture" role="button" tabindex="0" style="margin-top:12px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></svg><strong>Upload file</strong><span>PDF, DOC, JPEG, JPG or PNG · max 5 MB · Official (Closed) / non-sensitive or below</span></div>
+        <div class="capture" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></svg><strong>Upload file</strong><span>PDF, DOC, JPEG, JPG or PNG &middot; max 5 MB &middot; Official (Closed) / non-sensitive or below</span></div>
       </div>
     </div></div></div>
   </div>
 
-  <!-- ===== STEP 2 · Fund Detail ===== -->
+  <!-- ===== STEP 2 &middot; Fund Detail ===== -->
   <div class="step-group" data-group="2">
     <div class="sec on"><div class="card"><div class="card-body">
       <div class="sec-title">Fund Detail</div>
@@ -714,79 +690,21 @@ body.view-mode .field:has(> label + .capture:last-child)::after{
         <table class="boq">
           <thead><tr><th>Funding source</th><th>Fund owner</th><th>Section</th><th class="num">Estimated amount (S$)</th><th class="act"></th></tr></thead>
           <tbody id="fundBody">
-            <tr><td><input value="EXT.ETRO.ASM(RD).E-TR388.000.3MINDE7115.TR388"></td><td><input value="LTA"></td><td><input value="NW3"></td><td class="num"><input value="234.56"></td><td class="act"><button class="boq-del" type="button" aria-label="Delete row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button></td></tr>
+            <tr><td><input></td><td><input></td><td><input></td><td class="num"><input></td><td class="act"><button class="boq-del" type="button" aria-label="Delete row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button></td></tr>
           </tbody>
           <tbody class="boq-actions"><tr><td colspan="5"><button class="boq-add" type="button" id="fundAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add funding source</button></td></tr></tbody>
         </table>
       </div>
       <div class="fgrid" style="margin-top:18px">
-        <div class="field"><label>Estimated amount (S$)</label><div class="control num">234.56</div></div>
-        <div class="field"><label>Estimated completion date <span class="req">*</span></label><div class="control">17 Jun 2026</div></div>
-        <div class="field"><label>Supervision</label><div class="control">LTA project team</div></div>
+        <div class="field"><label>Estimated amount (S$)</label><div class="control num empty">Not set</div></div>
+        <div class="field"><label>Estimated completion date <span class="req">*</span></label><div class="control empty">Not set</div></div>
+        <div class="field"><label>Supervision</label><div class="control empty">Not set</div></div>
       </div>
       <div class="fstack" style="margin-top:16px">
         <div class="field"><label>Fund remarks</label><div class="control area empty">Not set</div></div>
         <div class="field"><label>Attachment</label>
-          <div class="capture" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></svg><strong>Upload file</strong><span>PDF, DOC, JPEG, JPG or PNG · max 5 MB</span></div>
+          <div class="capture" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></svg><strong>Upload file</strong><span>PDF, DOC, JPEG, JPG or PNG &middot; max 5 MB</span></div>
         </div>
-      </div>
-    </div></div></div>
-  </div>
-
-  <!-- ===== STEP 3 · Price Schedule ===== -->
-  <div class="step-group" data-group="3">
-    <div class="sec on"><div class="card"><div class="card-body">
-      <div class="sec-title">Price Schedule</div>
-      <div class="fgrid">
-        <div class="field"><label>Payment type</label><div class="control">Final</div></div>
-        <div class="field"><label>Final amount (S$)</label><div class="control num">234.56</div></div>
-        <div class="field"><label>Actual completion date</label><div class="control">2 Jun 2026</div></div>
-      </div>
-      <div class="field" style="margin-top:16px"><label>Funding source details</label><div class="ro-1line">EXT.ETRO.ASM(RD).E-TR388.000.3MINDE7115.TR388</div></div>
-      <div class="fgrid" style="margin-top:16px">
-        <div class="field"><label>Fund owner</label><div class="control">LTA</div></div>
-        <div class="field"><label>Section</label><div class="control">NW3</div></div>
-      </div>
-      <div class="boq-wrap" style="margin-top:18px">
-        <table class="boq">
-          <thead><tr><th>Item</th><th>Description 1</th><th>Description 2</th><th>Description 3</th><th>Unit</th><th class="num">Rate (S$)</th><th class="num">Quantity</th><th class="num">Amount (S$)</th><th class="act"></th></tr></thead>
-          <tbody id="boqBody">
-            <tr><td><input value="1.1"></td><td><input value="Supply and install replacement bollard"></td><td><input value="Galvanised steel, 900 mm"></td><td><input value="Incl. base plate and fixings"></td><td><input value="Nos"></td><td class="num"><input value="185.00"></td><td class="num"><input value="2"></td><td class="num"><input class="boq-amt" value="370.00"></td><td class="act"><button class="boq-del" type="button" aria-label="Delete row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button></td></tr>
-          </tbody>
-          <tbody class="boq-actions"><tr><td colspan="9"><button class="boq-add" type="button" id="boqAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add BOQ row</button></td></tr></tbody>
-          <tfoot><tr><td colspan="7">Total</td><td class="num" id="boqTotal">S$ 370.00</td><td class="act"></td></tr></tfoot>
-        </table>
-      </div>
-      <div class="fstack" style="margin-top:18px">
-        <div class="field"><label>Attachment</label>
-          <div class="capture" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></svg><strong>Upload file</strong><span>PDF, DOC, JPEG, JPG or PNG · max 5 MB</span></div>
-        </div>
-        <div class="field"><label>Price schedule remarks</label><div class="control area empty">Not set</div></div>
-        <label class="toggle"><input type="checkbox"><span class="tk"></span><span class="tx"><strong>Contractor declaration — Certificate of Supervision</strong><span>The works were performed and supervised in accordance with the contract specification.</span></span></label>
-      </div>
-    </div></div></div>
-  </div>
-
-  <!-- ===== STEP 4 · Approval ===== -->
-  <div class="step-group" data-group="4">
-    <div class="sec on"><div class="card"><div class="card-body">
-      <div class="sec-title">Approval</div>
-      <div class="fstack">
-        <div class="field-row">
-          <div class="field"><label>Payment type</label><div class="control">Final</div></div>
-          <div class="field"><label>Final amount (S$)</label><div class="control num">234.56</div></div>
-        </div>
-        <div class="field"><label>Approval remarks</label><div class="control area empty">Not set</div></div>
-      </div>
-      <div class="fgrid" style="margin-top:16px">
-        <div class="field"><label>Instruction date</label><div class="control">2 Jun 2026</div></div>
-        <div class="field"><label>Estimated completion date</label><div class="control">17 Jun 2026</div></div>
-        <div class="field"><label>Actual completion date</label><div class="control">2 Jun 2026</div></div>
-        <div class="field"><label>Feedback date</label><div class="control">2 Jun 2026</div></div>
-        <div class="field"><label>JM submission date (first)</label><div class="control">8 Jul 2026</div></div>
-        <div class="field"><label>JM submission date (latest)</label><div class="control">8 Jul 2026</div></div>
-        <div class="field"><label>Days taken to submit JM (to LTA)</label><div class="control">36 days</div></div>
-        <div class="field"><label>Payment status</label><div class="control">Un Paid</div></div>
       </div>
     </div></div></div>
   </div>
@@ -798,11 +716,10 @@ body.view-mode .field:has(> label + .capture:last-child)::after{
 <div class="actionbar">
   <div class="ab-inner">
     <div class="act-left">
-      <button class="btn btn-out" id="btnReturn" type="button"><span class="lbl-full">Return Work Instruction</span><span class="lbl-short">Return</span></button>
-      <button class="btn btn-out" type="button"><span class="lbl-full">Reassign to LTA Officer</span><span class="lbl-short">Reassign</span></button>
+      <button class="btn btn-out" type="button"><span class="lbl-full">Save as draft</span><span class="lbl-short">Save</span></button>
     </div>
     <div class="act-right">
-      <button class="btn btn-primary" type="button">Approve</button>
+      <button class="btn btn-primary" type="button"><span class="lbl-full">Submit to Site Supervisor</span><span class="lbl-short">Submit</span></button>
     </div>
   </div>
 </div>
@@ -1034,118 +951,11 @@ body.view-mode .field:has(> label + .capture:last-child)::after{
   },{passive:true});
 })();
 </script>
-<div class="tl-scrim" id="tlScrim"></div>
-<div class="tl-modal" id="tlModal" role="dialog" aria-modal="true" aria-label="Timeline">
-  <div class="tl-head">
-    <strong>Timeline for &middot; RMWP-TR388-RRFM-M-5</strong>
-    <button class="tl-close" id="tlClose" type="button" aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
-  </div>
-  <div class="tl-body">
-    <div class="tl-item">
-      <span class="tl-time">02/06/2026 03:20 PM</span>
-      <div class="tl-title">Work Instruction created</div>
-      <div class="tl-meta">
-        <div><span>Status</span>Draft</div>
-        <div><span>Role</span><em class="rb rb-co">Contract Officer</em></div>
-        <div><span>Name</span>DEV CO01</div>
-        <div><span>Remarks</span>&mdash;</div>
-      </div>
-    </div>
-    <div class="tl-item">
-      <span class="tl-time">02/06/2026 03:40 PM</span>
-      <div class="tl-title">Submitted to Site Supervisor (Work-in-Progress)</div>
-      <div class="tl-meta">
-        <div><span>Status</span>Work-in-Progress</div>
-        <div><span>Role</span><em class="rb rb-co">Contract Officer</em></div>
-        <div><span>Name</span>DEV CO01</div>
-        <div><span>Remarks</span>N/A</div>
-      </div>
-    </div>
-    <div class="tl-item">
-      <span class="tl-time">02/06/2026 03:56 PM</span>
-      <div class="tl-title">Submitted to Engineer (Verification-in-Progress)</div>
-      <div class="tl-meta">
-        <div><span>Status</span>Verification-in-Progress</div>
-        <div><span>Role</span><em class="rb rb-ss">Site Supervisor</em></div>
-        <div><span>Name</span>DEV TR388SS01</div>
-        <div><span>Remarks</span>N/A</div>
-      </div>
-    </div>
-    <div class="tl-item">
-      <span class="tl-time">02/06/2026 04:13 PM</span>
-      <div class="tl-title">Submitted to Contract Officer (Approval-in-Progress)</div>
-      <div class="tl-meta">
-        <div><span>Status</span>Approval-in-Progress</div>
-        <div><span>Role</span><em class="rb rb-eng">Engineer</em></div>
-        <div><span>Name</span>DEV TR388ENG01</div>
-        <div><span>Remarks</span>N/A</div>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="tl-scrim" id="rtScrim"></div>
-<div class="tl-modal tl-sm" id="rtModal" role="dialog" aria-modal="true" aria-label="Return work instruction">
-  <div class="tl-head">
-    <strong>Return work instruction</strong>
-    <button class="tl-close" id="rtClose" type="button" aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
-  </div>
-  <div class="tl-body">
-    <p class="rt-hint">Choose who this work instruction goes back to.</p>
-    <div id="rtOpts"></div>
-    <div class="rt-field">
-      <label for="rtRemarks">Remarks</label>
-      <textarea id="rtRemarks" placeholder="Reason for returning"></textarea>
-    </div>
-  </div>
-  <div class="rt-foot">
-    <button class="btn btn-ghost" id="rtCancel" type="button">Cancel</button>
-    <button class="btn btn-primary" id="rtConfirm" type="button">Return</button>
-  </div>
-</div>
-<script>
-/* Return work instruction — pick who it goes back to.
-   This page is fixed at the Contract Officer / Approval-in-progress stage, so the targets
-   are the CO set from mwi-wi-workflow.html's ROLES table. If this page ever becomes
-   role-aware, swap TARGETS for that page's per-role `returns` list. */
-(function(){
-  var btn=document.getElementById('btnReturn'); if(!btn) return;
-  var sc=document.getElementById('rtScrim'), md=document.getElementById('rtModal');
-  var TARGETS=[['Site Supervisor','Site execution needs correcting'],
-               ['QS','Quantities need re-measuring'],
-               ['Engineer','Price schedule needs revising']];
-  document.getElementById('rtOpts').innerHTML=TARGETS.map(function(o,i){
-    return '<label class="rt-opt"><input type="radio" name="rtRole" value="'+o[0]+'"'+(i?'':' checked')+
-           '><span><strong>'+o[0]+'</strong><em>'+o[1]+'</em></span></label>';}).join('');
-  function open(){sc.classList.add('show');md.classList.add('show');}
-  function close(){sc.classList.remove('show');md.classList.remove('show');}
-  btn.addEventListener('click',open);
-  document.getElementById('rtClose').addEventListener('click',close);
-  document.getElementById('rtCancel').addEventListener('click',close);
-  document.getElementById('rtConfirm').addEventListener('click',close);
-  sc.addEventListener('click',close);
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
-})();
-</script>
 <script>
 /* Timeline modal + Edit / Save (mirrors mwi-wi-workflow_photoswipe-navy.html).
    This page renders values as read-only .control boxes rather than form inputs, so
    "edit" makes them contenteditable in place instead of un-disabling real fields. */
 (function(){
-  var sc=document.getElementById('tlScrim'), md=document.getElementById('tlModal'),
-      tb=document.getElementById('btnTimeline');
-  function tOpen(){sc.classList.add('show');md.classList.add('show');}
-  function tClose(){sc.classList.remove('show');md.classList.remove('show');}
-  if(tb){
-    tb.addEventListener('click',tOpen);
-    document.getElementById('tlClose').addEventListener('click',tClose);
-    sc.addEventListener('click',tClose);
-    document.addEventListener('keydown',function(e){if(e.key==='Escape')tClose();});
-  }
-
   var PEN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>';
   var TICK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
   var eb=document.getElementById('btnEdit'); if(!eb) return;
@@ -1168,7 +978,9 @@ body.view-mode .field:has(> label + .capture:last-child)::after{
     });
   }
   eb.addEventListener('click',function(){setMode(!document.body.classList.contains('view-mode'));});
-  setMode(true);   // default: view / read-only
+  // A create screen opens editable — there is no saved version to "view" yet, which
+  // is also how mwi-wi-create.html behaves (live inputs, no Edit toggle).
+  setMode(false);
 })();
 </script>
 <script>

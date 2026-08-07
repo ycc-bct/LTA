@@ -70,7 +70,9 @@
   --shadow-lg:0 8px 24px rgba(22,31,38,.10);--sidebar-w:248px;--topbar-h:72px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans);font-size:.875rem;color:var(--grey-800);background:var(--grey-50);-webkit-font-smoothing:antialiased;line-height:1.5}
+/* the page field is a cool violet, not neutral grey: it sits between white cards
+   (1.08:1, so their edges still read) and the #EDEFF9 sidebar (1.06:1) */
+body{font-family:var(--font-sans);font-size:.875rem;color:var(--grey-800);background:#F5F6FC;-webkit-font-smoothing:antialiased;line-height:1.5}
 button{font-family:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--teal-600);outline-offset:2px;border-radius:var(--r-sm)}
 
@@ -194,7 +196,9 @@ button{font-family:inherit;cursor:pointer}
 .back:hover{color:var(--teal-700)}.back svg{width:15px;height:15px}
 
 /* ==== sticky page head (Layout A) ==== */
-.pagehead{position:sticky;top:var(--topbar-h);z-index:25;background:var(--grey-50);padding:12px 0;margin-bottom:8px}
+/* must track the body, not --grey-50: it is a sticky band the content scrolls
+   under, so any mismatch shows up as a stripe across the top */
+.pagehead{position:sticky;top:var(--topbar-h);z-index:25;background:#F5F6FC;padding:12px 0;margin-bottom:8px}
 .b-top{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
 .ph-back{display:inline-flex;width:38px;height:38px;border-radius:50%;border:1px solid var(--grey-200);background:#fff;align-items:center;justify-content:center;color:var(--grey-700);flex:none}
 .ph-back svg{width:17px;height:17px}
@@ -361,7 +365,14 @@ button{font-family:inherit;cursor:pointer}
 /* ---- Edit mode: the read-only value boxes become editable in place ---- */
 body:not(.view-mode) .actionbar{display:none}   /* editing: only Save (top right) is available */
 body:not(.view-mode) .formcol .control[contenteditable]{background:#fff;border-color:var(--grey-300);
-  color:var(--grey-900);cursor:text;white-space:normal;overflow:visible;text-overflow:clip}
+  color:var(--grey-900);cursor:text;text-overflow:clip}
+/* Single-line fields stay single-line while editing. white-space:normal used to let
+   the narrow .with-map values (Asset tag, X Y coordinates) wrap the moment you pressed
+   Edit, and the row jumped 41px -> 62px. A long value scrolls sideways instead — the
+   browser keeps the caret in view on its own. .area keeps its fixed height either way. */
+body:not(.view-mode) .formcol .control[contenteditable]:not(.area){
+  white-space:nowrap;overflow-x:auto;overflow-y:hidden}
+body:not(.view-mode) .formcol .control.area[contenteditable]{white-space:normal;overflow:auto}
 body:not(.view-mode) .formcol .control[contenteditable]:focus{outline:none;border-color:var(--teal-600);
   box-shadow:0 0 0 3px rgba(0,116,122,.12)}
 body:not(.view-mode) .formcol .control[contenteditable]:empty::before{content:attr(data-ph);color:var(--grey-400)}

@@ -168,6 +168,20 @@ step 圓點、toggle 全部同深，整頁是一個平面，**沒有「先看哪
 - ⚠️ 側欄展開中的父層（`.nav-group>.nav-item.active:not(:hover)`）**不吃這條** ——
   它被刻意壓成 `--chrome-ink`，那是先前決定要拿掉強調的（見上一節）。
 
+### 1b-2b-2. Iris 的頁面底色與編輯態（2026-08-06）
+- **頁底 `body{background:#F5F6FC}`**（原本是 `--grey-50 #F7F9FA`，200° 的中性冷灰）。
+  231° 的淡紫，跟 `#EDEFF9` 側欄同一家族：白卡對頁底 **1.08**（比原本的 1.06 更分得開）、
+  頁底對側欄 **1.06**（兩塊面板仍分得出來）。三頁 Iris 都套。
+  - ⚠️ `.pagehead` 是 sticky 的，底色**必須跟著 body 一起改** —— 它原本吃 `--grey-50`，
+    內容捲到它下面時會露出一條灰帶。
+- **按 Edit 不可以改變任何高度**：`.control[contenteditable]` 原本會切成
+  `white-space:normal;overflow:visible`，`.with-map` 那兩個窄欄位（Asset tag、
+  Default X Y coordinates）一進編輯就換行，整列從 **41px 跳到 62px**。
+  改成單行欄位維持 `nowrap` ＋ `overflow-x:auto`（值太長就橫向捲，游標由瀏覽器帶著走）；
+  `.area` 本來就是固定高度，維持 `normal` 沒差。
+  - 唯一還會變高的是 **step 1 的 Attachment**：`.capture` 上傳區塊在 view-mode 是隱藏的，
+    按 Edit 才出現（+127px）。**那是刻意的**（見 SPEC_pages 的 read-only 規則），不是 bug。
+
 ### 1b-2c. Iris 的角色頭像（2026-08-06）
 原本三個角色是 teal `#10757E` / coral `#AD210B` / amber `#866709` —— 三個互不相關的色相
 擺在紫藍色的 chrome 上，三顆圓圈湊在一起很跳。改成**沿著色相走的紫色三階**
@@ -308,6 +322,20 @@ step 1 在兩版都叫 **Work / Task / Site Detail**（它涵蓋前四個區塊�
 
 方向是**讓標題去對齊導覽**，因為導覽名稱兩版本來就一致、也貼近線上 wizard 的用字。
 這些字串沒有被任何 JS 當 key（查過），純顯示文字。
+
+### 2d. 表頭 brand-name 對齊側欄（2026-08-06，四個 Original 頁）
+`.brand-name` 的分隔線原本停在 x=202，側欄右緣是 232 —— 差 30px，看起來像沒對準而不是刻意。
+讓 logo 佔滿側欄那一欄，分隔線就落在側欄右緣，也就是 `.main` 起始的同一條線：
+```css
+@media(min-width:1021px){
+  .topbar .brand{gap:0}
+  .topbar .brand-logo-img{width:calc(var(--sidebar-w) - 20px);object-fit:contain;object-position:left center}
+  .topbar .brand-name{margin-left:0}
+}
+```
+`20px` 是 `.topbar` 的左內距。用 `object-fit:contain` 撐寬度而不是直接給 `width`，
+logo 才不會被拉變形。**只在 ≥1021px 生效** —— 以下側欄是抽屜，沒有東西可以對齊，
+≤640px 時 `.brand-name` 本來就 `display:none`。
 
 ## 3. 圓角 / 陰影 / 版面
 ```

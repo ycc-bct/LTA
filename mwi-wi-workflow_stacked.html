@@ -86,6 +86,16 @@ button{font-family:inherit;cursor:pointer}
 .brand-name{border-left:1px solid var(--grey-200);padding-left:14px;margin-left:2px}
 .brand-name{font-weight:650;color:var(--navy-700);font-size:var(--fs-md);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand-name small{display:block;font-weight:450;color:var(--grey-500);font-size:var(--fs-xs)}
+/* The header splits where the body does: the logo occupies the sidebar column, so the
+   divider falls on the sidebar's right edge — the same line .main starts on. It used
+   to stop 30px short, which read as a misalignment rather than a choice.
+   Desktop only: below 1021px the sidebar is a drawer and there is nothing to line up
+   with, and below 640px .brand-name is hidden outright. */
+@media(min-width:1021px){
+  .topbar .brand{gap:0}
+  .topbar .brand-logo-img{width:calc(var(--sidebar-w) - 20px);object-fit:contain;object-position:left center}
+  .topbar .brand-name{margin-left:0}
+}
 .topbar-spacer{flex:1}
 .icon-btn{
   width:38px;height:38px;border-radius:var(--r-md);border:1px solid transparent;
@@ -1842,20 +1852,50 @@ body.view-mode .boq-actions{display:none}
   }
 
   var activeAsset=0;
+  /* Selecting is not rebuilding. buildAssetTabs()/updateTaskRemove() wipe the chip bar
+     and re-create every button, which flickers on each click and throws away the chips
+     you just added. These two only flip the state the selection actually owns; the full
+     rebuild still runs when an asset or task is added or removed. */
+  function selectAsset(i){
+    var list=assets(); if(!list.length) return;
+    activeAsset=Math.min(Math.max(i,0),list.length-1);
+    list.forEach(function(a,k){ a.hidden=false; a.classList.remove('collapsed'); });
+    var bar=document.getElementById('assetTabs');
+    if(bar) Array.prototype.forEach.call(bar.querySelectorAll('.at-chip'),function(c,k){
+      c.classList.toggle('is-on',k===activeAsset); });
+  }
+  function selectTask(a,i){
+    var list=tasksIn(a); if(!list.length) return;
+    var act=Math.min(Math.max(i,0),list.length-1);
+    a.dataset.activeTask=act;
+    list.forEach(function(t,k){ t.hidden=false; t.classList.remove('collapsed'); });
+    var bar=taskTabsOf(a);
+    if(bar) Array.prototype.forEach.call(bar.querySelectorAll('.tt-chip'),function(c,k){
+      c.classList.toggle('is-on',k===act); });
+  }
   function buildAssetTabs(){
     var bar=document.getElementById('assetTabs'); if(!bar) return;
     var list=assets();
     if(activeAsset>=list.length) activeAsset=Math.max(0,list.length-1);
+    list.forEach(function(a,i){ a.hidden=false; });
+    /* Everything below re-creates the chip bar from scratch. #s-site fires
+       refreshGates() on every input/change event, so without this guard the bar is
+       torn down and rebuilt while you type — which is what read as "it starts over".
+       The signature is exactly what the bar displays; if none of it moved, leave the
+       existing nodes alone. */
+    var sig=list.length+'|'+activeAsset+'|'+list.map(function(a){return tasksIn(a).length;}).join(',')+'|';
+    for(var q=0;q<list.length;q++){ if(!assetComplete(list[q])){ sig+=(q+1); break; } }
+    if(bar.dataset.sig===sig) return;
+    bar.dataset.sig=sig;
     bar.innerHTML='';
     list.forEach(function(a,i){
-      a.hidden=false;                             // stacked: every asset stays visible
       var b=document.createElement('button');
       b.type='button'; b.className='at-chip'+(i===activeAsset?' is-on':'');
       var n=tasksIn(a).length;
       b.innerHTML='<span></span><span class="at-count'+(n?'':' is-zero')+'">'+n+'</span>';
       b.firstChild.textContent='Asset '+(i+1);
       b.title=n+(n===1?' task':' tasks');
-      b.addEventListener('click',function(){ activeAsset=i; buildAssetTabs(); a.classList.remove('collapsed'); jumpTo(a); });
+      b.addEventListener('click',function(){ selectAsset(i); a.classList.remove('collapsed'); jumpTo(a); });
       bar.appendChild(b);
     });
     var note=noteAfter(bar,'asset-gate');
@@ -1942,12 +1982,17 @@ body.view-mode .boq-actions{display:none}
     });
     var bar=taskTabsOf(a);
     if(bar){
+      // same guard as the asset bar — refreshGates() reaches here on every keystroke
+      var sig=list.length+'|'+act+'|';
+      for(var q=0;q<list.length;q++){ if(!taskComplete(list[q])){ sig+=(q+1); break; } }
+      if(bar.dataset.sig===sig) return;
+      bar.dataset.sig=sig;
       bar.innerHTML='';
       list.forEach(function(t,i){
         var b=document.createElement('button');
         b.type='button'; b.className='tt-chip'+(i===act?' is-on':'');
         b.textContent='Task '+(i+1);
-        b.addEventListener('click',function(){ a.dataset.activeTask=i; updateTaskRemove(a); t.classList.remove('collapsed'); jumpTo(t); });
+        b.addEventListener('click',function(){ selectTask(a,i); t.classList.remove('collapsed'); jumpTo(t); });
         bar.appendChild(b);
       });
       if(list.length<MAX_TASKS){
@@ -2542,6 +2587,10 @@ document.addEventListener('change', function(e){
     // animated scroll, and an animation started during load gets cancelled.
     window.scrollTo({top:Math.max(0,sec.getBoundingClientRect().top+window.pageYOffset-off),left:0,behavior:'instant'});
   }
+  // Land NOW, before the first paint: this script is the last thing in <body>, so
+  // #s-site is already parsed and laid out. Waiting for `load` is what made the page
+  // flash at scroll 0 and then jump.
+  land();
   // late layout (fonts, the sticky head remeasuring) can move the target, so land again
   function landTwice(){ land(); requestAnimationFrame(land); setTimeout(land,200); }
   if(document.readyState==='complete') landTwice();

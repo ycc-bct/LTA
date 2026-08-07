@@ -98,9 +98,11 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
+/* the page field is a cool violet, not neutral grey: it sits between white cards
+   (1.08:1, so their edges still read) and the #EDEFF9 sidebar (1.06:1) */
 body{
   font-family:var(--font-sans);font-size:var(--fs-base);
-  color:var(--grey-800);background:var(--grey-50);
+  color:var(--grey-800);background:#F5F6FC;
   -webkit-font-smoothing:antialiased;line-height:1.5;
 }
 a{color:var(--teal-600);text-decoration:none}
@@ -911,7 +913,7 @@ select.control{background-position:right 16px center}
       <h1>Maintenance work instructions</h1>
     </div>
     <div class="head-actions">
-      <a class="btn btn-primary" href="mwi-wi-create.html" title="New WI" style="text-decoration:none">
+      <a class="btn btn-primary" href="mwi-wi-create-a.html" title="New WI" style="text-decoration:none">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
         <span class="bl">New WI</span>
       </a>
